@@ -1,4 +1,3 @@
-﻿
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -440,7 +439,7 @@
   <div class="grid" id="calGrid"></div>
 </div>
 
-<footer>Data is saved to your account and persists across sessions.</footer>
+<footer>Data is saved to your browser and persists across sessions.</footer>
 
 <div class="overlay" id="overlay">
   <div class="modal">
@@ -489,32 +488,37 @@ const today = new Date();
 viewYear = today.getFullYear();
 viewMonth = today.getMonth();
 
-async function loadData(){
+// FIX: Uses standard browser localStorage API for rock-solid persistence!
+function loadData(){
   try{
-    const res = await window.storage.get(DATA_KEY, false);
-    return res && res.value ? JSON.parse(res.value) : {};
+    const stored = localStorage.getItem(DATA_KEY);
+    return stored ? JSON.parse(stored) : {};
   } catch(e){
+    console.error('Failed to load data', e);
     return {};
   }
 }
-async function saveData(d){
+
+function saveData(d){
   try{
-    await window.storage.set(DATA_KEY, JSON.stringify(d), false);
+    localStorage.setItem(DATA_KEY, JSON.stringify(d));
   } catch(e){
     console.error('Failed to save trades', e);
   }
 }
-async function loadStartingBalance(){
+
+function loadStartingBalance(){
   try{
-    const res = await window.storage.get(BALANCE_KEY, false);
-    return res && res.value !== undefined ? parseFloat(res.value) : 0;
+    const stored = localStorage.getItem(BALANCE_KEY);
+    return stored !== null ? parseFloat(stored) : 0;
   } catch(e){
     return 0;
   }
 }
-async function saveStartingBalance(v){
+
+function saveStartingBalance(v){
   try{
-    await window.storage.set(BALANCE_KEY, String(v), false);
+    localStorage.setItem(BALANCE_KEY, String(v));
     return true;
   } catch(e){
     console.error('Failed to save starting balance', e);
@@ -526,12 +530,12 @@ const startingBalanceInput = document.getElementById('startingBalanceInput');
 const saveBalanceBtn = document.getElementById('saveBalanceBtn');
 const balanceSaveFlag = document.getElementById('balanceSaveFlag');
 
-saveBalanceBtn.addEventListener('click', async () => {
+saveBalanceBtn.addEventListener('click', () => {
   const v = parseFloat(startingBalanceInput.value);
   startingBalance = isNaN(v) ? 0 : v;
   saveBalanceBtn.disabled = true;
   balanceSaveFlag.textContent = 'saving…';
-  const ok = await saveStartingBalance(startingBalance);
+  const ok = saveStartingBalance(startingBalance);
   balanceSaveFlag.textContent = ok ? 'saved' : 'save failed';
   saveBalanceBtn.disabled = false;
   setTimeout(() => { balanceSaveFlag.textContent = ''; }, 1500);
@@ -554,7 +558,6 @@ function dayTotalPnl(key){
   return rec.trades.reduce((s,t)=> s + (parseFloat(t.pnl)||0), 0);
 }
 
-// compute cumulative balance for every date up to and including given date
 function balanceThrough(y,m,d){
   const targetKey = dateKey(y,m,d);
   const keys = Object.keys(data).filter(k => data[k].trades && data[k].trades.length > 0).sort();
@@ -567,7 +570,6 @@ function balanceThrough(y,m,d){
   return bal;
 }
 
-// balance as of right before the given date (i.e. excluding that day's own trades)
 function balanceBefore(y,m,d){
   const targetKey = dateKey(y,m,d);
   const keys = Object.keys(data).filter(k => data[k].trades && data[k].trades.length > 0).sort();
@@ -580,7 +582,6 @@ function balanceBefore(y,m,d){
   return bal;
 }
 
-// day's % return relative to the balance going into that day
 function dayReturnPct(y,m,d){
   const key = dateKey(y,m,d);
   const pnl = dayTotalPnl(key);
@@ -676,7 +677,6 @@ function renderStats(){
   })();
   const currentBalance = lastTradingDay ? balanceThrough(viewYear, viewMonth, lastTradingDay) :
     (() => {
-      // fall back to last known balance before this month
       const keys = Object.keys(data).filter(k => data[k].trades && data[k].trades.length > 0).sort();
       const monthStartKey = dateKey(viewYear, viewMonth, 1);
       let bal = startingBalance;
@@ -713,7 +713,6 @@ document.getElementById('nextBtn').addEventListener('click', () => {
   render();
 });
 
-// Modal logic
 let activeKey = null;
 const overlay = document.getElementById('overlay');
 const tradesContainer = document.getElementById('tradesContainer');
@@ -731,7 +730,7 @@ const importImageBtn = document.getElementById('importImageBtn');
 const imageGrid = document.getElementById('imageGrid');
 const lightboxOverlay = document.getElementById('lightboxOverlay');
 const lightboxImg = document.getElementById('lightboxImg');
-let currentImages = []; // array of base64 data URLs for the active day
+let currentImages = [];
 
 function renderImageGrid(){
   imageGrid.innerHTML = '';
@@ -761,7 +760,6 @@ function renderImageGrid(){
   });
 }
 
-// Lightbox logic
 function openLightbox(dataUrl){
   lightboxImg.src = dataUrl;
   lightboxOverlay.classList.add('show');
@@ -829,7 +827,6 @@ function openModal(y,m,d){
   } else {
     addTradeRow('', '');
   }
-  // support old records that stored a single "image" field
   if(rec.images && rec.images.length){
     currentImages = [...rec.images];
   } else if(rec.image){
@@ -840,10 +837,7 @@ function openModal(y,m,d){
   renderImageGrid();
   updateDayTotal();
   
-  // 1. Show the modal first so the browser can calculate element bounds
   overlay.classList.add('show');
-  
-  // 2. Now calculate the notes auto-height correctly!
   autoGrowNotes();
 }
 
@@ -883,7 +877,7 @@ function closeModal(){
   activeKey = null;
 }
 
-saveBtn.addEventListener('click', async () => {
+saveBtn.addEventListener('click', () => {
   const trades = [];
   tradesContainer.querySelectorAll('.trade-row').forEach(row => {
     const symbol = row.querySelector('.symbol-input').value.trim();
@@ -902,7 +896,9 @@ saveBtn.addEventListener('click', async () => {
 
   saveBtn.disabled = true;
   saveBtn.textContent = 'Saving...';
-  await saveData(data);
+  
+  saveData(data);
+  
   saveBtn.disabled = false;
   saveBtn.textContent = 'Save';
 
@@ -910,14 +906,9 @@ saveBtn.addEventListener('click', async () => {
   render();
 });
 
-async function init(){
-  try{
-    const [d, b] = await Promise.all([loadData(), loadStartingBalance()]);
-    data = d;
-    startingBalance = b;
-  } catch(e){
-    console.error('Failed to load journal data', e);
-  }
+function init(){
+  data = loadData();
+  startingBalance = loadStartingBalance();
   startingBalanceInput.value = startingBalance;
   document.getElementById('loadingScreen').style.display = 'none';
   document.getElementById('app').style.display = 'block';
