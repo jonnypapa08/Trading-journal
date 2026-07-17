@@ -441,7 +441,28 @@
   </div>
 </header>
 
-<div class="stats-bar" id="statsBar"></div>
+<!-- STATS DASHBOARD ROW -->
+<div id="statsBar" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-top: 20px; margin-bottom: 25px; font-family: sans-serif;">
+    
+    <!-- Net P&L Card -->
+    <div style="background: #161c24; border: 1px solid #2a3340; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.4);">
+        <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #7d8894; margin-bottom: 8px; font-weight: 700;">Net P&L • All Time</div>
+        <div id="stat-net-pl" style="font-size: 32px; font-weight: 700; color: #e6edf3;">$0.00</div>
+    </div>
+
+    <!-- Best Trade Card -->
+    <div style="background: #161c24; border: 1px solid #2a3340; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.4);">
+        <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #7d8894; margin-bottom: 8px; font-weight: 700;">Best Trade</div>
+        <div id="stat-best-trade" style="font-size: 24px; font-weight: 700; color: #3fb950;">$0.00</div>
+    </div>
+
+    <!-- Worst Trade Card -->
+    <div style="background: #161c24; border: 1px solid #2a3340; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.4);">
+        <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #7d8894; margin-bottom: 8px; font-weight: 700;">Worst Trade</div>
+        <div id="stat-worst-trade" style="font-size: 24px; font-weight: 700; color: #f85149;">$0.00</div>
+    </div>
+
+</div>
 
 <!-- The Premium Net Equity Curve Chart -->
 <div class="chart-container">
@@ -524,9 +545,56 @@ function loadData(){
 function saveData(d){
   try{
     localStorage.setItem(DATA_KEY, JSON.stringify(d));
+    calculateDashboardStats();
   } catch(e){
     console.error('Failed to save trades', e);
   }
+}
+
+
+
+
+  function calculateDashboardStats() {
+    const data = loadData();
+    // Handles if your trades are inside an object array (e.g., data.trades) or the root object itself
+    const tradesArray = Array.isArray(data) ? data : (data.trades || Object.values(data));
+
+    let netPL = 0;
+    let bestTrade = -Infinity;
+    let worstTrade = Infinity;
+    let validTradesCount = 0;
+
+    if (tradesArray && tradesArray.length > 0) {
+        tradesArray.forEach(trade => {
+            if (trade && (trade.pl !== undefined || trade.pnl !== undefined)) {
+                const pl = parseFloat(trade.pl ?? trade.pnl) || 0;
+                netPL += pl;
+                if (pl > bestTrade) bestTrade = pl;
+                if (pl < worstTrade) worstTrade = pl;
+                validTradesCount++;
+            }
+        });
+    }
+
+    if (bestTrade === -Infinity) bestTrade = 0;
+    if (worstTrade === Infinity) worstTrade = 0;
+
+    // Format currency helper
+    const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
+
+    // Update Net P&L display text and coloring
+    const netEl = document.getElementById('stat-net-pl');
+    if (netEl) {
+        netEl.innerText = (netPL >= 0 ? '+' : '') + fmt.format(netPL);
+        netEl.style.color = netPL >= 0 ? '#3fb950' : '#f85149'; // Green or Red
+    }
+
+    // Update Best & Worst Cards
+    const bestEl = document.getElementById('stat-best-trade');
+    if (bestEl) bestEl.innerText = (bestTrade >= 0 ? '+' : '') + fmt.format(bestTrade);
+
+    const worstEl = document.getElementById('stat-worst-trade');
+    if (worstEl) worstEl.innerText = fmt.format(worstTrade);
 }
 
 function loadStartingBalance(){
@@ -619,6 +687,7 @@ function render(){
   document.getElementById('monthLabel').textContent = `${monthNames[viewMonth]} ${viewYear}`;
   renderCalendar();
   renderStats();
+  calculateDashboardStats();
   renderEquityChart(); // Redraws chart dynamic data
 }
 
