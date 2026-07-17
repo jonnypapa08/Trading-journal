@@ -359,10 +359,22 @@
     font-size:13px;
   }
   .add-trade:hover{ color:var(--amber); border-color:var(--amber); }
+  
+  /* Fixed Expanding Journal Notes Settings */
   .notes-field{
-    width:100%; background:transparent; border:none; outline:none; color:var(--text);
-    font-size:14px; margin-top:6px; resize:none; min-height:32px; font-family:inherit;
+    width:100%; 
+    background:transparent; 
+    border:none; 
+    outline:none; 
+    color:var(--text);
+    font-size:14px; 
+    margin-top:8px; 
+    resize:none; 
+    min-height:160px; /* Gives plenty of start breathing room */
+    font-family:inherit;
+    line-height:1.5;
   }
+  
   .image-section{ margin-top:14px; }
   .image-label{ display:block; font-size:10px; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); margin-bottom:6px; }
   .image-grid{ display:flex; flex-direction:column; gap:16px; margin-top:10px; }
@@ -380,7 +392,7 @@
   .lightbox-overlay.show{ display:flex; }
   .lightbox-overlay img{ max-width:90%; max-height:90%; border-radius:6px; }
 
-  .modal-footer{ display:flex; justify-content:space-between; align-items:center; margin-top:18px; }
+  .modal-footer{ display:flex; justify-content:space-between; align-items:center; margin-top:18px; position:sticky; bottom:-28px; background:var(--panel); padding:16px 0; border-top:1px solid var(--border); }
   .modal-buttons{ display:flex; gap:8px; }
   .btn{ padding:9px 16px; border-radius:4px; border:1px solid var(--border); cursor:pointer; font-size:13px; font-weight:600; }
   .btn-save{ background:var(--amber); color:#1a1200; border-color:var(--amber); }
@@ -410,14 +422,11 @@
   </div>
 </header>
 
-<!-- STATS DASHBOARD ROW (EXACT SKETCH ARCHITECTURE) -->
-<div class="stats-bar" id="statsBar">
-  <!-- Dynamic Injection -->
-</div>
+<!-- STATS DASHBOARD ROW -->
+<div class="stats-bar" id="statsBar"></div>
 
-<!-- MID DASHBOARD LAYOUT (WIN RATE CIRCLE + RECENT TRADES) -->
+<!-- MID DASHBOARD LAYOUT -->
 <div class="mid-section">
-  <!-- Win Rate Ring Card -->
   <div class="winrate-panel">
     <div class="panel-title">// WIN RATE</div>
     <div class="chart-wrapper">
@@ -429,7 +438,6 @@
     </div>
   </div>
 
-  <!-- Recent Trades Table Panel -->
   <div class="recent-panel">
     <div class="panel-title">// RECENT TRADES</div>
     <div style="overflow-x:auto;">
@@ -443,9 +451,7 @@
                   <th style="text-align: right;">P&amp;L</th>
               </tr>
           </thead>
-          <tbody id="recentTradesBody">
-              <!-- Instanced dynamically -->
-          </tbody>
+          <tbody id="recentTradesBody"></tbody>
       </table>
     </div>
   </div>
@@ -527,9 +533,7 @@ function loadData(){
   try{
     const stored = localStorage.getItem(DATA_KEY);
     return stored ? JSON.parse(stored) : {};
-  } catch(e){
-    return {};
-  }
+  } catch(e){ return {}; }
 }
 
 function saveData(d){
@@ -591,6 +595,11 @@ function dayReturnPct(y,m,d){
 }
 
 const monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+
+function autoGrowNotes() {
+  this.style.height = 'auto';
+  this.style.height = this.scrollHeight + 'px';
+}
 
 function render(){
   document.getElementById('monthLabel').textContent = `${monthNames[viewMonth]} ${viewYear}`;
@@ -663,14 +672,12 @@ function renderStatsAndPanels(){
 
   const daysInMonth = new Date(viewYear, viewMonth+1, 0).getDate();
 
-  // 1. Calculate Monthly totals
   for(let d=1; d<=daysInMonth; d++){
     const key = dateKey(viewYear, viewMonth, d);
     const pnl = dayTotalPnl(key);
     if(pnl !== null) monthPnl += pnl;
   }
 
-  // 2. Scan whole data universe
   Object.keys(data).forEach(k => {
     const day = data[k];
     if (day && day.trades) {
@@ -705,7 +712,6 @@ function renderStatsAndPanels(){
   if (bestTrade === -Infinity) bestTrade = 0;
   if (worstTrade === Infinity) worstTrade = 0;
 
-  // Render Top 5 Box Blocks
   const bar = document.getElementById('statsBar');
   bar.innerHTML = `
     <div class="stat">
@@ -732,7 +738,6 @@ function renderStatsAndPanels(){
     </div>
   `;
 
-  // 3. Circle Donut Win Rate Calculation & Chart Engine Update
   const totalTrades = winTradesCount + lossTradesCount;
   const winPct = totalTrades > 0 ? ((winTradesCount / totalTrades) * 100) : 0;
   
@@ -760,7 +765,6 @@ function renderStatsAndPanels(){
     }
   });
 
-  // 4. Update Recent Trades Layout containing QTY
   allTradesList.sort((a, b) => new Date(b.date) - new Date(a.date));
   const recentTradesBody = document.getElementById('recentTradesBody');
   if (recentTradesBody) {
@@ -868,6 +872,9 @@ const lightboxOverlay = document.getElementById('lightboxOverlay');
 const lightboxImg = document.getElementById('lightboxImg');
 let currentImages = [];
 
+// Attach autogrow handler to expanding notes area
+notesField.addEventListener('input', autoGrowNotes);
+
 function renderImageGrid(){
   imageGrid.innerHTML = '';
   currentImages.forEach((dataUrl, idx) => {
@@ -918,7 +925,14 @@ function openModal(y,m,d){
   currentImages = rec.images ? [...rec.images] : (rec.image ? [rec.image] : []);
   renderImageGrid();
   updateDayTotal();
+  
   overlay.classList.add('show');
+  
+  // Calculate heights instantly on popup injection
+  setTimeout(() => {
+    notesField.style.height = 'auto';
+    notesField.style.height = notesField.scrollHeight + 'px';
+  }, 10);
 }
 
 function addTradeRow(symbol='', pnl='', side='long', qty=''){
