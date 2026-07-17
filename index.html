@@ -775,7 +775,19 @@ function renderStats(){
       for(const k of keys){ if(k < monthStartKey) bal += dayTotalPnl(k); }
       return bal;
     })();
-
+let bestTrade = -Infinity;
+    let worstTrade = Infinity;
+    Object.values(data).forEach(day => {
+        if (day && day.trades) {
+            day.trades.forEach(t => {
+                const pnl = parseFloat(t.pnl || t.pl || 0);
+                if (pnl > bestTrade) bestTrade = pnl;
+                if (pnl < worstTrade) worstTrade = pnl;
+            });
+        }
+    });
+    if (bestTrade === -Infinity) bestTrade = 0;
+    if (worstTrade === Infinity) worstTrade = 0;
   const bar = document.getElementById('statsBar');
   bar.innerHTML = '';
   const stats = [
@@ -785,6 +797,8 @@ function renderStats(){
     { label:'Win Days', value: winDays, cls:'pos' },
     { label:'Loss Days', value: lossDays, cls:'neg' },
     { label:'Win Rate', value: tradingDays > 0 ? winPct.toFixed(1)+'%' : '—', cls: winPct >= 50 ? 'pos' : 'neg' },
+    { label: 'Best Trade', value: fmtMoney(bestTrade), cls: bestTrade > 0 ? 'pos' : (bestTrade < 0 ? 'neg' : 'neu') },
+    { label: 'Worst Trade', value: fmtMoney(worstTrade), cls: worstTrade > 0 ? 'pos' : (worstTrade < 0 ? 'neg' : 'neu') },
   ];
   stats.forEach(s => {
     const el = document.createElement('div');
