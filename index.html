@@ -430,7 +430,7 @@
 
 <header>
   <div>
-    <h1>TradeFlow</h1>
+    <h1>Welcome back, <span style="opacity: 0.6; font-weight: normal;">Jonathan</span></h1>
     <div class="sub">Daily P&amp;L &middot; running balance &middot; equity growth curve</div>
   </div>
   <div class="balance-setup">
@@ -462,6 +462,23 @@
         <div id="stat-worst-trade" style="font-size: 24px; font-weight: 700; color: #f85149;">$0.00</div>
     </div>
 
+</div>
+  <!-- RECENT TRADES CONTAINER -->
+<div style="background: #161c24; border: 1px solid #2a3340; padding: 20px; border-radius: 12px; margin-top: 20px; margin-bottom: 25px; box-shadow: 0 4px 12px rgba(0,0,0,0.4);">
+    <div style="color: #7d8894; font-size: 11px; letter-spacing: 1.5px; margin-bottom: 15px; font-family: monospace; font-weight: 700;">// RECENT TRADES</div>
+    <table style="width: 100%; border-collapse: collapse; text-align: left; font-family: monospace;">
+        <thead>
+            <tr style="color: #7d8894; font-size: 11px; border-bottom: 1px solid #2a3340;">
+                <th style="padding: 10px 5px; font-weight: normal;">DATE</th>
+                <th style="padding: 10px 5px; font-weight: normal;">SYMBOL</th>
+                <th style="padding: 10px 5px; font-weight: normal;">SIDE</th>
+                <th style="padding: 10px 5px; text-align: right; font-weight: normal;">P&L</th>
+            </tr>
+        </thead>
+        <tbody id="recentTradesBody" style="color: #e6edf3; font-size: 13px;">
+            <!-- Trades will inject here -->
+        </tbody>
+    </table>
 </div>
 
 <!-- The Premium Net Equity Curve Chart -->
@@ -778,11 +795,13 @@ function renderStats(){
 let bestTrade = -Infinity;
     let worstTrade = Infinity;
   let allTimePl = 0;
+  let allTradesList = [];
     Object.values(data).forEach(day => {
         if (day && day.trades) {
             day.trades.forEach(t => {
                 const pnl = parseFloat(t.pnl || t.pl || 0);
               allTimePl += pnl;
+              allTradesList.push({ date: day.date || '—', symbol: t.symbol || t.ticker || '—', side: t.side || t.type || '—', pnl: pnl });
                 if (pnl > bestTrade) bestTrade = pnl;
                 if (pnl < worstTrade) worstTrade = pnl;
             });
@@ -808,6 +827,24 @@ let bestTrade = -Infinity;
     el.innerHTML = `<div class="label">${s.label}</div><div class="value ${s.cls}">${s.value}</div>`;
     bar.appendChild(el);
   });
+}
+  // Sort trades from newest to oldest and render the top 5
+allTradesList.sort((a, b) => new Date(b.date) - new Date(a.date));
+const recentTradesBody = document.getElementById('recentTradesBody');
+if (recentTradesBody) {
+    recentTradesBody.innerHTML = allTradesList.slice(0, 5).map(t => {
+        const pnlClass = t.pnl >= 0 ? 'color: #3fb950;' : 'color: #f85149;';
+        const pnlSign = t.pnl >= 0 ? '+' : '';
+        const sideColor = (t.side.toLowerCase() === 'buy' || t.side.toLowerCase() === 'long') ? 'color: #58a6ff;' : 'color: #f2ca4c;';
+        return `
+            <tr style="border-bottom: 1px solid #21262d;">
+                <td style="padding: 10px 5px; color: #8b949e;">${t.date}</td>
+                <td style="padding: 10px 5px; font-weight: bold;">${t.symbol.toUpperCase()}</td>
+                <td style="padding: 10px 5px; ${sideColor}">${t.side.toUpperCase()}</td>
+                <td style="padding: 10px 5px; text-align: right; font-weight: bold; ${pnlClass}">${pnlSign}${fmtMoneyPlain(t.pnl)}</td>
+            </tr>
+        `;
+    }).join('');
 }
 
 /* Generates and maps historical data for Net P&L Chart */
