@@ -1128,12 +1128,18 @@ saveBtn.addEventListener('click', () => {
 });
 
 function init(){
-  data = loadData();
-  startingBalance = loadStartingBalance();
-  startingBalanceInput.value = startingBalance;
-  document.getElementById('loadingScreen').style.display = 'none';
-  document.getElementById('app').style.display = 'block';
-  render();
+console.log("1. Init started");
+    data = loadData();
+    console.log("2. Data loaded:", data);
+    startingBalance = loadStartingBalance();
+    console.log("3. Balance loaded:", startingBalance);
+    startingBalanceInput.value = startingBalance;
+    console.log("4. Input value set");
+    document.getElementById('loadingScreen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    console.log("5. App visible");
+    render();
+    console.log("6. Render complete");
 }
 
 init();
