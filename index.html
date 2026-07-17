@@ -37,7 +37,7 @@
   header{
     padding:24px 32px 12px;
     display:flex;
-    align-items:baseline;
+    align-items:flex-start;
     justify-content:space-between;
     flex-wrap:wrap;
     gap:12px;
@@ -48,6 +48,14 @@
     letter-spacing:0.02em;
     color:var(--text);
     font-weight:700;
+    text-transform: uppercase;
+  }
+  .header-quote {
+    margin: 6px 0 0 0;
+    font-size: 13px;
+    color: var(--muted);
+    font-style: italic;
+    text-transform: lowercase;
   }
 
   .balance-setup{
@@ -56,6 +64,7 @@
     gap:8px;
     font-size:13px;
     color:var(--muted);
+    margin-top:4px;
   }
   .balance-setup input{
     background:var(--panel2);
@@ -370,7 +379,7 @@
     font-size:14px; 
     margin-top:8px; 
     resize:none; 
-    min-height:160px; /* Gives plenty of start breathing room */
+    min-height:160px;
     font-family:inherit;
     line-height:1.5;
   }
@@ -413,7 +422,8 @@
 
 <header>
   <div>
-    <h1>Welcome back, <span style="color:var(--amber);">Jonathan</span></h1>
+    <h1>Welcome back, Jonathan</h1>
+    <p class="header-quote">“dont fuck up the progress trying to speed up the process”</p>
   </div>
   <div class="balance-setup">
     starting balance
@@ -872,7 +882,6 @@ const lightboxOverlay = document.getElementById('lightboxOverlay');
 const lightboxImg = document.getElementById('lightboxImg');
 let currentImages = [];
 
-// Attach autogrow handler to expanding notes area
 notesField.addEventListener('input', autoGrowNotes);
 
 function renderImageGrid(){
@@ -928,7 +937,6 @@ function openModal(y,m,d){
   
   overlay.classList.add('show');
   
-  // Calculate heights instantly on popup injection
   setTimeout(() => {
     notesField.style.height = 'auto';
     notesField.style.height = notesField.scrollHeight + 'px';
