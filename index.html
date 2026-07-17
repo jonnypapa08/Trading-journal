@@ -246,12 +246,12 @@
   }
   .trade-row{
     display:grid;
-    grid-template-columns:1fr 1fr auto;
+    grid-template-columns:2fr 1.5fr 2fr auto;
     gap:8px;
     margin-bottom:8px;
     align-items:center;
   }
-  .trade-row input{
+  .trade-row input, .trade-row select{
     background:var(--panel2);
     border:1px solid var(--border);
     color:var(--text);
@@ -259,6 +259,10 @@
     border-radius:4px;
     font-size:13px;
     width:100%;
+  }
+  .trade-row select {
+    cursor: pointer;
+    outline: none;
   }
   .trade-row input.pnl-input{ font-family:'Consolas',monospace; }
   .trade-row button.remove{
@@ -443,7 +447,6 @@
 
 <!-- STATS DASHBOARD ROW -->
 <div id="statsBar" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-top: 20px; margin-bottom: 25px; font-family: sans-serif;">
-    <!-- Elements are dynamically generated in renderStats() -->
 </div>
 
 <!-- RECENT TRADES CONTAINER -->
@@ -459,7 +462,6 @@
             </tr>
         </thead>
         <tbody id="recentTradesBody" style="color: #e6edf3; font-size: 13px;">
-            <!-- Trades will inject here -->
         </tbody>
     </table>
 </div>
@@ -627,7 +629,6 @@ function fmtMoney(n){
 function fmtMoneyPlain(n){
   return '$' + n.toFixed(2);
 }
-// Fixed naming conflict here:
 function padNumber(n){ return n < 10 ? '0'+n : ''+n; }
 function dateKey(y,m,d){ return `${y}-${padNumber(m+1)}-${padNumber(d)}`; }
 
@@ -763,7 +764,7 @@ function renderStats(){
             allTradesList.push({ 
                 date: k, 
                 symbol: t.symbol || '—', 
-                side: 'buy', // default fallback text matching recent trades structural markup
+                side: t.side || 'long', 
                 pnl: pnl 
             });
             if (pnl > bestTrade) bestTrade = pnl;
@@ -801,12 +802,19 @@ function renderStats(){
     recentTradesBody.innerHTML = allTradesList.slice(0, 5).map(t => {
           const pnlColor = t.pnl >= 0 ? '#3fb950' : '#f85149';
           const pnlSign = t.pnl >= 0 ? '+$' : '-$';
+          
+          // Custom color styling per direction selection:
+          const isShort = t.side.toLowerCase() === 'short';
+          const sideColor = isShort ? '#f85149' : '#3fb950';
+          const sideBg = isShort ? 'rgba(248, 81, 73, 0.1)' : 'rgba(63, 185, 80, 0.1)';
+          const sideText = isShort ? 'SHORT' : 'LONG';
+
           return `
               <tr style="border-bottom: 1px solid #21262d;">
                   <td style="padding: 12px 5px; color: #8b949e;">${t.date}</td>
                   <td style="padding: 12px 5px; font-weight: bold;">${t.symbol.toUpperCase()}</td>
                   <td style="padding: 12px 5px;">
-                      <span style="color: #3fb950; background: rgba(63, 185, 80, 0.1); border: 1px solid #3fb950; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: bold;">TRADE</span>
+                      <span style="color: ${sideColor}; background: ${sideBg}; border: 1px solid ${sideColor}; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; letter-spacing: 0.5px;">${sideText}</span>
                   </td>
                   <td style="padding: 12px 5px; text-align: right; font-weight: bold; color: ${pnlColor};">
                       ${pnlSign}${Math.abs(t.pnl).toFixed(2)}
@@ -1004,9 +1012,9 @@ function openModal(y,m,d){
   
   tradesContainer.innerHTML = '';
   if(rec.trades && rec.trades.length){
-    rec.trades.forEach(t => addTradeRow(t.symbol, t.pnl));
+    rec.trades.forEach(t => addTradeRow(t.symbol, t.pnl, t.side));
   } else {
-    addTradeRow('', '');
+    addTradeRow('', '', 'long');
   }
   if(rec.images && rec.images.length){
     currentImages = [...rec.images];
@@ -1022,11 +1030,19 @@ function openModal(y,m,d){
   autoGrowNotes();
 }
 
-function addTradeRow(symbol='', pnl=''){
+function addTradeRow(symbol='', pnl='', side='long'){
   const row = document.createElement('div');
   row.className = 'trade-row';
+  
+  const selectedLong = (side && side.toLowerCase() === 'short') ? '' : 'selected';
+  const selectedShort = (side && side.toLowerCase() === 'short') ? 'selected' : '';
+
   row.innerHTML = `
     <input type="text" class="symbol-input" placeholder="Symbol (e.g. ES, AAPL)" value="${symbol}">
+    <select class="side-input">
+        <option value="long" ${selectedLong}>Long (Buy)</option>
+        <option value="short" ${selectedShort}>Short (Sell)</option>
+    </select>
     <input type="number" step="0.01" class="pnl-input" placeholder="P&L ($)" value="${pnl}">
     <button class="remove" title="Remove trade">&times;</button>
   `;
@@ -1062,9 +1078,14 @@ saveBtn.addEventListener('click', () => {
   const trades = [];
   tradesContainer.querySelectorAll('.trade-row').forEach(row => {
     const symbol = row.querySelector('.symbol-input').value.trim();
+    const side = row.querySelector('.side-input').value;
     const pnlVal = row.querySelector('.pnl-input').value;
     if(symbol !== '' || pnlVal !== ''){
-      trades.push({ symbol: symbol || 'Trade', pnl: parseFloat(pnlVal) || 0 });
+      trades.push({ 
+        symbol: symbol || 'Trade', 
+        side: side || 'long', 
+        pnl: parseFloat(pnlVal) || 0 
+      });
     }
   });
   const notes = notesField.value.trim();
