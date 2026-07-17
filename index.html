@@ -84,7 +84,7 @@
     cursor:pointer;
     font-size:12px;
   }
-  .balance-setup button:hover{ border-color:var(--amber); }
+  .balance-setup button:hover{ border-color:var(--amber); color:var(--amber); }
   .balance-setup button:disabled{ opacity:0.5; cursor:default; }
 
   .stats-bar{
@@ -378,7 +378,7 @@
     margin-top:18px;
     gap:10px;
   }
-  .day-total unofficial-mono{
+  .day-total{
     font-family:'Consolas',monospace;
     font-size:15px;
     font-weight:700;
@@ -443,27 +443,10 @@
 
 <!-- STATS DASHBOARD ROW -->
 <div id="statsBar" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-top: 20px; margin-bottom: 25px; font-family: sans-serif;">
-    
-    <!-- Net P&L Card -->
-    <div style="background: #161c24; border: 1px solid #2a3340; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.4);">
-        <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #7d8894; margin-bottom: 8px; font-weight: 700;">Net P&L • All Time</div>
-        <div id="stat-net-pl" style="font-size: 32px; font-weight: 700; color: #e6edf3;">$0.00</div>
-    </div>
-
-    <!-- Best Trade Card -->
-    <div style="background: #161c24; border: 1px solid #2a3340; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.4);">
-        <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #7d8894; margin-bottom: 8px; font-weight: 700;">Best Trade</div>
-        <div id="stat-best-trade" style="font-size: 24px; font-weight: 700; color: #3fb950;">$0.00</div>
-    </div>
-
-    <!-- Worst Trade Card -->
-    <div style="background: #161c24; border: 1px solid #2a3340; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.4);">
-        <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #7d8894; margin-bottom: 8px; font-weight: 700;">Worst Trade</div>
-        <div id="stat-worst-trade" style="font-size: 24px; font-weight: 700; color: #f85149;">$0.00</div>
-    </div>
-
+    <!-- Elements are dynamically generated in renderStats() -->
 </div>
-  <!-- RECENT TRADES CONTAINER -->
+
+<!-- RECENT TRADES CONTAINER -->
 <div style="background: #161c24; border: 1px solid #2a3340; padding: 20px; border-radius: 12px; margin-top: 20px; margin-bottom: 25px; box-shadow: 0 4px 12px rgba(0,0,0,0.4);">
     <div style="color: #7d8894; font-size: 11px; letter-spacing: 1.5px; margin-bottom: 15px; font-family: monospace; font-weight: 700;">// RECENT TRADES</div>
     <table style="width: 100%; border-collapse: collapse; text-align: left; font-family: monospace;">
@@ -543,7 +526,7 @@ const BALANCE_KEY = 'tj_starting_balance_v1';
 let data = {}; 
 let startingBalance = 0;
 let viewYear, viewMonth; 
-let equityChartInstance = null; // Stores chart state
+let equityChartInstance = null; 
 
 const today = new Date();
 viewYear = today.getFullYear();
@@ -562,51 +545,39 @@ function loadData(){
 function saveData(d){
   try{
     localStorage.setItem(DATA_KEY, JSON.stringify(d));
-    calculateDashboardStats();
   } catch(e){
     console.error('Failed to save trades', e);
   }
 }
 
-
-
-
-  function calculateDashboardStats() {
-    const data = loadData();
-    // Handles if your trades are inside an object array (e.g., data.trades) or the root object itself
-    const tradesArray = Array.isArray(data) ? data : (data.trades || Object.values(data));
-
+function calculateDashboardStats() {
     let netPL = 0;
     let bestTrade = -Infinity;
     let worstTrade = Infinity;
-    let validTradesCount = 0;
 
-    if (tradesArray && tradesArray.length > 0) {
-        tradesArray.forEach(trade => {
-            if (trade && (trade.pl !== undefined || trade.pnl !== undefined)) {
-                const pl = parseFloat(trade.pl ?? trade.pnl) || 0;
+    Object.keys(data).forEach(k => {
+        const day = data[k];
+        if (day && day.trades) {
+            day.trades.forEach(t => {
+                const pl = parseFloat(t.pnl) || 0;
                 netPL += pl;
                 if (pl > bestTrade) bestTrade = pl;
                 if (pl < worstTrade) worstTrade = pl;
-                validTradesCount++;
-            }
-        });
-    }
+            });
+        }
+    });
 
     if (bestTrade === -Infinity) bestTrade = 0;
     if (worstTrade === Infinity) worstTrade = 0;
 
-    // Format currency helper
     const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
 
-    // Update Net P&L display text and coloring
     const netEl = document.getElementById('stat-net-pl');
     if (netEl) {
         netEl.innerText = (netPL >= 0 ? '+' : '') + fmt.format(netPL);
-        netEl.style.color = netPL >= 0 ? '#3fb950' : '#f85149'; // Green or Red
+        netEl.style.color = netPL >= 0 ? '#3fb950' : '#f85149';
     }
 
-    // Update Best & Worst Cards
     const bestEl = document.getElementById('stat-best-trade');
     if (bestEl) bestEl.innerText = (bestTrade >= 0 ? '+' : '') + fmt.format(bestTrade);
 
@@ -656,8 +627,9 @@ function fmtMoney(n){
 function fmtMoneyPlain(n){
   return '$' + n.toFixed(2);
 }
-function pad(n){ return n < 10 ? '0'+n : ''+n; }
-function dateKey(y,m,d){ return `${y}-${pad(m+1)}-${pad(d)}`; }
+// Fixed naming conflict here:
+function padNumber(n){ return n < 10 ? '0'+n : ''+n; }
+function dateKey(y,m,d){ return `${y}-${padNumber(m+1)}-${padNumber(d)}`; }
 
 function dayTotalPnl(key){
   const rec = data[key];
@@ -705,7 +677,7 @@ function render(){
   renderCalendar();
   renderStats();
   calculateDashboardStats();
-  renderEquityChart(); // Redraws chart dynamic data
+  renderEquityChart(); 
 }
 
 function renderCalendar(){
@@ -777,100 +749,89 @@ function renderStats(){
   }
 
   const winPct = tradingDays > 0 ? (winDays / tradingDays * 100) : 0;
-  const lastTradingDay = (() => {
-    for(let d=daysInMonth; d>=1; d--){
-      const key = dateKey(viewYear, viewMonth, d);
-      if(dayTotalPnl(key) !== null) return d;
-    }
-    return null;
-  })();
-  const currentBalance = lastTradingDay ? balanceThrough(viewYear, viewMonth, lastTradingDay) :
-    (() => {
-      const keys = Object.keys(data).filter(k => data[k].trades && data[k].trades.length > 0).sort();
-      const monthStartKey = dateKey(viewYear, viewMonth, 1);
-      let bal = startingBalance;
-      for(const k of keys){ if(k < monthStartKey) bal += dayTotalPnl(k); }
-      return bal;
-    })();
-let bestTrade = -Infinity;
-    let worstTrade = Infinity;
+  let bestTrade = -Infinity;
+  let worstTrade = Infinity;
   let allTimePl = 0;
   let allTradesList = [];
-    Object.values(data).forEach(day => {
-        if (day && day.trades) {
-            day.trades.forEach(t => {
-                const pnl = parseFloat(t.pnl || t.pl || 0);
-              allTimePl += pnl;
-              allTradesList.push({ date: day.date || '—', symbol: t.symbol || t.ticker || '—', side: t.side || t.type || '—', pnl: pnl });
-                if (pnl > bestTrade) bestTrade = pnl;
-                if (pnl < worstTrade) worstTrade = pnl;
+
+  Object.keys(data).forEach(k => {
+    const day = data[k];
+    if (day && day.trades) {
+        day.trades.forEach(t => {
+            const pnl = parseFloat(t.pnl) || 0;
+            allTimePl += pnl;
+            allTradesList.push({ 
+                date: k, 
+                symbol: t.symbol || '—', 
+                side: 'buy', // default fallback text matching recent trades structural markup
+                pnl: pnl 
             });
-        }
-    });
-    if (bestTrade === -Infinity) bestTrade = 0;
-    if (worstTrade === Infinity) worstTrade = 0;
+            if (pnl > bestTrade) bestTrade = pnl;
+            if (pnl < worstTrade) worstTrade = pnl;
+        });
+    }
+  });
+
+  if (bestTrade === -Infinity) bestTrade = 0;
+  if (worstTrade === Infinity) worstTrade = 0;
+
   const bar = document.getElementById('statsBar');
   bar.innerHTML = '';
   const stats = [
-    { label: 'NET P&L', value: fmtMoney(allTimePl), cls: allTimePl >= 0 ? 'pos' : 'neg' },
-    { label:'Month P&L', value: fmtMoney(monthPnl), cls: monthPnl > 0 ? 'pos' : (monthPnl < 0 ? 'neg' : 'neu') },
-    { label:'Trading Days', value: tradingDays, cls:'neu' },
-    { label:'Win Days', value: winDays, cls:'pos' },
-    { label:'Loss Days', value: lossDays, cls:'neg' },
-    { label:'Win Rate', value: tradingDays > 0 ? winPct.toFixed(1)+'%' : '—', cls: winPct >= 50 ? 'pos' : 'neg' },
+    { label: 'NET P&L • ALL TIME', value: fmtMoney(allTimePl), cls: allTimePl >= 0 ? 'pos' : 'neg' },
+    { label: 'Month P&L', value: fmtMoney(monthPnl), cls: monthPnl > 0 ? 'pos' : (monthPnl < 0 ? 'neg' : 'neu') },
+    { label: 'Trading Days', value: tradingDays, cls:'neu' },
+    { label: 'Win Days', value: winDays, cls:'pos' },
+    { label: 'Loss Days', value: lossDays, cls:'neg' },
+    { label: 'Win Rate', value: tradingDays > 0 ? winPct.toFixed(1)+'%' : '—', cls: winPct >= 50 ? 'pos' : 'neg' },
     { label: 'Best Trade', value: fmtMoney(bestTrade), cls: bestTrade > 0 ? 'pos' : (bestTrade < 0 ? 'neg' : 'neu') },
     { label: 'Worst Trade', value: fmtMoney(worstTrade), cls: worstTrade > 0 ? 'pos' : (worstTrade < 0 ? 'neg' : 'neu') },
   ];
+  
   stats.forEach(s => {
     const el = document.createElement('div');
     el.className = 'stat';
     el.innerHTML = `<div class="label">${s.label}</div><div class="value ${s.cls}">${s.value}</div>`;
     bar.appendChild(el);
   });
-   // Sort trades from newest to oldest and render the top 5
-allTradesList.sort((a, b) => new Date(b.date) - new Date(a.date));
-const recentTradesBody = document.getElementById('recentTradesBody');
-if (recentTradesBody) {
-  recentTradesBody.innerHTML = allTradesList.slice(0, 5).map(t => {
-        const isLong = t.side.toLowerCase() === 'buy' || t.side.toLowerCase() === 'long';
-        const badgeColor = isLong ? '#3fb950' : '#f85149';
-        const badgeBg = isLong ? 'rgba(63, 185, 80, 0.1)' : 'rgba(248, 81, 73, 0.1)';
-        const pnlColor = t.pnl >= 0 ? '#3fb950' : '#f85149';
-        const pnlSign = t.pnl >= 0 ? '+$' : '-$';
 
-        return `
-            <tr style="border-bottom: 1px solid #21262d;">
-                <td style="padding: 12px 5px; color: #8b949e;">${t.date}</td>
-                <td style="padding: 12px 5px; font-weight: bold;">${t.symbol.toUpperCase()}</td>
-                <td style="padding: 12px 5px;">
-                    <span style="color: ${badgeColor}; background: ${badgeBg}; border: 1px solid ${badgeColor}; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: bold;">${t.side.toUpperCase()}</span>
-                </td>
-                <td style="padding: 12px 5px; text-align: right; font-weight: bold; color: ${pnlColor};">
-                    ${pnlSign}${Math.abs(t.pnl).toFixed(2)}
-                </td>
-            </tr>
-        `;
-    }).join('');
+  allTradesList.sort((a, b) => new Date(b.date) - new Date(a.date));
+  const recentTradesBody = document.getElementById('recentTradesBody');
+  if (recentTradesBody) {
+    recentTradesBody.innerHTML = allTradesList.slice(0, 5).map(t => {
+          const pnlColor = t.pnl >= 0 ? '#3fb950' : '#f85149';
+          const pnlSign = t.pnl >= 0 ? '+$' : '-$';
+          return `
+              <tr style="border-bottom: 1px solid #21262d;">
+                  <td style="padding: 12px 5px; color: #8b949e;">${t.date}</td>
+                  <td style="padding: 12px 5px; font-weight: bold;">${t.symbol.toUpperCase()}</td>
+                  <td style="padding: 12px 5px;">
+                      <span style="color: #3fb950; background: rgba(63, 185, 80, 0.1); border: 1px solid #3fb950; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: bold;">TRADE</span>
+                  </td>
+                  <td style="padding: 12px 5px; text-align: right; font-weight: bold; color: ${pnlColor};">
+                      ${pnlSign}${Math.abs(t.pnl).toFixed(2)}
+                  </td>
+              </tr>
+          `;
+      }).join('');
+  }
 }
 
- 
-
-/* Generates and maps historical data for Net P&L Chart */
 function renderEquityChart(){
-  const ctx = document.getElementById('equityChart').getContext('2d');
+  const canvasEl = document.getElementById('equityChart');
+  if(!canvasEl) return;
+  const ctx = canvasEl.getContext('2d');
   
-  // Sort all existing dates that contain logged trades chronologically
   const sortedKeys = Object.keys(data).filter(k => data[k].trades && data[k].trades.length > 0).sort();
   
   let labels = ['Start'];
-  let chartData = [0]; // Begins equity curve line at $0 net return
+  let chartData = [0]; 
   let runningNetPnl = 0;
 
   sortedKeys.forEach(k => {
     const dayPnl = dayTotalPnl(k);
     if (dayPnl !== null) {
       runningNetPnl += dayPnl;
-      // Convert YYYY-MM-DD back to readable shorthand (e.g. "Oct 30")
       const parts = k.split('-');
       const formattedDate = new Date(parts[0], parts[1]-1, parts[2]).toLocaleDateString(undefined, {month:'short', day:'numeric'});
       labels.push(formattedDate);
@@ -879,10 +840,9 @@ function renderEquityChart(){
   });
 
   if (equityChartInstance) {
-    equityChartInstance.destroy(); // Clear cache memory allocation for frame redraw
+    equityChartInstance.destroy(); 
   }
 
-  // Create customized dark theme instance matching user design requirements
   equityChartInstance = new Chart(ctx, {
     type: 'line',
     data: {
@@ -890,11 +850,11 @@ function renderEquityChart(){
       datasets: [{
         label: 'Net P&L',
         data: chartData,
-        borderColor: '#3fb950', // Vibrant Trading Green
+        borderColor: '#3fb950', 
         borderWidth: 2.5,
-        backgroundColor: 'rgba(63, 185, 80, 0.06)', // Transparent shadow fill under equity curve
+        backgroundColor: 'rgba(63, 185, 80, 0.06)', 
         fill: true,
-        tension: 0.2, // Clean, smooth curves
+        tension: 0.2, 
         pointRadius: chartData.length > 20 ? 1 : 3,
         pointBackgroundColor: '#3fb950'
       }]
@@ -1128,7 +1088,7 @@ saveBtn.addEventListener('click', () => {
 });
 
 function init(){
-console.log("1. Init started");
+    console.log("1. Init started");
     data = loadData();
     console.log("2. Data loaded:", data);
     startingBalance = loadStartingBalance();
