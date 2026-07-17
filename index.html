@@ -777,10 +777,12 @@ function renderStats(){
     })();
 let bestTrade = -Infinity;
     let worstTrade = Infinity;
+  let allTimePl = 0;
     Object.values(data).forEach(day => {
         if (day && day.trades) {
             day.trades.forEach(t => {
                 const pnl = parseFloat(t.pnl || t.pl || 0);
+              allTimePl += pnl;
                 if (pnl > bestTrade) bestTrade = pnl;
                 if (pnl < worstTrade) worstTrade = pnl;
             });
@@ -791,7 +793,7 @@ let bestTrade = -Infinity;
   const bar = document.getElementById('statsBar');
   bar.innerHTML = '';
   const stats = [
-    { label:'Current Balance', value: fmtMoneyPlain(currentBalance), cls:'neu' },
+    { label: 'NET P&L', value: fmtMoney(allTimePl), cls: allTimePl >= 0 ? 'pos' : 'neg' },
     { label:'Month P&L', value: fmtMoney(monthPnl), cls: monthPnl > 0 ? 'pos' : (monthPnl < 0 ? 'neg' : 'neu') },
     { label:'Trading Days', value: tradingDays, cls:'neu' },
     { label:'Win Days', value: winDays, cls:'pos' },
