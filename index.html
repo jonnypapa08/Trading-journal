@@ -827,25 +827,32 @@ let bestTrade = -Infinity;
     el.innerHTML = `<div class="label">${s.label}</div><div class="value ${s.cls}">${s.value}</div>`;
     bar.appendChild(el);
   });
-}
-  // Sort trades from newest to oldest and render the top 5
+   // Sort trades from newest to oldest and render the top 5
 allTradesList.sort((a, b) => new Date(b.date) - new Date(a.date));
 const recentTradesBody = document.getElementById('recentTradesBody');
 if (recentTradesBody) {
-    recentTradesBody.innerHTML = allTradesList.slice(0, 5).map(t => {
-        const pnlClass = t.pnl >= 0 ? 'color: #3fb950;' : 'color: #f85149;';
-        const pnlSign = t.pnl >= 0 ? '+' : '';
-        const sideColor = (t.side.toLowerCase() === 'buy' || t.side.toLowerCase() === 'long') ? 'color: #58a6ff;' : 'color: #f2ca4c;';
+  recentTradesBody.innerHTML = allTradesList.slice(0, 5).map(t => {
+        const isLong = t.side.toLowerCase() === 'buy' || t.side.toLowerCase() === 'long';
+        const badgeColor = isLong ? '#3fb950' : '#f85149';
+        const badgeBg = isLong ? 'rgba(63, 185, 80, 0.1)' : 'rgba(248, 81, 73, 0.1)';
+        const pnlColor = t.pnl >= 0 ? '#3fb950' : '#f85149';
+        const pnlSign = t.pnl >= 0 ? '+$' : '-$';
+
         return `
             <tr style="border-bottom: 1px solid #21262d;">
-                <td style="padding: 10px 5px; color: #8b949e;">${t.date}</td>
-                <td style="padding: 10px 5px; font-weight: bold;">${t.symbol.toUpperCase()}</td>
-                <td style="padding: 10px 5px; ${sideColor}">${t.side.toUpperCase()}</td>
-                <td style="padding: 10px 5px; text-align: right; font-weight: bold; ${pnlClass}">${pnlSign}${fmtMoneyPlain(t.pnl)}</td>
+                <td style="padding: 12px 5px; color: #8b949e;">${t.date}</td>
+                <td style="padding: 12px 5px; font-weight: bold;">${t.symbol.toUpperCase()}</td>
+                <td style="padding: 12px 5px;">
+                    <span style="color: ${badgeColor}; background: ${badgeBg}; border: 1px solid ${badgeColor}; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: bold;">${t.side.toUpperCase()}</span>
+                </td>
+                <td style="padding: 12px 5px; text-align: right; font-weight: bold; color: ${pnlColor};">
+                    ${pnlSign}${Math.abs(t.pnl).toFixed(2)}
+                </td>
             </tr>
         `;
     }).join('');
 }
+ 
 
 /* Generates and maps historical data for Net P&L Chart */
 function renderEquityChart(){
