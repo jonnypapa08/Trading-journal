@@ -7,7 +7,7 @@
 <link rel="icon" type="image/png" sizes="32x32" href="icon.png.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icon.png.png">
 <link rel="icon" type="image/png" sizes="512x512" href="icon.png.png">
-<link rel="apple-touch-icon" href="icon.png.png">
+<link class="apple-touch-icon" href="icon.png.png">
 <!-- Chart.js Engine for Equity Curve and Win Rate Donut Chart -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
@@ -851,11 +851,14 @@ function renderEquityChart(){
       maintainAspectRatio: false,
       plugins: { legend: { display: false } },
       scales: {
-        x: { grid: { color: '#141414' }, ticks: { color: 'var(--muted)', font: { size: 10 } } },
+        x: { 
+          grid: { color: '#141414' }, 
+          ticks: { color: '#e6edf3', font: { size: 10 } } 
+        },
         y: {
           grid: { color: '#141414' },
           ticks: {
-            color: 'var(--muted)',
+            color: '#e6edf3',
             font: { family: 'Consolas' },
             callback: function(v) { return (v >= 0 ? '+' : '') + '$' + v; }
           }
