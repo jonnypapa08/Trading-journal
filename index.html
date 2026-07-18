@@ -55,7 +55,6 @@
     font-size: 13px;
     color: var(--muted);
     font-style: italic;
-    text-transform: lowercase;
   }
 
   .balance-setup{
@@ -423,7 +422,7 @@
 <header>
   <div>
     <h1>Welcome back, Jonathan</h1>
-    <p class="header-quote">“dont fuck up the progress trying to speed up the process”</p>
+    <p class="header-quote">“Dont fuck up the progress trying to speed up the process”</p>
   </div>
   <div class="balance-setup">
     starting balance
@@ -702,10 +701,15 @@ function renderStatsAndPanels(){
             const qty = t.qty || '—';
             allTimePl += pnl;
             
+            // Map long/short to call/put dynamically for older records if they exist
+            let sideDisplay = t.side || 'call';
+            if(sideDisplay.toLowerCase() === 'long') sideDisplay = 'call';
+            if(sideDisplay.toLowerCase() === 'short') sideDisplay = 'put';
+
             allTradesList.push({ 
                 date: k, 
                 symbol: t.symbol || '—', 
-                side: t.side || 'long', 
+                side: sideDisplay, 
                 qty: qty,
                 pnl: pnl 
             });
@@ -784,14 +788,14 @@ function renderStatsAndPanels(){
       recentTradesBody.innerHTML = allTradesList.slice(0, 5).map(t => {
           const pnlColor = t.pnl >= 0 ? '#3fb950' : '#f85149';
           const pnlSign = t.pnl >= 0 ? '+$' : '-$';
-          const isShort = t.side.toLowerCase() === 'short';
+          const isPut = t.side.toLowerCase() === 'put' || t.side.toLowerCase() === 'short';
 
           return `
               <tr>
                   <td style="color: #8b949e;">${t.date}</td>
                   <td style="font-weight: bold; color:var(--text);">${t.symbol.toUpperCase()}</td>
                   <td>
-                      <span style="color: ${isShort ? '#f85149' : '#3fb950'}; font-size:11px; font-weight:bold;">${isShort ? 'SHORT' : 'LONG'}</span>
+                      <span style="color: ${isPut ? '#f85149' : '#3fb950'}; font-size:11px; font-weight:bold;">${isPut ? 'PUT' : 'CALL'}</span>
                   </td>
                   <td style="color: var(--amber); font-weight:600;">${t.qty}</td>
                   <td style="text-align: right; font-weight: bold; color: ${pnlColor};">
@@ -929,7 +933,7 @@ function openModal(y,m,d){
   if(rec.trades && rec.trades.length){
     rec.trades.forEach(t => addTradeRow(t.symbol, t.pnl, t.side, t.qty));
   } else {
-    addTradeRow('', '', 'long', '');
+    addTradeRow('', '', 'call', '');
   }
   currentImages = rec.images ? [...rec.images] : (rec.image ? [rec.image] : []);
   renderImageGrid();
@@ -943,18 +947,18 @@ function openModal(y,m,d){
   }, 10);
 }
 
-function addTradeRow(symbol='', pnl='', side='long', qty=''){
+function addTradeRow(symbol='', pnl='', side='call', qty=''){
   const row = document.createElement('div');
   row.className = 'trade-row';
   
-  const selectedLong = (side && side.toLowerCase() === 'short') ? '' : 'selected';
-  const selectedShort = (side && side.toLowerCase() === 'short') ? 'selected' : '';
+  const selectedCall = (side && (side.toLowerCase() === 'put' || side.toLowerCase() === 'short')) ? '' : 'selected';
+  const selectedPut = (side && (side.toLowerCase() === 'put' || side.toLowerCase() === 'short')) ? 'selected' : '';
 
   row.innerHTML = `
-    <input type="text" class="symbol-input" placeholder="Symbol (e.g. MNQ)" value="${symbol}">
+    <input type="text" class="symbol-input" placeholder="Symbol (e.g. SPY)" value="${symbol}">
     <select class="side-input">
-        <option value="long" ${selectedLong}>Long</option>
-        <option value="short" ${selectedShort}>Short</option>
+        <option value="call" ${selectedCall}>Call</option>
+        <option value="put" ${selectedPut}>Put</option>
     </select>
     <input type="number" class="qty-input" placeholder="QTY" value="${qty}">
     <input type="number" step="0.01" class="pnl-input" placeholder="P&L ($)" value="${pnl}">
@@ -991,7 +995,7 @@ saveBtn.addEventListener('click', () => {
     if(symbol !== '' || pnlVal !== ''){
       trades.push({ 
         symbol: symbol || 'Trade', 
-        side: side || 'long', 
+        side: side || 'call', 
         qty: qtyVal !== '' ? parseInt(qtyVal) || qtyVal : 1,
         pnl: parseFloat(pnlVal) || 0 
       });
