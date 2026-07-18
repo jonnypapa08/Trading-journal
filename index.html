@@ -12,16 +12,16 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
   :root{
-    --bg:#0f1419;
-    --panel:#161c24;
-    --panel2:#1c232c;
-    --border:#2a3340;
+    --bg:#000000;
+    --panel:#0d0d0d;
+    --panel2:#141414;
+    --border:#1f1f1f;
     --text:#e6edf3;
-    --muted:#7d8894;
+    --muted:#767d85;
     --green:#3fb950;
-    --green-dim:#1a3320;
+    --green-dim:#0e2413;
     --red:#f85149;
-    --red-dim:#3a1a1a;
+    --red-dim:#2b1414;
     --amber:#d4a72c;
   }
   *{box-sizing:border-box;}
@@ -188,7 +188,7 @@
     border: 1px solid var(--border);
     border-radius: 12px;
     padding: 20px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
   }
   .recent-table {
     width: 100%;
@@ -197,17 +197,17 @@
     font-family: monospace;
   }
   .recent-table th {
-    color: #7d8894;
+    color: var(--muted);
     font-size: 11px;
     padding: 10px 5px;
     font-weight: normal;
-    border-bottom: 1px solid #2a3340;
+    border-bottom: 1px solid var(--border);
   }
   .recent-table td {
     padding: 10px 5px;
     font-size: 13px;
     color: #e6edf3;
-    border-bottom: 1px solid #21262d;
+    border-bottom: 1px solid #141414;
   }
 
   /* Equity Chart Container */
@@ -286,8 +286,8 @@
   .cell:hover{ border-color:var(--amber); transform:translateY(-1px); }
   .cell.empty{ background:transparent; border:none; cursor:default; }
   .cell.empty:hover{ transform:none; }
-  .cell.profit{ background:var(--green-dim); border-color:#2a5a34; }
-  .cell.loss{ background:var(--red-dim); border-color:#5a2a2a; }
+  .cell.profit{ background:var(--green-dim); border-color:#1c4223; }
+  .cell.loss{ background:var(--red-dim); border-color:#4a1e1e; }
   .cell .daynum{
     font-size:12px;
     color:var(--muted);
@@ -312,7 +312,7 @@
   .overlay{
     display:none;
     position:fixed; inset:0;
-    background:rgba(0,0,0,0.6);
+    background:rgba(0,0,0,0.85);
     align-items:center;
     justify-content:center;
     z-index:100;
@@ -390,11 +390,11 @@
   .image-thumb img{ width:100%; display:block; cursor:zoom-in; }
   .image-thumb .thumb-remove{
     position:absolute; top:8px; right:8px; width:28px; height:28px; border-radius:4px;
-    background:rgba(15,20,25,0.85); color:var(--red); cursor:pointer; display:flex; align-items:center; justify-content:center; border:1px solid var(--border);
+    background:rgba(0,0,0,0.85); color:var(--red); cursor:pointer; display:flex; align-items:center; justify-content:center; border:1px solid var(--border);
   }
 
   .lightbox-overlay{
-    display:none; position:fixed; inset:0; background:rgba(0,0,0,0.88);
+    display:none; position:fixed; inset:0; background:rgba(0,0,0,0.92);
     align-items:center; justify-content:center; z-index:200; cursor:zoom-out;
   }
   .lightbox-overlay.show{ display:flex; }
@@ -701,7 +701,6 @@ function renderStatsAndPanels(){
             const qty = t.qty || '—';
             allTimePl += pnl;
             
-            // Map long/short to call/put dynamically for older records if they exist
             let sideDisplay = t.side || 'call';
             if(sideDisplay.toLowerCase() === 'long') sideDisplay = 'call';
             if(sideDisplay.toLowerCase() === 'short') sideDisplay = 'put';
@@ -747,7 +746,7 @@ function renderStatsAndPanels(){
     <div class="stat">
       <div class="split-stat-box">
         <div class="split-stat-row"><span style="color:var(--muted); font-size:10px;">BEST TRADE</span><span class="pos">${fmtMoney(bestTrade)}</span></div>
-        <div class="split-stat-row" style="margin-top:6px; border-top:1px solid #1c232c; padding-top:4px;"><span style="color:var(--muted); font-size:10px;">WORST TRADE</span><span class="neg">${fmtMoney(worstTrade)}</span></div>
+        <div class="split-stat-row" style="margin-top:6px; border-top:1px solid var(--border); padding-top:4px;"><span style="color:var(--muted); font-size:10px;">WORST TRADE</span><span class="neg">${fmtMoney(worstTrade)}</span></div>
       </div>
     </div>
   `;
@@ -766,7 +765,7 @@ function renderStatsAndPanels(){
     data: {
       datasets: [{
         data: totalTrades > 0 ? [winTradesCount, lossTradesCount] : [1, 0],
-        backgroundColor: totalTrades > 0 ? ['#3fb950', '#f85149'] : ['#2a3340', 'transparent'],
+        backgroundColor: totalTrades > 0 ? ['#3fb950', '#f85149'] : ['#1f1f1f', 'transparent'],
         borderWidth: 0,
         hoverOffset: 0
       }]
@@ -792,7 +791,7 @@ function renderStatsAndPanels(){
 
           return `
               <tr>
-                  <td style="color: #8b949e;">${t.date}</td>
+                  <td style="color: var(--muted);">${t.date}</td>
                   <td style="font-weight: bold; color:var(--text);">${t.symbol.toUpperCase()}</td>
                   <td>
                       <span style="color: ${isPut ? '#f85149' : '#3fb950'}; font-size:11px; font-weight:bold;">${isPut ? 'PUT' : 'CALL'}</span>
@@ -840,7 +839,7 @@ function renderEquityChart(){
         data: chartData,
         borderColor: '#3fb950', 
         borderWidth: 2,
-        backgroundColor: 'rgba(63, 185, 80, 0.04)', 
+        backgroundColor: 'rgba(63, 185, 80, 0.03)', 
         fill: true,
         tension: 0.25, 
         pointRadius: chartData.length > 20 ? 0 : 3,
@@ -852,11 +851,11 @@ function renderEquityChart(){
       maintainAspectRatio: false,
       plugins: { legend: { display: false } },
       scales: {
-        x: { grid: { color: '#1c232c' }, ticks: { color: '#7d8894', font: { size: 10 } } },
+        x: { grid: { color: '#141414' }, ticks: { color: 'var(--muted)', font: { size: 10 } } },
         y: {
-          grid: { color: '#1c232c' },
+          grid: { color: '#141414' },
           ticks: {
-            color: '#7d8894',
+            color: 'var(--muted)',
             font: { family: 'Consolas' },
             callback: function(v) { return (v >= 0 ? '+' : '') + '$' + v; }
           }
