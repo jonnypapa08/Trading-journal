@@ -933,7 +933,6 @@ function loadCustomTags(){
 }
 function saveCustomTags(){ try { localStorage.setItem(TAGS_KEY, JSON.stringify(customTags)); } catch(e){} }
 
-// Limit threshold calculator
 function getMaxLossDollarThreshold(){
   if(maxLossUnit === '%') {
     return (startingBalance * maxLossValue) / 100;
@@ -1439,13 +1438,13 @@ function renderEquityChart(){
       scales: {
         x: { 
           grid: { color: 'var(--panel2)' }, 
-          ticks: { color: 'var(--text)', font: { size: 10 } } 
+          ticks: { color: '#ffffff', font: { size: 11, weight: 'bold' } } 
         },
         y: {
           grid: { color: 'var(--panel2)' },
           ticks: {
-            color: 'var(--text)',
-            font: { family: 'Consolas' },
+            color: '#ffffff',
+            font: { family: 'Consolas', size: 11, weight: 'bold' },
             callback: function(v) { return (v >= 0 ? '+' : '') + '$' + v; }
           }
         }
