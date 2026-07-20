@@ -367,6 +367,74 @@
   }
   .add-trade:hover{ color:var(--amber); border-color:var(--amber); }
   
+  /* Tag Manager Styling */
+  .tag-manager-box {
+    background: var(--panel2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px;
+    margin-bottom: 16px;
+  }
+  .tag-group {
+    margin-bottom: 10px;
+  }
+  .tag-group:last-child { margin-bottom: 0; }
+  .tag-group-title {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 6px;
+  }
+  .tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+  }
+  .tag-chip {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 3px 8px;
+    font-size: 12px;
+    font-family: monospace;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .tag-chip button {
+    background: none;
+    border: none;
+    color: var(--red);
+    cursor: pointer;
+    font-weight: bold;
+    padding: 0;
+    font-size: 12px;
+  }
+  .add-tag-inline {
+    display: flex;
+    gap: 6px;
+  }
+  .add-tag-inline input {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    width: 110px;
+  }
+  .add-tag-inline button {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    color: var(--amber);
+    padding: 3px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+  }
+
   .notes-field{
     width:100%; 
     background:transparent; 
@@ -487,6 +555,18 @@
   <div class="modal">
     <h2 id="modalDate">Date</h2>
     <div class="modal-sub">Log individual setup profiles or executions for this calendar day.</div>
+    
+    <div class="tag-manager-box">
+      <div class="tag-group">
+        <div class="tag-group-title">Custom Strategies</div>
+        <div class="tag-list" id="stratTagList"></div>
+      </div>
+      <div class="tag-group" style="margin-top:10px;">
+        <div class="tag-group-title">Custom Mistakes</div>
+        <div class="tag-list" id="mistakeTagList"></div>
+      </div>
+    </div>
+
     <div id="tradesContainer"></div>
     <button class="add-trade" id="addTradeBtn" style="margin-top:8px; margin-bottom:15px;">+ Add trade</button>
 
@@ -521,9 +601,15 @@
 <script>
 const DATA_KEY = 'tj_data_v1';
 const BALANCE_KEY = 'tj_starting_balance_v1';
+const TAGS_KEY = 'tj_custom_tags_v1';
 
 let data = {}; 
 let startingBalance = 0;
+let customTags = {
+  strategies: ["BOS15M", "BOS1H", "OBNV15M", "MAGM1H"],
+  mistakes: ["FOMO", "EarlyExit", "LateEntry", "RevengeTrade"]
+};
+
 let viewYear, viewMonth; 
 let equityChartInstance = null; 
 let winRateChartInstance = null;
@@ -552,6 +638,21 @@ function loadStartingBalance(){
 
 function saveStartingBalance(v){
   try{ localStorage.setItem(BALANCE_KEY, String(v)); return true; }catch(e){ return false; }
+}
+
+function loadCustomTags(){
+  try {
+    const stored = localStorage.getItem(TAGS_KEY);
+    if(stored) {
+      const parsed = JSON.parse(stored);
+      if(parsed.strategies && parsed.mistakes) return parsed;
+    }
+  } catch(e){}
+  return customTags;
+}
+
+function saveCustomTags(){
+  try { localStorage.setItem(TAGS_KEY, JSON.stringify(customTags)); } catch(e){}
 }
 
 const startingBalanceInput = document.getElementById('startingBalanceInput');
@@ -607,6 +708,70 @@ const monthNames = ["January","February","March","April","May","June","July","Au
 function autoGrowNotes() {
   this.style.height = 'auto';
   this.style.height = this.scrollHeight + 'px';
+}
+
+function renderTagManager() {
+  const stratList = document.getElementById('stratTagList');
+  const mistakeList = document.getElementById('mistakeTagList');
+
+  if(stratList) {
+    stratList.innerHTML = customTags.strategies.map((s, idx) => `
+      <div class="tag-chip">#${s} <button onclick="removeTag('strategies', ${idx})">&times;</button></div>
+    `).join('') + `
+      <div class="add-tag-inline">
+        <input type="text" id="newStratInput" placeholder="New Strategy">
+        <button onclick="addTag('strategies')">+ Add</button>
+      </div>
+    `;
+  }
+
+  if(mistakeList) {
+    mistakeList.innerHTML = customTags.mistakes.map((m, idx) => `
+      <div class="tag-chip">#${m} <button onclick="removeTag('mistakes', ${idx})">&times;</button></div>
+    `).join('') + `
+      <div class="add-tag-inline">
+        <input type="text" id="newMistakeInput" placeholder="New Mistake">
+        <button onclick="addTag('mistakes')">+ Add</button>
+      </div>
+    `;
+  }
+}
+
+function addTag(type) {
+  const inputId = type === 'strategies' ? 'newStratInput' : 'newMistakeInput';
+  const val = document.getElementById(inputId).value.trim().replace(/[^a-zA-Z0-9_-]/g, '');
+  if(val && !customTags[type].includes(val)) {
+    customTags[type].push(val);
+    saveCustomTags();
+    renderTagManager();
+    updateTradeDropdowns();
+  }
+}
+
+function removeTag(type, idx) {
+  customTags[type].splice(idx, 1);
+  saveCustomTags();
+  renderTagManager();
+  updateTradeDropdowns();
+}
+
+function updateTradeDropdowns() {
+  document.querySelectorAll('.trade-row').forEach(row => {
+    const stratSelect = row.querySelector('.strategy-input');
+    const mistakeSelect = row.querySelector('.mistake-input');
+    
+    if(stratSelect) {
+      const currentStrat = stratSelect.value;
+      stratSelect.innerHTML = `<option value="None">No Strategy</option>` + 
+        customTags.strategies.map(s => `<option value="${s}" ${currentStrat === s ? 'selected' : ''}>#${s}</option>`).join('');
+    }
+
+    if(mistakeSelect) {
+      const currentMistake = mistakeSelect.value;
+      mistakeSelect.innerHTML = `<option value="None">No Mistake</option>` + 
+        customTags.mistakes.map(m => `<option value="${m}" ${currentMistake === m ? 'selected' : ''}>#${m}</option>`).join('');
+    }
+  });
 }
 
 function render(){
@@ -954,6 +1119,8 @@ function openModal(y,m,d){
   document.getElementById('modalDate').textContent = new Date(y,m,d).toLocaleDateString(undefined, { weekday:'long', year:'numeric', month:'long', day:'numeric' });
   notesField.value = rec.notes || '';
   
+  renderTagManager();
+
   tradesContainer.innerHTML = '';
   if(rec.trades && rec.trades.length){
     rec.trades.forEach(t => addTradeRow(t.symbol, t.pnl, t.side, t.qty, t.strategy, t.mistake));
@@ -979,13 +1146,11 @@ function addTradeRow(symbol='', pnl='', side='call', qty='', strategy='None', mi
   const selectedCall = (side && (side.toLowerCase() === 'put' || side.toLowerCase() === 'short')) ? '' : 'selected';
   const selectedPut = (side && (side.toLowerCase() === 'put' || side.toLowerCase() === 'short')) ? 'selected' : '';
 
-  const strategyOptions = ["None", "BOS15M", "BOS1H", "OBNV15M", "MAGM1H"].map(opt => 
-    `<option value="${opt}" ${strategy === opt ? 'selected' : ''}>${opt === 'None' ? 'No Strategy' : '#' + opt}</option>`
-  ).join('');
+  const strategyOptions = `<option value="None">No Strategy</option>` + 
+    customTags.strategies.map(opt => `<option value="${opt}" ${strategy === opt ? 'selected' : ''}>#${opt}</option>`).join('');
 
-  const mistakeOptions = ["None", "FOMO", "EarlyExit", "LateEntry", "RevengeTrade"].map(opt => 
-    `<option value="${opt}" ${mistake === opt ? 'selected' : ''}>${opt === 'None' ? 'No Mistake' : '#' + opt}</option>`
-  ).join('');
+  const mistakeOptions = `<option value="None">No Mistake</option>` + 
+    customTags.mistakes.map(opt => `<option value="${opt}" ${mistake === opt ? 'selected' : ''}>#${opt}</option>`).join('');
 
   row.innerHTML = `
     <input type="text" class="symbol-input" placeholder="Symbol (e.g. SPY)" value="${symbol}">
@@ -1057,6 +1222,7 @@ function init(){
   try {
     data = loadData();
     startingBalance = loadStartingBalance();
+    customTags = loadCustomTags();
     if(startingBalanceInput) startingBalanceInput.value = startingBalance;
   } catch(err) {
     console.error("Data load bypass applied:", err);
