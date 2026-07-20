@@ -77,6 +77,65 @@
   }
   .mono{ font-family:'Consolas','SFMono-Regular',Menlo,monospace; }
 
+  /* GAME-STYLE ACHIEVEMENT BANNER POPUP */
+  .achievement-toast-container {
+    position: fixed;
+    top: -120px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    transition: top 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    pointer-events: none;
+  }
+  .achievement-toast-container.show {
+    top: 20px;
+  }
+  .achievement-toast {
+    background: #11141a;
+    border: 2px solid var(--amber);
+    box-shadow: 0 0 20px rgba(212, 167, 44, 0.4), inset 0 0 10px rgba(212, 167, 44, 0.2);
+    border-radius: 10px;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    min-width: 320px;
+    max-width: 480px;
+  }
+  .toast-icon {
+    font-size: 36px;
+    background: rgba(212, 167, 44, 0.15);
+    border: 1px solid var(--amber);
+    border-radius: 8px;
+    width: 52px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .toast-body {
+    display: flex;
+    flex-direction: column;
+  }
+  .toast-header {
+    color: var(--amber);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-weight: 800;
+  }
+  .toast-title {
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 700;
+    margin: 2px 0 3px 0;
+  }
+  .toast-desc {
+    color: var(--muted);
+    font-size: 12px;
+  }
+
   header{
     padding:24px 32px 12px;
     display:flex;
@@ -132,7 +191,7 @@
     font-size:13px;
   }
   .balance-setup input.num-input { width: 90px; }
-  .balance-setup button, .backup-btn{
+  .balance-setup button, .backup-btn, .trophy-btn {
     background:var(--panel2);
     border:1px solid var(--border);
     color:var(--text);
@@ -140,6 +199,19 @@
     border-radius:4px;
     cursor:pointer;
     font-size:12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .trophy-btn {
+    border-color: var(--amber);
+    color: var(--amber);
+    font-weight: 700;
+    background: rgba(212, 167, 44, 0.08);
+  }
+  .trophy-btn:hover {
+    background: var(--amber);
+    color: #000000;
   }
   .balance-setup button:hover, .backup-btn:hover{ border-color:var(--amber); color:var(--amber); }
 
@@ -501,6 +573,84 @@
   }
   .modal h2{ margin:0 0 4px; font-size:16px; }
   .modal .modal-sub{ color:var(--muted); font-size:12px; margin-bottom:18px; }
+
+  /* BADGES TROPHY MODAL INVENTORY */
+  .badge-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+    margin-top: 16px;
+  }
+  .badge-card {
+    background: var(--panel2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    position: relative;
+    opacity: 0.45;
+    filter: grayscale(1);
+    transition: all 0.2s ease;
+  }
+  .badge-card.unlocked {
+    opacity: 1;
+    filter: grayscale(0);
+    border-color: var(--amber);
+    background: rgba(212, 167, 44, 0.05);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  }
+  .badge-card-icon {
+    font-size: 32px;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    flex-shrink: 0;
+  }
+  .badge-card.unlocked .badge-card-icon {
+    border-color: var(--amber);
+    background: rgba(212, 167, 44, 0.15);
+  }
+  .badge-card-info {
+    display: flex;
+    flex-direction: column;
+  }
+  .badge-card-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .badge-card.unlocked .badge-card-title {
+    color: var(--amber);
+  }
+  .badge-card-desc {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+  .badge-status-tag {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 3px;
+    background: var(--panel);
+    color: var(--muted);
+  }
+  .badge-card.unlocked .badge-status-tag {
+    background: var(--amber);
+    color: #000;
+  }
   
   .modal-alert {
     display: none;
@@ -663,6 +813,17 @@
 </head>
 <body>
 
+<div class="achievement-toast-container" id="achievementToastContainer">
+  <div class="achievement-toast">
+    <div class="toast-icon" id="toastIcon">🏆</div>
+    <div class="toast-body">
+      <div class="toast-header">ACHIEVEMENT UNLOCKED!</div>
+      <div class="toast-title" id="toastTitle">Achievement Title</div>
+      <div class="toast-desc" id="toastDesc">Short description of what was earned.</div>
+    </div>
+  </div>
+</div>
+
 <div id="loadingScreen" class="loading-screen">Loading TradeFlow&hellip;</div>
 
 <div id="app" style="display:none;">
@@ -674,6 +835,7 @@
   </div>
   <div class="header-controls">
     <div class="settings-row">
+      <button class="trophy-btn" id="openBadgesModalBtn">🏆 Trophy Case</button>
       <div class="balance-setup">
         Theme:
         <select id="themeSelect">
@@ -847,6 +1009,20 @@
   </div>
 </div>
 
+<div class="overlay" id="badgesOverlay">
+  <div class="modal" style="max-width: 860px;">
+    <h2>🏆 Trophy Case & Trader Milestones</h2>
+    <div class="modal-sub">Track your consistency badges and discipline achievements over time.</div>
+
+    <div class="badge-grid" id="badgeInventoryGrid"></div>
+
+    <div class="modal-footer" style="position:static; margin-top:24px; border:none; padding-bottom:0;">
+      <div></div>
+      <button class="btn btn-save" id="closeBadgesBtn">Close</button>
+    </div>
+  </div>
+</div>
+
 </div>
 
 <div class="lightbox-overlay" id="lightboxOverlay">
@@ -861,6 +1037,7 @@ const GOAL_KEY = 'tj_monthly_goal_v1';
 const THEME_KEY = 'tj_theme_v1';
 const MAX_LOSS_VAL_KEY = 'tj_max_loss_val_v1';
 const MAX_LOSS_UNIT_KEY = 'tj_max_loss_unit_v1';
+const UNLOCKED_BADGES_KEY = 'tj_unlocked_badges_v1';
 
 let data = {}; 
 let startingBalance = 0;
@@ -868,6 +1045,67 @@ let monthlyGoal = 5000;
 let maxLossValue = 500;
 let maxLossUnit = '$';
 let currentTheme = 'default';
+let unlockedBadges = [];
+
+// MASTER BADGES DEFINITION LIST
+const BADGES_DEFINITIONS = [
+  {
+    id: "first_blood",
+    icon: "⚔️",
+    title: "First Blood",
+    desc: "Log your first trade execution in TradeFlow.",
+    check: (stats) => stats.totalTrades >= 1
+  },
+  {
+    id: "century_club",
+    icon: "💯",
+    title: "Century Club",
+    desc: "Reach 100 total logged trades in your journal.",
+    check: (stats) => stats.totalTrades >= 100
+  },
+  {
+    id: "iron_discipline",
+    icon: "🛡️",
+    title: "Iron Discipline",
+    desc: "Successfully respect your Max Daily Loss limit for 5 logged trading days.",
+    check: (stats) => stats.disciplinedDays >= 5
+  },
+  {
+    id: "zen_master",
+    icon: "🧘",
+    title: "Zen Master",
+    desc: "Log 5 trades with Zero recorded mistake tags.",
+    check: (stats) => stats.cleanTrades >= 5
+  },
+  {
+    id: "profit_hunter",
+    icon: "🦅",
+    title: "Profit Hunter",
+    desc: "Accumulate at least +$1,000 in net profit.",
+    check: (stats) => stats.netPnl >= 1000
+  },
+  {
+    id: "goal_crusher",
+    icon: "🏆",
+    title: "Goal Crusher",
+    desc: "Reach 100% of your monthly profit goal.",
+    check: (stats) => stats.monthlyPnl >= stats.goalAmount && stats.goalAmount > 0
+  },
+  {
+    id: "on_fire",
+    icon: "🔥",
+    title: "On Fire",
+    desc: "Achieve a winning streak of 3 consecutive winning trades.",
+    check: (stats) => stats.maxWinStreak >= 3
+  },
+  {
+    id: "master_historian",
+    icon: "📜",
+    title: "Master Historian",
+    desc: "Write detailed journal notes on 5 separate trading days.",
+    check: (stats) => stats.daysWithNotes >= 5
+  }
+];
 
 let customTags = {
   strategies: ["BOS15M", "BOS1H", "OBNV15M", "MAGM1H"],
@@ -896,6 +1134,9 @@ function saveStartingBalance(v){ try{ localStorage.setItem(BALANCE_KEY, String(v
 
 function loadMonthlyGoal(){ try{ const s = localStorage.getItem(GOAL_KEY); return s !== null ? parseFloat(s) : 5000; } catch(e){ return 5000; } }
 function saveMonthlyGoal(v){ try{ localStorage.setItem(GOAL_KEY, String(v)); }catch(e){} }
+
+function loadUnlockedBadges(){ try{ const s = localStorage.getItem(UNLOCKED_BADGES_KEY); return s ? JSON.parse(s) : []; } catch(e){ return []; } }
+function saveUnlockedBadges(arr){ try{ localStorage.setItem(UNLOCKED_BADGES_KEY, JSON.stringify(arr)); }catch(e){} }
 
 function loadMaxLossSettings(){
   try {
@@ -1118,6 +1359,65 @@ function updateTradeDropdowns() {
   });
 }
 
+/* GAME ACHIEVEMENT POPUP TRIGGER */
+let toastTimeout = null;
+function triggerAchievementToast(badge) {
+  const container = document.getElementById('achievementToastContainer');
+  document.getElementById('toastIcon').textContent = badge.icon;
+  document.getElementById('toastTitle').textContent = badge.title;
+  document.getElementById('toastDesc').textContent = badge.desc;
+
+  container.classList.add('show');
+
+  if(toastTimeout) clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => {
+    container.classList.remove('show');
+  }, 5000);
+}
+
+function evaluateBadges(computedStats) {
+  BADGES_DEFINITIONS.forEach(badge => {
+    if(!unlockedBadges.includes(badge.id)) {
+      if(badge.check(computedStats)) {
+        unlockedBadges.push(badge.id);
+        saveUnlockedBadges(unlockedBadges);
+        triggerAchievementToast(badge);
+      }
+    }
+  });
+}
+
+function renderBadgesInventory() {
+  const grid = document.getElementById('badgeInventoryGrid');
+  if(!grid) return;
+
+  grid.innerHTML = BADGES_DEFINITIONS.map(b => {
+    const isUnlocked = unlockedBadges.includes(b.id);
+    return `
+      <div class="badge-card ${isUnlocked ? 'unlocked' : ''}">
+        <div class="badge-status-tag">${isUnlocked ? 'UNLOCKED' : 'LOCKED'}</div>
+        <div class="badge-card-icon">${b.icon}</div>
+        <div class="badge-card-info">
+          <div class="badge-card-title">${b.title}</div>
+          <div class="badge-card-desc">${b.desc}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+const badgesOverlay = document.getElementById('badgesOverlay');
+document.getElementById('openBadgesModalBtn').addEventListener('click', () => {
+  renderBadgesInventory();
+  badgesOverlay.classList.add('show');
+});
+document.getElementById('closeBadgesBtn').addEventListener('click', () => {
+  badgesOverlay.classList.remove('show');
+});
+badgesOverlay.addEventListener('click', (e) => {
+  if(e.target === badgesOverlay) badgesOverlay.classList.remove('show');
+});
+
 function render(){
   try {
     document.getElementById('monthLabel').textContent = `${monthNames[viewMonth]} ${viewYear}`;
@@ -1239,6 +1539,10 @@ function renderStatsAndPanels(){
   let bestTrade = -Infinity, worstTrade = Infinity;
   let winTradesCount = 0, lossTradesCount = 0;
   let allTradesList = [];
+  let cleanTradesCount = 0;
+  let currentStreak = 0, maxWinStreak = 0;
+  let disciplinedDays = 0;
+  let daysWithNotes = 0;
 
   const daysInMonth = new Date(viewYear, viewMonth+1, 0).getDate();
 
@@ -1253,45 +1557,74 @@ function renderStatsAndPanels(){
   document.getElementById('goalProgressFill').style.width = fillPct + '%';
   document.getElementById('goalRatioText').innerText = `${fmtMoney(monthPnl)} / ${fmtMoney(monthlyGoal)}`;
 
-  Object.keys(data).forEach(k => {
+  const sortedDateKeys = Object.keys(data).sort();
+  const limitThreshold = getMaxLossDollarThreshold();
+
+  sortedDateKeys.forEach(k => {
     const day = data[k];
-    if (day && day.trades) {
-        const dTotal = day.trades.reduce((s,t)=> s + (parseFloat(t.pnl)||0), 0);
-        if(day.trades.length > 0) {
+    if (day) {
+        if(day.notes && day.notes.trim() !== '') daysWithNotes++;
+
+        if(day.trades && day.trades.length > 0) {
+          const dTotal = day.trades.reduce((s,t)=> s + (parseFloat(t.pnl)||0), 0);
           if(dTotal >= 0) winDays++;
           else lossDays++;
+
+          if(dTotal < 0 && Math.abs(dTotal) <= limitThreshold) disciplinedDays++;
+          if(dTotal >= 0) disciplinedDays++;
+
+          day.trades.forEach(t => {
+              const pnl = parseFloat(t.pnl) || 0;
+              const qty = t.qty || '—';
+              allTimePl += pnl;
+
+              if(!t.mistake || t.mistake === 'None') cleanTradesCount++;
+              
+              if(pnl >= 0) {
+                currentStreak++;
+                if(currentStreak > maxWinStreak) maxWinStreak = currentStreak;
+              } else {
+                currentStreak = 0;
+              }
+
+              let sideDisplay = t.side || 'call';
+              if(sideDisplay.toLowerCase() === 'long') sideDisplay = 'call';
+              if(sideDisplay.toLowerCase() === 'short') sideDisplay = 'put';
+
+              allTradesList.push({ 
+                  date: k, 
+                  symbol: String(t.symbol || '—'), 
+                  side: sideDisplay, 
+                  qty: qty,
+                  strategy: t.strategy || 'None',
+                  mistake: t.mistake || 'None',
+                  pnl: pnl 
+              });
+              
+              if (pnl >= 0) winTradesCount++;
+              else lossTradesCount++;
+
+              if (pnl > bestTrade) bestTrade = pnl;
+              if (pnl < worstTrade) worstTrade = pnl;
+          });
         }
-
-        day.trades.forEach(t => {
-            const pnl = parseFloat(t.pnl) || 0;
-            const qty = t.qty || '—';
-            allTimePl += pnl;
-            
-            let sideDisplay = t.side || 'call';
-            if(sideDisplay.toLowerCase() === 'long') sideDisplay = 'call';
-            if(sideDisplay.toLowerCase() === 'short') sideDisplay = 'put';
-
-            allTradesList.push({ 
-                date: k, 
-                symbol: String(t.symbol || '—'), 
-                side: sideDisplay, 
-                qty: qty,
-                strategy: t.strategy || 'None',
-                mistake: t.mistake || 'None',
-                pnl: pnl 
-            });
-            
-            if (pnl >= 0) winTradesCount++;
-            else lossTradesCount++;
-
-            if (pnl > bestTrade) bestTrade = pnl;
-            if (pnl < worstTrade) worstTrade = pnl;
-        });
     }
   });
 
   if (bestTrade === -Infinity) bestTrade = 0;
   if (worstTrade === Infinity) worstTrade = 0;
+
+  // Evaluate Achievement Milestones
+  evaluateBadges({
+    totalTrades: allTradesList.length,
+    netPnl: allTimePl,
+    monthlyPnl: monthPnl,
+    goalAmount: monthlyGoal,
+    disciplinedDays: disciplinedDays,
+    cleanTrades: cleanTradesCount,
+    maxWinStreak: maxWinStreak,
+    daysWithNotes: daysWithNotes
+  });
 
   const bar = document.getElementById('statsBar');
   if(bar) {
@@ -1462,7 +1795,7 @@ document.getElementById('nextBtn').addEventListener('click', () => {
 
 /* Export & Import Backup Functionality */
 document.getElementById('exportJsonBtn').addEventListener('click', () => {
-  const backup = { data, startingBalance, monthlyGoal, customTags, maxLossValue, maxLossUnit, currentTheme };
+  const backup = { data, startingBalance, monthlyGoal, customTags, maxLossValue, maxLossUnit, currentTheme, unlockedBadges };
   const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
@@ -1502,12 +1835,14 @@ importFileInput.addEventListener('change', (e) => {
       if(imported.maxLossValue !== undefined) maxLossValue = imported.maxLossValue;
       if(imported.maxLossUnit !== undefined) maxLossUnit = imported.maxLossUnit;
       if(imported.currentTheme) applyTheme(imported.currentTheme);
+      if(imported.unlockedBadges) unlockedBadges = imported.unlockedBadges;
 
       saveData(data);
       saveStartingBalance(startingBalance);
       saveMonthlyGoal(monthlyGoal);
       saveCustomTags(customTags);
       saveMaxLossSettings();
+      saveUnlockedBadges(unlockedBadges);
 
       if(startingBalanceInput) startingBalanceInput.value = startingBalance;
       if(targetGoalInput) targetGoalInput.value = monthlyGoal;
@@ -1704,6 +2039,7 @@ function init(){
     loadMaxLossSettings();
     customTags = loadCustomTags();
     currentTheme = loadTheme();
+    unlockedBadges = loadUnlockedBadges();
     
     applyTheme(currentTheme);
 
