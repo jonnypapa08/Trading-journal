@@ -56,13 +56,19 @@
     font-style: italic;
   }
 
+  .header-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+  }
+
   .balance-setup{
     display:flex;
     align-items:center;
     gap:8px;
     font-size:13px;
     color:var(--muted);
-    margin-top:4px;
   }
   .balance-setup input{
     background:var(--panel2);
@@ -74,7 +80,7 @@
     width:100px;
     font-size:14px;
   }
-  .balance-setup button{
+  .balance-setup button, .backup-btn{
     background:var(--panel2);
     border:1px solid var(--border);
     color:var(--text);
@@ -83,14 +89,19 @@
     cursor:pointer;
     font-size:12px;
   }
-  .balance-setup button:hover{ border-color:var(--amber); color:var(--amber); }
+  .balance-setup button:hover, .backup-btn:hover{ border-color:var(--amber); color:var(--amber); }
+
+  .backup-actions {
+    display: flex;
+    gap: 6px;
+  }
 
   /* Top Grid Layout */
   .stats-bar{
     display:grid;
     grid-template-columns:repeat(5,1fr);
     gap:12px;
-    margin:0 32px 20px;
+    margin:0 32px 12px;
   }
   @media(max-width: 900px) {
     .stats-bar { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
@@ -126,6 +137,82 @@
     justify-content:space-between;
     font-size:13px;
     font-family:'Consolas',monospace;
+  }
+
+  /* Goal Progress Bar Section */
+  .goal-section {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin: 0 32px 20px;
+    padding: 14px 20px;
+  }
+  .goal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    font-size: 12px;
+  }
+  .goal-title {
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+  }
+  .goal-amount-setup {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--muted);
+  }
+  .goal-amount-setup input {
+    background: var(--panel2);
+    border: 1px solid var(--border);
+    color: var(--amber);
+    font-family: 'Consolas', monospace;
+    padding: 3px 8px;
+    border-radius: 4px;
+    width: 90px;
+    font-size: 12px;
+  }
+  .goal-progress-bg {
+    background: var(--panel2);
+    border: 1px solid var(--border);
+    height: 12px;
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+  }
+  .goal-progress-fill {
+    background: linear-gradient(90deg, var(--amber), var(--green));
+    height: 100%;
+    width: 0%;
+    transition: width 0.3s ease;
+  }
+
+  /* Filter Toolbar */
+  .filter-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin: 10px 32px 0;
+  }
+  .filter-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .filter-group select {
+    background: var(--panel2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
   }
 
   /* Mid Section Layout: Win Rate Left, Recent Trades Right */
@@ -225,7 +312,7 @@
     align-items:center;
     justify-content:center;
     gap:20px;
-    margin:24px 0 12px;
+    margin:14px 0 12px;
   }
   .cal-nav button{
     background:var(--panel2);
@@ -287,6 +374,7 @@
   .cell.empty:hover{ transform:none; }
   .cell.profit{ background:var(--green-dim); border-color:#1c4223; }
   .cell.loss{ background:var(--red-dim); border-color:#4a1e1e; }
+  .cell.filtered-out { opacity: 0.25; filter: grayscale(1); }
   .cell .daynum{
     font-size:12px;
     color:var(--muted);
@@ -490,14 +578,36 @@
     <h1>Welcome back, Jonathan</h1>
     <p class="header-quote">“Dont fuck up the progress trying to speed up the process”</p>
   </div>
-  <div class="balance-setup">
-    starting balance
-    <input type="number" id="startingBalanceInput" class="mono" step="0.01">
-    <button id="saveBalanceBtn">Set</button>
+  <div class="header-controls">
+    <div class="balance-setup">
+      starting balance
+      <input type="number" id="startingBalanceInput" class="mono" step="0.01">
+      <button id="saveBalanceBtn">Set</button>
+    </div>
+    <div class="backup-actions">
+      <button class="backup-btn" id="exportJsonBtn">Export JSON</button>
+      <button class="backup-btn" id="exportCsvBtn">Export CSV</button>
+      <button class="backup-btn" id="importJsonBtn">Import Backup</button>
+      <input type="file" id="importFileInput" accept=".json" style="display:none">
+    </div>
   </div>
 </header>
 
 <div class="stats-bar" id="statsBar"></div>
+
+<div class="goal-section">
+  <div class="goal-header">
+    <div class="goal-title">Monthly Goal Progress</div>
+    <div class="goal-amount-setup">
+      Target: $
+      <input type="number" id="targetGoalInput" class="mono" step="100" value="5000">
+      <span id="goalRatioText" class="mono" style="color:var(--text); font-weight:600; margin-left:8px;">$0 / $5,000</span>
+    </div>
+  </div>
+  <div class="goal-progress-bg">
+    <div class="goal-progress-fill" id="goalProgressFill"></div>
+  </div>
+</div>
 
 <div class="mid-section">
   <div class="winrate-panel">
@@ -534,6 +644,21 @@
 
 <div class="chart-container">
   <canvas id="equityChart"></canvas>
+</div>
+
+<div class="filter-toolbar">
+  <div class="filter-group">
+    Filter Strategy:
+    <select id="filterStrategySelect">
+      <option value="ALL">All Strategies</option>
+    </select>
+  </div>
+  <div class="filter-group">
+    Filter Mistake:
+    <select id="filterMistakeSelect">
+      <option value="ALL">All Mistakes</option>
+    </select>
+  </div>
 </div>
 
 <div class="cal-nav">
@@ -602,13 +727,18 @@
 const DATA_KEY = 'tj_data_v1';
 const BALANCE_KEY = 'tj_starting_balance_v1';
 const TAGS_KEY = 'tj_custom_tags_v1';
+const GOAL_KEY = 'tj_monthly_goal_v1';
 
 let data = {}; 
 let startingBalance = 0;
+let monthlyGoal = 5000;
 let customTags = {
   strategies: ["BOS15M", "BOS1H", "OBNV15M", "MAGM1H"],
   mistakes: ["FOMO", "EarlyExit", "LateEntry", "RevengeTrade"]
 };
+
+let activeStrategyFilter = "ALL";
+let activeMistakeFilter = "ALL";
 
 let viewYear, viewMonth; 
 let equityChartInstance = null; 
@@ -640,6 +770,17 @@ function saveStartingBalance(v){
   try{ localStorage.setItem(BALANCE_KEY, String(v)); return true; }catch(e){ return false; }
 }
 
+function loadMonthlyGoal(){
+  try{
+    const stored = localStorage.getItem(GOAL_KEY);
+    return stored !== null ? parseFloat(stored) : 5000;
+  } catch(e){ return 5000; }
+}
+
+function saveMonthlyGoal(v){
+  try{ localStorage.setItem(GOAL_KEY, String(v)); }catch(e){}
+}
+
 function loadCustomTags(){
   try {
     const stored = localStorage.getItem(TAGS_KEY);
@@ -657,6 +798,7 @@ function saveCustomTags(){
 
 const startingBalanceInput = document.getElementById('startingBalanceInput');
 const saveBalanceBtn = document.getElementById('saveBalanceBtn');
+const targetGoalInput = document.getElementById('targetGoalInput');
 
 if(saveBalanceBtn) {
   saveBalanceBtn.addEventListener('click', () => {
@@ -664,6 +806,15 @@ if(saveBalanceBtn) {
     startingBalance = isNaN(v) ? 0 : v;
     saveStartingBalance(startingBalance);
     render();
+  });
+}
+
+if(targetGoalInput) {
+  targetGoalInput.addEventListener('input', () => {
+    const v = parseFloat(targetGoalInput.value);
+    monthlyGoal = isNaN(v) || v <= 0 ? 1 : v;
+    saveMonthlyGoal(monthlyGoal);
+    renderStatsAndPanels();
   });
 }
 
@@ -735,6 +886,8 @@ function renderTagManager() {
       </div>
     `;
   }
+
+  updateFilterOptions();
 }
 
 function addTag(type) {
@@ -754,6 +907,31 @@ function removeTag(type, idx) {
   renderTagManager();
   updateTradeDropdowns();
 }
+
+function updateFilterOptions() {
+  const stratSelect = document.getElementById('filterStrategySelect');
+  const mistakeSelect = document.getElementById('filterMistakeSelect');
+
+  if(stratSelect) {
+    stratSelect.innerHTML = `<option value="ALL">All Strategies</option>` + 
+      customTags.strategies.map(s => `<option value="${s}" ${activeStrategyFilter === s ? 'selected' : ''}>#${s}</option>`).join('');
+  }
+
+  if(mistakeSelect) {
+    mistakeSelect.innerHTML = `<option value="ALL">All Mistakes</option>` + 
+      customTags.mistakes.map(m => `<option value="${m}" ${activeMistakeFilter === m ? 'selected' : ''}>#${m}</option>`).join('');
+  }
+}
+
+document.getElementById('filterStrategySelect').addEventListener('change', (e) => {
+  activeStrategyFilter = e.target.value;
+  renderCalendar();
+});
+
+document.getElementById('filterMistakeSelect').addEventListener('change', (e) => {
+  activeMistakeFilter = e.target.value;
+  renderCalendar();
+});
 
 function updateTradeDropdowns() {
   document.querySelectorAll('.trade-row').forEach(row => {
@@ -777,12 +955,28 @@ function updateTradeDropdowns() {
 function render(){
   try {
     document.getElementById('monthLabel').textContent = `${monthNames[viewMonth]} ${viewYear}`;
+    updateFilterOptions();
     renderCalendar();
     renderStatsAndPanels();
     renderEquityChart(); 
   } catch(e) {
     console.error("Render error:", e);
   }
+}
+
+function dayMatchesFilter(key) {
+  const rec = data[key];
+  if(!rec || !rec.trades || rec.trades.length === 0) return true;
+  
+  let matchStrat = activeStrategyFilter === "ALL";
+  let matchMistake = activeMistakeFilter === "ALL";
+
+  rec.trades.forEach(t => {
+    if(!matchStrat && t.strategy === activeStrategyFilter) matchStrat = true;
+    if(!matchMistake && t.mistake === activeMistakeFilter) matchMistake = true;
+  });
+
+  return matchStrat && matchMistake;
 }
 
 function renderCalendar(){
@@ -803,6 +997,11 @@ function renderCalendar(){
     const pnl = dayTotalPnl(key);
     const cell = document.createElement('div');
     cell.className = 'cell';
+
+    if(!dayMatchesFilter(key)) {
+      cell.className += ' filtered-out';
+    }
+
     if(pnl !== null) cell.className += pnl >= 0 ? ' profit' : ' loss';
     
     if(viewYear === today.getFullYear() && viewMonth === today.getMonth() && d === today.getDate()){
@@ -855,6 +1054,11 @@ function renderStatsAndPanels(){
     const pnl = dayTotalPnl(key);
     if(pnl !== null) monthPnl += pnl;
   }
+
+  // Update Goal Progress Bar
+  const fillPct = Math.min(Math.max((monthPnl / (monthlyGoal || 1)) * 100, 0), 100);
+  document.getElementById('goalProgressFill').style.width = fillPct + '%';
+  document.getElementById('goalRatioText').innerText = `${fmtMoney(monthPnl)} / ${fmtMoney(monthlyGoal)}`;
 
   Object.keys(data).forEach(k => {
     const day = data[k];
@@ -1056,6 +1260,63 @@ document.getElementById('nextBtn').addEventListener('click', () => {
   viewMonth++; if(viewMonth > 11){ viewMonth = 0; viewYear++; } render();
 });
 
+/* Export & Import Backup Functionality */
+document.getElementById('exportJsonBtn').addEventListener('click', () => {
+  const backup = { data, startingBalance, monthlyGoal, customTags };
+  const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `TradeFlow_Backup_${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+});
+
+document.getElementById('exportCsvBtn').addEventListener('click', () => {
+  let csv = "Date,Symbol,Side,Qty,Strategy,Mistake,PnL\n";
+  Object.keys(data).forEach(k => {
+    if(data[k] && data[k].trades) {
+      data[k].trades.forEach(t => {
+        csv += `"${k}","${t.symbol}","${t.side}","${t.qty}","${t.strategy}","${t.mistake}","${t.pnl}"\n`;
+      });
+    }
+  });
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `TradeFlow_Trades_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+});
+
+const importFileInput = document.getElementById('importFileInput');
+document.getElementById('importJsonBtn').addEventListener('click', () => importFileInput.click());
+importFileInput.addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = (event) => {
+    try {
+      const imported = JSON.parse(event.target.result);
+      if(imported.data) data = imported.data;
+      if(imported.startingBalance !== undefined) startingBalance = imported.startingBalance;
+      if(imported.monthlyGoal !== undefined) monthlyGoal = imported.monthlyGoal;
+      if(imported.customTags) customTags = imported.customTags;
+
+      saveData(data);
+      saveStartingBalance(startingBalance);
+      saveMonthlyGoal(monthlyGoal);
+      saveCustomTags(customTags);
+
+      if(startingBalanceInput) startingBalanceInput.value = startingBalance;
+      if(targetGoalInput) targetGoalInput.value = monthlyGoal;
+
+      render();
+      alert("Backup imported successfully!");
+    } catch(err) {
+      alert("Invalid backup file.");
+    }
+  };
+  reader.readAsText(file);
+});
+
 let activeKey = null;
 const overlay = document.getElementById('overlay');
 const tradesContainer = document.getElementById('tradesContainer');
@@ -1222,8 +1483,10 @@ function init(){
   try {
     data = loadData();
     startingBalance = loadStartingBalance();
+    monthlyGoal = loadMonthlyGoal();
     customTags = loadCustomTags();
     if(startingBalanceInput) startingBalanceInput.value = startingBalance;
+    if(targetGoalInput) targetGoalInput.value = monthlyGoal;
   } catch(err) {
     console.error("Data load bypass applied:", err);
     data = {};
