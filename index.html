@@ -574,7 +574,23 @@
   .modal h2{ margin:0 0 4px; font-size:16px; }
   .modal .modal-sub{ color:var(--muted); font-size:12px; margin-bottom:18px; }
 
-  /* BADGES TROPHY MODAL INVENTORY */
+  /* BADGES TROPHY MODAL INVENTORY (SCROLLABLE CONTAINER) */
+  .badge-modal-container {
+    max-height: 70vh;
+    overflow-y: auto;
+    padding-right: 8px;
+  }
+  .badge-modal-container::-webkit-scrollbar {
+    width: 6px;
+  }
+  .badge-modal-container::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 4px;
+  }
+  .badge-modal-container::-webkit-scrollbar-thumb:hover {
+    background: var(--amber);
+  }
+
   .badge-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -1010,11 +1026,13 @@
 </div>
 
 <div class="overlay" id="badgesOverlay">
-  <div class="modal" style="max-width: 860px;">
+  <div class="modal" style="max-width: 880px;">
     <h2>🏆 Trophy Case & Trader Milestones</h2>
-    <div class="modal-sub">Track your consistency badges and discipline achievements over time.</div>
+    <div class="modal-sub">Track your consistency badges, tier levels, and 7-figure milestones over time.</div>
 
-    <div class="badge-grid" id="badgeInventoryGrid"></div>
+    <div class="badge-modal-container">
+      <div class="badge-grid" id="badgeInventoryGrid"></div>
+    </div>
 
     <div class="modal-footer" style="position:static; margin-top:24px; border:none; padding-bottom:0;">
       <div></div>
@@ -1047,28 +1065,93 @@ let maxLossUnit = '$';
 let currentTheme = 'default';
 let unlockedBadges = [];
 
-// MASTER BADGES DEFINITION LIST
+// MASTER BADGES DEFINITION LIST (MAX 3 TIERS PER TIERED BADGE)
 const BADGES_DEFINITIONS = [
+  // MILLIONAIRE BADGE
+  {
+    id: "seven_figure_club",
+    icon: "💎",
+    title: "7-Figure Club",
+    desc: "Reach your first $1,000,000 in Net P&L. Legendary status.",
+    check: (stats) => stats.netPnl >= 1000000
+  },
+
+  // TRADE VOLUME TIERS (MAX 3 TIERS)
+  {
+    id: "trades_tier_1",
+    icon: "🥉",
+    title: "Novice Executioner",
+    desc: "Log 10 total trades in TradeFlow.",
+    check: (stats) => stats.totalTrades >= 10
+  },
+  {
+    id: "trades_tier_2",
+    icon: "🥈",
+    title: "Century Club",
+    desc: "Log 100 total trades in your journal.",
+    check: (stats) => stats.totalTrades >= 100
+  },
+  {
+    id: "trades_tier_3",
+    icon: "🥇",
+    title: "10k Titan",
+    desc: "Log 10,000 total trades in your journal.",
+    check: (stats) => stats.totalTrades >= 10000
+  },
+
+  // DISCIPLINE TIERS (MAX 3 TIERS)
+  {
+    id: "discipline_tier_1",
+    icon: "🥉",
+    title: "Iron Discipline",
+    desc: "Respect your Max Daily Loss limit on 5 trading days.",
+    check: (stats) => stats.disciplinedDays >= 5
+  },
+  {
+    id: "discipline_tier_2",
+    icon: "🥈",
+    title: "Fortress Mindset",
+    desc: "Respect your Max Daily Loss limit on 20 trading days.",
+    check: (stats) => stats.disciplinedDays >= 20
+  },
+  {
+    id: "discipline_tier_3",
+    icon: "🥇",
+    title: "Unshakable Professional",
+    desc: "Respect your Max Daily Loss limit on 50 trading days.",
+    check: (stats) => stats.disciplinedDays >= 50
+  },
+
+  // WIN STREAK TIERS (MAX 3 TIERS)
+  {
+    id: "streak_tier_1",
+    icon: "🥉",
+    title: "On Fire",
+    desc: "Achieve a winning streak of 3 consecutive trades.",
+    check: (stats) => stats.maxWinStreak >= 3
+  },
+  {
+    id: "streak_tier_2",
+    icon: "🥈",
+    title: "Unstoppable Streak",
+    desc: "Achieve a winning streak of 7 consecutive trades.",
+    check: (stats) => stats.maxWinStreak >= 7
+  },
+  {
+    id: "streak_tier_3",
+    icon: "🥇",
+    title: "Apex Dominance",
+    desc: "Achieve a winning streak of 15 consecutive trades.",
+    check: (stats) => stats.maxWinStreak >= 15
+  },
+
+  // STANDALONE DISCIPLINE & PROFIT BADGES
   {
     id: "first_blood",
     icon: "⚔️",
     title: "First Blood",
     desc: "Log your first trade execution in TradeFlow.",
     check: (stats) => stats.totalTrades >= 1
-  },
-  {
-    id: "century_club",
-    icon: "💯",
-    title: "Century Club",
-    desc: "Reach 100 total logged trades in your journal.",
-    check: (stats) => stats.totalTrades >= 100
-  },
-  {
-    id: "iron_discipline",
-    icon: "🛡️",
-    title: "Iron Discipline",
-    desc: "Successfully respect your Max Daily Loss limit for 5 logged trading days.",
-    check: (stats) => stats.disciplinedDays >= 5
   },
   {
     id: "zen_master",
@@ -1081,7 +1164,7 @@ const BADGES_DEFINITIONS = [
     id: "profit_hunter",
     icon: "🦅",
     title: "Profit Hunter",
-    desc: "Accumulate at least +$1,000 in net profit.",
+    desc: "Accumulate at least +$1,000 in Net P&L.",
     check: (stats) => stats.netPnl >= 1000
   },
   {
@@ -1092,11 +1175,18 @@ const BADGES_DEFINITIONS = [
     check: (stats) => stats.monthlyPnl >= stats.goalAmount && stats.goalAmount > 0
   },
   {
-    id: "on_fire",
-    icon: "🔥",
-    title: "On Fire",
-    desc: "Achieve a winning streak of 3 consecutive winning trades.",
-    check: (stats) => stats.maxWinStreak >= 3
+    id: "precision_trader",
+    icon: "🎯",
+    title: "Precision Trader",
+    desc: "Maintain a win rate of 60% or higher with at least 20 trades.",
+    check: (stats) => stats.totalTrades >= 20 && stats.winRatePct >= 60
+  },
+  {
+    id: "growth_leader",
+    icon: "📈",
+    title: "Growth Leader",
+    desc: "Grow your account balance by +20% overall.",
+    check: (stats) => stats.startingBal > 0 && ((stats.netPnl / stats.startingBal) * 100) >= 20
   },
   {
     id: "master_historian",
@@ -1614,16 +1704,21 @@ function renderStatsAndPanels(){
   if (bestTrade === -Infinity) bestTrade = 0;
   if (worstTrade === Infinity) worstTrade = 0;
 
+  const totalTradesCount = allTradesList.length;
+  const winRateCalculated = totalTradesCount > 0 ? ((winTradesCount / totalTradesCount) * 100) : 0;
+
   // Evaluate Achievement Milestones
   evaluateBadges({
-    totalTrades: allTradesList.length,
+    totalTrades: totalTradesCount,
     netPnl: allTimePl,
     monthlyPnl: monthPnl,
     goalAmount: monthlyGoal,
     disciplinedDays: disciplinedDays,
     cleanTrades: cleanTradesCount,
     maxWinStreak: maxWinStreak,
-    daysWithNotes: daysWithNotes
+    daysWithNotes: daysWithNotes,
+    winRatePct: winRateCalculated,
+    startingBal: startingBalance
   });
 
   const bar = document.getElementById('statsBar');
@@ -1654,10 +1749,7 @@ function renderStatsAndPanels(){
     `;
   }
 
-  const totalTrades = winTradesCount + lossTradesCount;
-  const winPct = totalTrades > 0 ? ((winTradesCount / totalTrades) * 100) : 0;
-  
-  document.getElementById('winRatePctText').innerText = totalTrades > 0 ? winPct.toFixed(0) + '%' : '0%';
+  document.getElementById('winRatePctText').innerText = totalTradesCount > 0 ? winRateCalculated.toFixed(0) + '%' : '0%';
   document.getElementById('winRateCountsText').innerText = `${winTradesCount}W / ${lossTradesCount}L`;
 
   const canvasCircular = document.getElementById('winRateChart');
@@ -1673,8 +1765,8 @@ function renderStatsAndPanels(){
       type: 'doughnut',
       data: {
         datasets: [{
-          data: totalTrades > 0 ? [winTradesCount, lossTradesCount] : [1, 0],
-          backgroundColor: totalTrades > 0 ? [greenColor, redColor] : ['#1f1f1f', 'transparent'],
+          data: totalTradesCount > 0 ? [winTradesCount, lossTradesCount] : [1, 0],
+          backgroundColor: totalTradesCount > 0 ? [greenColor, redColor] : ['#1f1f1f', 'transparent'],
           borderWidth: 0,
           hoverOffset: 0
         }]
@@ -1683,7 +1775,7 @@ function renderStatsAndPanels(){
         cutout: '82%',
         responsive: true,
         maintainAspectRatio: false,
-        plugins: { legend: { display: false }, tooltip: { enabled: totalTrades > 0 } }
+        plugins: { legend: { display: false }, tooltip: { enabled: totalTradesCount > 0 } }
       }
     });
   }
