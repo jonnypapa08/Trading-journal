@@ -85,7 +85,7 @@
   }
   .balance-setup button:hover{ border-color:var(--amber); color:var(--amber); }
 
-  /* Top Grid Layout directly matching sketch */
+  /* Top Grid Layout */
   .stats-bar{
     display:grid;
     grid-template-columns:repeat(5,1fr);
@@ -323,7 +323,7 @@
     border:1px solid var(--border);
     border-radius:8px;
     width:100%;
-    max-width:920px; /* Slightly widened to fit tags elegantly */
+    max-width:920px;
     max-height:90vh;
     overflow-y:auto;
     padding:28px;
@@ -367,7 +367,6 @@
   }
   .add-trade:hover{ color:var(--amber); border-color:var(--amber); }
   
-  /* Fixed Expanding Journal Notes Settings */
   .notes-field{
     width:100%; 
     background:transparent; 
@@ -495,4 +494,581 @@
       <label class="image-label">Visual Screenshots</label>
       <input type="file" id="imageInput" accept="image/*" multiple style="display:none">
       <button type="button" class="add-trade" id="importImageBtn">+ Import picture(s)</button>
-      <div class="image-grid" id="imageGrid
+      <div class="image-grid" id="imageGrid"></div>
+    </div>
+
+    <div class="notes-section" style="margin-top:20px; border-top:1px solid var(--border); padding-top:15px;">
+      <label class="image-label">Journal Notes</label>
+      <textarea class="notes-field" id="notesField" placeholder="Review mechanics, setups played, psychological states..."></textarea>
+    </div>
+
+    <div class="modal-footer">
+      <div class="day-total mono" id="dayTotal" style="font-size:16px; font-weight:700;">$0.00</div>
+      <div class="modal-buttons">
+        <button class="btn btn-cancel" id="cancelBtn">Cancel</button>
+        <button class="btn btn-save" id="saveBtn">Save Day</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<div class="lightbox-overlay" id="lightboxOverlay">
+  <img id="lightboxImg" alt="Enlarged screenshot view">
+</div>
+
+<script>
+const DATA_KEY = 'tj_data_v1';
+const BALANCE_KEY = 'tj_starting_balance_v1';
+
+let data = {}; 
+let startingBalance = 0;
+let viewYear, viewMonth; 
+let equityChartInstance = null; 
+let winRateChartInstance = null;
+
+const today = new Date();
+viewYear = today.getFullYear();
+viewMonth = today.getMonth();
+
+function loadData(){
+  try{
+    const stored = localStorage.getItem(DATA_KEY);
+    return stored ? JSON.parse(stored) : {};
+  } catch(e){ return {}; }
+}
+
+function saveData(d){
+  try{ localStorage.setItem(DATA_KEY, JSON.stringify(d)); }catch(e){}
+}
+
+function loadStartingBalance(){
+  try{
+    const stored = localStorage.getItem(BALANCE_KEY);
+    return stored !== null ? parseFloat(stored) : 0;
+  } catch(e){ return 0; }
+}
+
+function saveStartingBalance(v){
+  try{ localStorage.setItem(BALANCE_KEY, String(v)); return true; }catch(e){ return false; }
+}
+
+const startingBalanceInput = document.getElementById('startingBalanceInput');
+const saveBalanceBtn = document.getElementById('saveBalanceBtn');
+
+if(saveBalanceBtn) {
+  saveBalanceBtn.addEventListener('click', () => {
+    const v = parseFloat(startingBalanceInput.value);
+    startingBalance = isNaN(v) ? 0 : v;
+    saveStartingBalance(startingBalance);
+    render();
+  });
+}
+
+function fmtMoney(n){
+  const sign = n < 0 ? '-' : (n > 0 ? '+' : '');
+  return sign + '$' + Math.abs(n).toFixed(2);
+}
+function padNumber(n){ return n < 10 ? '0'+n : ''+n; }
+function dateKey(y,m,d){ return `${y}-${padNumber(m+1)}-${padNumber(d)}`; }
+
+function dayTotalPnl(key){
+  const rec = data[key];
+  if(!rec || !rec.trades || rec.trades.length === 0) return null;
+  return rec.trades.reduce((s,t)=> s + (parseFloat(t.pnl)||0), 0);
+}
+
+function balanceBefore(y,m,d){
+  const targetKey = dateKey(y,m,d);
+  const keys = Object.keys(data).filter(k => data[k] && data[k].trades && data[k].trades.length > 0).sort();
+  let bal = startingBalance;
+  for(const k of keys){
+    if(k < targetKey) {
+      const pnl = dayTotalPnl(k);
+      if(pnl !== null) bal += pnl;
+    }
+    else break;
+  }
+  return bal;
+}
+
+function dayReturnPct(y,m,d){
+  const key = dateKey(y,m,d);
+  const pnl = dayTotalPnl(key);
+  if(pnl === null) return null;
+  const prevBal = balanceBefore(y,m,d);
+  if(prevBal === 0) return null;
+  return (pnl / prevBal) * 100;
+}
+
+const monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+
+function autoGrowNotes() {
+  this.style.height = 'auto';
+  this.style.height = this.scrollHeight + 'px';
+}
+
+function render(){
+  try {
+    document.getElementById('monthLabel').textContent = `${monthNames[viewMonth]} ${viewYear}`;
+    renderCalendar();
+    renderStatsAndPanels();
+    renderEquityChart(); 
+  } catch(e) {
+    console.error("Render error:", e);
+  }
+}
+
+function renderCalendar(){
+  const grid = document.getElementById('calGrid');
+  if(!grid) return;
+  grid.innerHTML = '';
+  const firstDay = new Date(viewYear, viewMonth, 1).getDay();
+  const daysInMonth = new Date(viewYear, viewMonth+1, 0).getDate();
+
+  for(let i=0;i<firstDay;i++){
+    const e = document.createElement('div');
+    e.className = 'cell empty';
+    grid.appendChild(e);
+  }
+
+  for(let d=1; d<=daysInMonth; d++){
+    const key = dateKey(viewYear, viewMonth, d);
+    const pnl = dayTotalPnl(key);
+    const cell = document.createElement('div');
+    cell.className = 'cell';
+    if(pnl !== null) cell.className += pnl >= 0 ? ' profit' : ' loss';
+    
+    if(viewYear === today.getFullYear() && viewMonth === today.getMonth() && d === today.getDate()){
+      cell.className += ' today';
+    }
+
+    const dayNum = document.createElement('div');
+    dayNum.className = 'daynum';
+    dayNum.textContent = d;
+    cell.appendChild(dayNum);
+
+    if(pnl !== null){
+      const pnlEl = document.createElement('div');
+      pnlEl.className = 'pnl ' + (pnl >= 0 ? 'pos' : 'neg');
+      pnlEl.textContent = fmtMoney(pnl);
+      cell.appendChild(pnlEl);
+
+      const metaRow = document.createElement('div');
+      metaRow.className = 'meta-row';
+      const pctReturn = dayReturnPct(viewYear, viewMonth, d);
+      const pctText = pctReturn === null ? '—' : (pctReturn >= 0 ? '+' : '') + pctReturn.toFixed(2) + '%';
+      metaRow.innerHTML = `<span>${data[key].trades.length}t</span><span>&bull;</span><span>${pctText}</span>`;
+      cell.appendChild(metaRow);
+    } else {
+      const spacer = document.createElement('div');
+      spacer.className = 'bal';
+      spacer.style.fontSize = '10px';
+      spacer.style.color = 'var(--muted)';
+      spacer.textContent = 'no trades';
+      cell.appendChild(spacer);
+    }
+
+    cell.addEventListener('click', () => openModal(viewYear, viewMonth, d));
+    grid.appendChild(cell);
+  }
+}
+
+function renderStatsAndPanels(){
+  let allTimePl = 0, monthPnl = 0;
+  let winDays = 0, lossDays = 0;
+  let bestTrade = -Infinity, worstTrade = Infinity;
+  
+  let winTradesCount = 0, lossTradesCount = 0;
+  let allTradesList = [];
+
+  const daysInMonth = new Date(viewYear, viewMonth+1, 0).getDate();
+
+  for(let d=1; d<=daysInMonth; d++){
+    const key = dateKey(viewYear, viewMonth, d);
+    const pnl = dayTotalPnl(key);
+    if(pnl !== null) monthPnl += pnl;
+  }
+
+  Object.keys(data).forEach(k => {
+    const day = data[k];
+    if (day && day.trades) {
+        const dTotal = day.trades.reduce((s,t)=> s + (parseFloat(t.pnl)||0), 0);
+        if(day.trades.length > 0) {
+          if(dTotal >= 0) winDays++;
+          else lossDays++;
+        }
+
+        day.trades.forEach(t => {
+            const pnl = parseFloat(t.pnl) || 0;
+            const qty = t.qty || '—';
+            allTimePl += pnl;
+            
+            let sideDisplay = t.side || 'call';
+            if(sideDisplay.toLowerCase() === 'long') sideDisplay = 'call';
+            if(sideDisplay.toLowerCase() === 'short') sideDisplay = 'put';
+
+            allTradesList.push({ 
+                date: k, 
+                symbol: String(t.symbol || '—'), 
+                side: sideDisplay, 
+                qty: qty,
+                strategy: t.strategy || '—',
+                mistake: t.mistake || 'None',
+                pnl: pnl 
+            });
+            
+            if (pnl >= 0) winTradesCount++;
+            else lossTradesCount++;
+
+            if (pnl > bestTrade) bestTrade = pnl;
+            if (pnl < worstTrade) worstTrade = pnl;
+        });
+    }
+  });
+
+  if (bestTrade === -Infinity) bestTrade = 0;
+  if (worstTrade === Infinity) worstTrade = 0;
+
+  const bar = document.getElementById('statsBar');
+  if(bar) {
+    bar.innerHTML = `
+      <div class="stat">
+        <div class="label">NET P&L ALL TIME</div>
+        <div class="value ${allTimePl >= 0 ? 'pos' : 'neg'}">${fmtMoney(allTimePl)}</div>
+      </div>
+      <div class="stat">
+        <div class="label">MONTHLY P&L</div>
+        <div class="value ${monthPnl >= 0 ? 'pos' : 'neg'}">${fmtMoney(monthPnl)}</div>
+      </div>
+      <div class="stat">
+        <div class="label">WIN DAYS</div>
+        <div class="value pos" style="font-family:Consolas;">${winDays} Days</div>
+      </div>
+      <div class="stat">
+        <div class="label">LOSS DAYS</div>
+        <div class="value neg" style="font-family:Consolas;">${lossDays} Days</div>
+      </div>
+      <div class="stat">
+        <div class="split-stat-box">
+          <div class="split-stat-row"><span style="color:var(--muted); font-size:10px;">BEST TRADE</span><span class="pos">${fmtMoney(bestTrade)}</span></div>
+          <div class="split-stat-row" style="margin-top:6px; border-top:1px solid var(--border); padding-top:4px;"><span style="color:var(--muted); font-size:10px;">WORST TRADE</span><span class="neg">${fmtMoney(worstTrade)}</span></div>
+        </div>
+      </div>
+    `;
+  }
+
+  const totalTrades = winTradesCount + lossTradesCount;
+  const winPct = totalTrades > 0 ? ((winTradesCount / totalTrades) * 100) : 0;
+  
+  document.getElementById('winRatePctText').innerText = totalTrades > 0 ? winPct.toFixed(0) + '%' : '0%';
+  document.getElementById('winRateCountsText').innerText = `${winTradesCount}W / ${lossTradesCount}L`;
+
+  const canvasCircular = document.getElementById('winRateChart');
+  if(canvasCircular && typeof Chart !== 'undefined') {
+    const ctxCircular = canvasCircular.getContext('2d');
+    if(winRateChartInstance) winRateChartInstance.destroy();
+
+    winRateChartInstance = new Chart(ctxCircular, {
+      type: 'doughnut',
+      data: {
+        datasets: [{
+          data: totalTrades > 0 ? [winTradesCount, lossTradesCount] : [1, 0],
+          backgroundColor: totalTrades > 0 ? ['#3fb950', '#f85149'] : ['#1f1f1f', 'transparent'],
+          borderWidth: 0,
+          hoverOffset: 0
+        }]
+      },
+      options: {
+        cutout: '82%',
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false }, tooltip: { enabled: totalTrades > 0 } }
+      }
+    });
+  }
+
+  allTradesList.sort((a, b) => new Date(b.date) - new Date(a.date));
+  const recentTradesBody = document.getElementById('recentTradesBody');
+  if (recentTradesBody) {
+    if(allTradesList.length === 0) {
+      recentTradesBody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--muted); padding:20px;">No trade execution history recorded yet.</td></tr>`;
+    } else {
+      recentTradesBody.innerHTML = allTradesList.slice(0, 5).map(t => {
+          const pnlColor = t.pnl >= 0 ? '#3fb950' : '#f85149';
+          const pnlSign = t.pnl >= 0 ? '+$' : '-$';
+          const isPut = t.side.toLowerCase() === 'put' || t.side.toLowerCase() === 'short';
+          const mistakeText = t.mistake && t.mistake !== 'None' ? `#${t.mistake}` : '—';
+          const mistakeColor = t.mistake && t.mistake !== 'None' ? 'var(--red)' : 'var(--muted)';
+
+          return `
+              <tr>
+                  <td style="color: var(--muted);">${t.date}</td>
+                  <td style="font-weight: bold; color:var(--text);">${t.symbol.toUpperCase()}</td>
+                  <td>
+                      <span style="color: ${isPut ? '#f85149' : '#3fb950'}; font-size:11px; font-weight:bold;">${isPut ? 'PUT' : 'CALL'}</span>
+                  </td>
+                  <td style="color: var(--amber); font-weight:600;">${t.qty}</td>
+                  <td style="color: var(--text); font-weight:500;">${t.strategy !== '—' ? `#${t.strategy}` : '—'}</td>
+                  <td style="color: ${mistakeColor}; font-weight:500;">${mistakeText}</td>
+                  <td style="text-align: right; font-weight: bold; color: ${pnlColor};">
+                      ${pnlSign}${Math.abs(t.pnl).toFixed(2)}
+                  </td>
+              </tr>
+          `;
+      }).join('');
+    }
+  }
+}
+
+function renderEquityChart(){
+  const canvasEl = document.getElementById('equityChart');
+  if(!canvasEl || typeof Chart === 'undefined') return;
+  const ctx = canvasEl.getContext('2d');
+  
+  const sortedKeys = Object.keys(data).filter(k => data[k] && data[k].trades && data[k].trades.length > 0).sort();
+  let labels = ['Start'];
+  let chartData = [0]; 
+  let runningNetPnl = 0;
+
+  sortedKeys.forEach(k => {
+    const dayPnl = dayTotalPnl(k);
+    if (dayPnl !== null) {
+      runningNetPnl += dayPnl;
+      const parts = k.split('-');
+      const formattedDate = new Date(parts[0], parts[1]-1, parts[2]).toLocaleDateString(undefined, {month:'short', day:'numeric'});
+      labels.push(formattedDate);
+      chartData.push(runningNetPnl);
+    }
+  });
+
+  if (equityChartInstance) equityChartInstance.destroy(); 
+
+  equityChartInstance = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Net Equity',
+        data: chartData,
+        borderColor: '#3fb950', 
+        borderWidth: 2,
+        backgroundColor: 'rgba(63, 185, 80, 0.03)', 
+        fill: true,
+        tension: 0.25, 
+        pointRadius: chartData.length > 20 ? 0 : 3,
+        pointBackgroundColor: '#3fb950'
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { 
+          grid: { color: '#141414' }, 
+          ticks: { color: '#e6edf3', font: { size: 10 } } 
+        },
+        y: {
+          grid: { color: '#141414' },
+          ticks: {
+            color: '#e6edf3',
+            font: { family: 'Consolas' },
+            callback: function(v) { return (v >= 0 ? '+' : '') + '$' + v; }
+          }
+        }
+      }
+    }
+  });
+}
+
+document.getElementById('prevBtn').addEventListener('click', () => {
+  viewMonth--; if(viewMonth < 0){ viewMonth = 11; viewYear--; } render();
+});
+document.getElementById('nextBtn').addEventListener('click', () => {
+  viewMonth++; if(viewMonth > 11){ viewMonth = 0; viewYear++; } render();
+});
+
+let activeKey = null;
+const overlay = document.getElementById('overlay');
+const tradesContainer = document.getElementById('tradesContainer');
+const notesField = document.getElementById('notesField');
+const dayTotalEl = document.getElementById('dayTotal');
+const saveBtn = document.getElementById('saveBtn');
+const imageInput = document.getElementById('imageInput');
+const importImageBtn = document.getElementById('importImageBtn');
+const imageGrid = document.getElementById('imageGrid');
+const lightboxOverlay = document.getElementById('lightboxOverlay');
+const lightboxImg = document.getElementById('lightboxImg');
+let currentImages = [];
+
+if (notesField) notesField.addEventListener('input', autoGrowNotes);
+
+function renderImageGrid(){
+  if(!imageGrid) return;
+  imageGrid.innerHTML = '';
+  currentImages.forEach((dataUrl, idx) => {
+    const thumb = document.createElement('div');
+    thumb.className = 'image-thumb';
+    const img = document.createElement('img');
+    img.src = dataUrl;
+    img.addEventListener('click', () => { lightboxImg.src = dataUrl; lightboxOverlay.classList.add('show'); });
+    const removeBtn = document.createElement('button');
+    removeBtn.className = 'thumb-remove';
+    removeBtn.textContent = '\u00d7';
+    removeBtn.addEventListener('click', (e) => { e.stopPropagation(); currentImages.splice(idx, 1); renderImageGrid(); });
+    thumb.appendChild(img); thumb.appendChild(removeBtn); imageGrid.appendChild(thumb);
+  });
+}
+
+if(lightboxOverlay) {
+  lightboxOverlay.addEventListener('click', () => { lightboxOverlay.classList.remove('show'); lightboxImg.src = ''; });
+}
+if(importImageBtn) {
+  importImageBtn.addEventListener('click', () => imageInput.click());
+}
+
+if(imageInput) {
+  imageInput.addEventListener('change', async () => {
+    const files = Array.from(imageInput.files || []);
+    imageInput.value = '';
+    for(const file of files){
+      try{
+        const dataUrl = await new Promise((resolve) => {
+          const r = new FileReader();
+          r.onload = (e) => resolve(e.target.result);
+          r.readAsDataURL(file);
+        });
+        currentImages.push(dataUrl);
+      }catch(e){}
+    }
+    renderImageGrid();
+  });
+}
+
+function openModal(y,m,d){
+  activeKey = dateKey(y,m,d);
+  const rec = data[activeKey] || { trades: [], notes: '' };
+  document.getElementById('modalDate').textContent = new Date(y,m,d).toLocaleDateString(undefined, { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+  notesField.value = rec.notes || '';
+  
+  tradesContainer.innerHTML = '';
+  if(rec.trades && rec.trades.length){
+    rec.trades.forEach(t => addTradeRow(t.symbol, t.pnl, t.side, t.qty, t.strategy, t.mistake));
+  } else {
+    addTradeRow('', '', 'call', '', 'BOS15M', 'None');
+  }
+  currentImages = rec.images ? [...rec.images] : (rec.image ? [rec.image] : []);
+  renderImageGrid();
+  updateDayTotal();
+  
+  overlay.classList.add('show');
+  
+  setTimeout(() => {
+    notesField.style.height = 'auto';
+    notesField.style.height = notesField.scrollHeight + 'px';
+  }, 10);
+}
+
+function addTradeRow(symbol='', pnl='', side='call', qty='', strategy='BOS15M', mistake='None'){
+  const row = document.createElement('div');
+  row.className = 'trade-row';
+  
+  const selectedCall = (side && (side.toLowerCase() === 'put' || side.toLowerCase() === 'short')) ? '' : 'selected';
+  const selectedPut = (side && (side.toLowerCase() === 'put' || side.toLowerCase() === 'short')) ? 'selected' : '';
+
+  const strategyOptions = ["BOS15M", "BOS1H", "OBNV15M", "MAGM1H"].map(opt => 
+    `<option value="${opt}" ${strategy === opt ? 'selected' : ''}>#${opt}</option>`
+  ).join('');
+
+  const mistakeOptions = ["None", "FOMO", "EarlyExit", "LateEntry", "RevengeTrade"].map(opt => 
+    `<option value="${opt}" ${mistake === opt ? 'selected' : ''}>${opt === 'None' ? 'No Mistake' : '#' + opt}</option>`
+  ).join('');
+
+  row.innerHTML = `
+    <input type="text" class="symbol-input" placeholder="Symbol (e.g. SPY)" value="${symbol}">
+    <select class="side-input">
+        <option value="call" ${selectedCall}>Call</option>
+        <option value="put" ${selectedPut}>Put</option>
+    </select>
+    <input type="number" class="qty-input" placeholder="QTY" value="${qty}">
+    <select class="strategy-input">${strategyOptions}</select>
+    <select class="mistake-input">${mistakeOptions}</select>
+    <input type="number" step="0.01" class="pnl-input" placeholder="P&L ($)" value="${pnl}">
+    <button class="remove">&times;</button>
+  `;
+  row.querySelector('.remove').addEventListener('click', () => { row.remove(); updateDayTotal(); });
+  row.querySelector('.pnl-input').addEventListener('input', updateDayTotal);
+  tradesContainer.appendChild(row);
+}
+
+document.getElementById('addTradeBtn').addEventListener('click', () => addTradeRow());
+
+function updateDayTotal(){
+  let total = 0;
+  tradesContainer.querySelectorAll('.trade-row').forEach(row => {
+    const v = parseFloat(row.querySelector('.pnl-input').value);
+    if(!isNaN(v)) total += v;
+  });
+  dayTotalEl.textContent = fmtMoney(total);
+  dayTotalEl.className = 'day-total mono ' + (total >= 0 ? 'pos' : 'neg');
+}
+
+document.getElementById('cancelBtn').addEventListener('click', closeModal);
+overlay.addEventListener('click', (e) => { if(e.target === overlay) closeModal(); });
+function closeModal(){ overlay.classList.remove('show'); activeKey = null; }
+
+saveBtn.addEventListener('click', () => {
+  const trades = [];
+  tradesContainer.querySelectorAll('.trade-row').forEach(row => {
+    const symbol = row.querySelector('.symbol-input').value.trim();
+    const side = row.querySelector('.side-input').value;
+    const qtyVal = row.querySelector('.qty-input').value.trim();
+    const strategy = row.querySelector('.strategy-input').value;
+    const mistake = row.querySelector('.mistake-input').value;
+    const pnlVal = row.querySelector('.pnl-input').value;
+    if(symbol !== '' || pnlVal !== ''){
+      trades.push({ 
+        symbol: symbol || 'Trade', 
+        side: side || 'call', 
+        qty: qtyVal !== '' ? parseInt(qtyVal) || qtyVal : 1,
+        strategy: strategy,
+        mistake: mistake,
+        pnl: parseFloat(pnlVal) || 0 
+      });
+    }
+  });
+  
+  const notes = notesField.value.trim();
+  if(trades.length === 0 && notes === '' && currentImages.length === 0){
+    delete data[activeKey];
+  } else {
+    data[activeKey] = { trades, notes, images: currentImages };
+  }
+
+  saveData(data);
+  closeModal();
+  render();
+});
+
+function init(){
+  try {
+    data = loadData();
+    startingBalance = loadStartingBalance();
+    if(startingBalanceInput) startingBalanceInput.value = startingBalance;
+  } catch(err) {
+    console.error("Data load bypass applied:", err);
+    data = {};
+  }
+  
+  // Unhide elements instantly before graphics processing to prevent loading freeze
+  document.getElementById('loadingScreen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  
+  render();
+}
+init();
+</script>
+</body>
+</html>
