@@ -714,7 +714,7 @@ function renderStatsAndPanels(){
                 symbol: String(t.symbol || '—'), 
                 side: sideDisplay, 
                 qty: qty,
-                strategy: t.strategy || '—',
+                strategy: t.strategy || 'None',
                 mistake: t.mistake || 'None',
                 pnl: pnl 
             });
@@ -799,6 +799,7 @@ function renderStatsAndPanels(){
           const pnlColor = t.pnl >= 0 ? '#3fb950' : '#f85149';
           const pnlSign = t.pnl >= 0 ? '+$' : '-$';
           const isPut = t.side.toLowerCase() === 'put' || t.side.toLowerCase() === 'short';
+          const strategyText = t.strategy && t.strategy !== 'None' ? `#${t.strategy}` : '—';
           const mistakeText = t.mistake && t.mistake !== 'None' ? `#${t.mistake}` : '—';
           const mistakeColor = t.mistake && t.mistake !== 'None' ? 'var(--red)' : 'var(--muted)';
 
@@ -810,7 +811,7 @@ function renderStatsAndPanels(){
                       <span style="color: ${isPut ? '#f85149' : '#3fb950'}; font-size:11px; font-weight:bold;">${isPut ? 'PUT' : 'CALL'}</span>
                   </td>
                   <td style="color: var(--amber); font-weight:600;">${t.qty}</td>
-                  <td style="color: var(--text); font-weight:500;">${t.strategy !== '—' ? `#${t.strategy}` : '—'}</td>
+                  <td style="color: var(--text); font-weight:500;">${strategyText}</td>
                   <td style="color: ${mistakeColor}; font-weight:500;">${mistakeText}</td>
                   <td style="text-align: right; font-weight: bold; color: ${pnlColor};">
                       ${pnlSign}${Math.abs(t.pnl).toFixed(2)}
@@ -957,7 +958,7 @@ function openModal(y,m,d){
   if(rec.trades && rec.trades.length){
     rec.trades.forEach(t => addTradeRow(t.symbol, t.pnl, t.side, t.qty, t.strategy, t.mistake));
   } else {
-    addTradeRow('', '', 'call', '', 'BOS15M', 'None');
+    addTradeRow('', '', 'call', '', 'None', 'None');
   }
   currentImages = rec.images ? [...rec.images] : (rec.image ? [rec.image] : []);
   renderImageGrid();
@@ -971,15 +972,15 @@ function openModal(y,m,d){
   }, 10);
 }
 
-function addTradeRow(symbol='', pnl='', side='call', qty='', strategy='BOS15M', mistake='None'){
+function addTradeRow(symbol='', pnl='', side='call', qty='', strategy='None', mistake='None'){
   const row = document.createElement('div');
   row.className = 'trade-row';
   
   const selectedCall = (side && (side.toLowerCase() === 'put' || side.toLowerCase() === 'short')) ? '' : 'selected';
   const selectedPut = (side && (side.toLowerCase() === 'put' || side.toLowerCase() === 'short')) ? 'selected' : '';
 
-  const strategyOptions = ["BOS15M", "BOS1H", "OBNV15M", "MAGM1H"].map(opt => 
-    `<option value="${opt}" ${strategy === opt ? 'selected' : ''}>#${opt}</option>`
+  const strategyOptions = ["None", "BOS15M", "BOS1H", "OBNV15M", "MAGM1H"].map(opt => 
+    `<option value="${opt}" ${strategy === opt ? 'selected' : ''}>${opt === 'None' ? 'No Strategy' : '#' + opt}</option>`
   ).join('');
 
   const mistakeOptions = ["None", "FOMO", "EarlyExit", "LateEntry", "RevengeTrade"].map(opt => 
@@ -1062,7 +1063,6 @@ function init(){
     data = {};
   }
   
-  // Unhide elements instantly before graphics processing to prevent loading freeze
   document.getElementById('loadingScreen').style.display = 'none';
   document.getElementById('app').style.display = 'block';
   
