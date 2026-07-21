@@ -22,6 +22,7 @@
     --red:#f85149;
     --red-dim:#2b1414;
     --amber:#d4a72c;
+    --sidebar-width: 260px;
   }
 
   :root[data-theme="cyberpunk"] {
@@ -73,9 +74,90 @@
     color:var(--text);
     font-family:'Segoe UI', system-ui, -apple-system, sans-serif;
     min-height:100vh;
+    display: flex;
+    overflow-x: hidden;
     transition: background 0.2s ease, color 0.2s ease;
   }
   .mono{ font-family:'Consolas','SFMono-Regular',Menlo,monospace; }
+
+  /* SIDEBAR STYLING */
+  .sidebar {
+    width: var(--sidebar-width);
+    background: var(--panel);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+    transition: transform 0.25s ease;
+    transform: translateX(-100%);
+  }
+  .sidebar.open {
+    transform: translateX(0);
+  }
+  .sidebar-header {
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+  }
+  .sidebar-title {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--amber);
+    text-transform: uppercase;
+  }
+  .sidebar-close-btn {
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    font-size: 18px;
+    cursor: pointer;
+  }
+  .sidebar-close-btn:hover { color: var(--text); }
+
+  .sidebar-nav {
+    padding: 16px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+  }
+  .sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: 6px;
+    color: var(--text);
+    background: transparent;
+    border: 1px solid transparent;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: left;
+    width: 100%;
+    transition: all 0.15s ease;
+  }
+  .sidebar-item:hover {
+    background: var(--panel2);
+    border-color: var(--border);
+    color: var(--amber);
+  }
+  .sidebar-item-icon {
+    font-size: 16px;
+  }
+
+  .main-wrapper {
+    flex: 1;
+    transition: margin-left 0.25s ease;
+    width: 100%;
+  }
 
   /* GAME-STYLE ACHIEVEMENT BANNER POPUP */
   .achievement-toast-container {
@@ -143,6 +225,27 @@
     justify-content:space-between;
     flex-wrap:wrap;
     gap:12px;
+  }
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .sidebar-toggle-btn {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-size: 18px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .sidebar-toggle-btn:hover {
+    border-color: var(--amber);
+    color: var(--amber);
   }
   header h1{
     margin:0;
@@ -557,7 +660,7 @@
     background:rgba(0,0,0,0.85);
     align-items:center;
     justify-content:center;
-    z-index:100;
+    z-index:1100;
     padding:16px;
   }
   .overlay.show{ display:flex; }
@@ -666,6 +769,97 @@
   .badge-card.unlocked .badge-status-tag {
     background: var(--amber);
     color: #000;
+  }
+
+  /* FLASHCARD MODAL STYLING */
+  .flashcard-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    margin-top: 10px;
+  }
+  .flashcard-header {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    align-items: center;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .flashcard-box {
+    width: 100%;
+    background: var(--panel2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+  }
+  .flashcard-img-wrapper {
+    width: 100%;
+    max-height: 380px;
+    overflow: hidden;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .flashcard-img-wrapper img {
+    max-width: 100%;
+    max-height: 380px;
+    object-fit: contain;
+  }
+  .flashcard-actions {
+    display: flex;
+    gap: 16px;
+    margin-top: 20px;
+    width: 100%;
+  }
+  .flashcard-btn {
+    flex: 1;
+    padding: 12px;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    transition: all 0.2s ease;
+  }
+  .btn-take {
+    background: rgba(63, 185, 80, 0.15);
+    color: var(--green);
+    border-color: var(--green);
+  }
+  .btn-take:hover {
+    background: var(--green);
+    color: #000;
+  }
+  .btn-pass {
+    background: rgba(248, 81, 73, 0.15);
+    color: var(--red);
+    border-color: var(--red);
+  }
+  .btn-pass:hover {
+    background: var(--red);
+    color: #000;
+  }
+  .flashcard-result-box {
+    display: none;
+    margin-top: 16px;
+    padding: 14px;
+    border-radius: 6px;
+    width: 100%;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .flashcard-result-box.show {
+    display: block;
   }
   
   .modal-alert {
@@ -809,7 +1003,7 @@
 
   .lightbox-overlay{
     display:none; position:fixed; inset:0; background:rgba(0,0,0,0.92);
-    align-items:center; justify-content:center; z-index:200; cursor:zoom-out;
+    align-items:center; justify-content:center; z-index:2000; cursor:zoom-out;
   }
   .lightbox-overlay.show{ display:flex; }
   .lightbox-overlay img{ max-width:90%; max-height:90%; border-radius:6px; }
@@ -829,6 +1023,25 @@
 </head>
 <body>
 
+<div class="sidebar" id="appSidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-title">TradeFlow Hub</div>
+    <button class="sidebar-close-btn" id="closeSidebarBtn">&times;</button>
+  </div>
+  <div class="sidebar-nav">
+    <button class="sidebar-item" id="sidebarTrophyBtn">
+      <span class="sidebar-item-icon">🏆</span>
+      <span>Trophy Case</span>
+    </button>
+    <button class="sidebar-item" id="sidebarFlashcardBtn">
+      <span class="sidebar-item-icon">🎴</span>
+      <span>Blind Review Mode</span>
+    </button>
+  </div>
+</div>
+
+<div class="main-wrapper" id="mainWrapper">
+
 <div class="achievement-toast-container" id="achievementToastContainer">
   <div class="achievement-toast">
     <div class="toast-icon" id="toastIcon">🏆</div>
@@ -845,9 +1058,12 @@
 <div id="app" style="display:none;">
 
 <header>
-  <div>
-    <h1>Welcome back, Jonathan</h1>
-    <p class="header-quote">“Dont fuck up the progress trying to speed up the process”</p>
+  <div class="header-left">
+    <button class="sidebar-toggle-btn" id="openSidebarBtn">☰</button>
+    <div>
+      <h1>Welcome back, Jonathan</h1>
+      <p class="header-quote">“Dont fuck up the progress trying to speed up the process”</p>
+    </div>
   </div>
   <div class="header-controls">
     <div class="settings-row">
@@ -1041,10 +1257,27 @@
   </div>
 </div>
 
+<div class="overlay" id="flashcardOverlay">
+  <div class="modal" style="max-width: 700px;">
+    <h2>🎴 Flashcard / Blind Setup Review Mode</h2>
+    <div class="modal-sub">Evaluate setup patterns without hindsight bias. Decide whether to take or pass the trade before seeing the result.</div>
+
+    <div id="flashcardContent" class="flashcard-container">
+      </div>
+
+    <div class="modal-footer" style="position:static; margin-top:24px; border:none; padding-bottom:0;">
+      <div></div>
+      <button class="btn btn-save" id="closeFlashcardsBtn">Exit Review</button>
+    </div>
+  </div>
+</div>
+
 </div>
 
 <div class="lightbox-overlay" id="lightboxOverlay">
   <img id="lightboxImg" alt="Enlarged screenshot view">
+</div>
+
 </div>
 
 <script>
@@ -1270,6 +1503,33 @@ function getMaxLossDollarThreshold(){
   }
   return maxLossValue;
 }
+
+/* SIDEBAR TOGGLE HANDLERS */
+const appSidebar = document.getElementById('appSidebar');
+const openSidebarBtn = document.getElementById('openSidebarBtn');
+const closeSidebarBtn = document.getElementById('closeSidebarBtn');
+
+if(openSidebarBtn) {
+  openSidebarBtn.addEventListener('click', () => {
+    appSidebar.classList.add('open');
+  });
+}
+if(closeSidebarBtn) {
+  closeSidebarBtn.addEventListener('click', () => {
+    appSidebar.classList.remove('open');
+  });
+}
+
+document.getElementById('sidebarTrophyBtn').addEventListener('click', () => {
+  appSidebar.classList.remove('open');
+  renderBadgesInventory();
+  badgesOverlay.classList.add('show');
+});
+
+document.getElementById('sidebarFlashcardBtn').addEventListener('click', () => {
+  appSidebar.classList.remove('open');
+  startFlashcardSession();
+});
 
 const startingBalanceInput = document.getElementById('startingBalanceInput');
 const saveBalanceBtn = document.getElementById('saveBalanceBtn');
@@ -1506,6 +1766,142 @@ document.getElementById('closeBadgesBtn').addEventListener('click', () => {
 });
 badgesOverlay.addEventListener('click', (e) => {
   if(e.target === badgesOverlay) badgesOverlay.classList.remove('show');
+});
+
+/* FLASHCARD / BLIND SETUP REVIEW ENGINE */
+const flashcardOverlay = document.getElementById('flashcardOverlay');
+let flashcardDeck = [];
+let currentCardIndex = 0;
+let userScore = 0;
+
+function getAllCardsWithImages() {
+  const deck = [];
+  Object.keys(data).forEach(dateStr => {
+    const record = data[dateStr];
+    if(record && record.images && record.images.length > 0) {
+      record.images.forEach(imgUrl => {
+        // Find associated trades for context if available
+        const mainTrade = record.trades && record.trades.length > 0 ? record.trades[0] : null;
+        const totalPnl = record.trades ? record.trades.reduce((s,t) => s + (parseFloat(t.pnl)||0), 0) : 0;
+        
+        deck.push({
+          date: dateStr,
+          img: imgUrl,
+          symbol: mainTrade ? mainTrade.symbol : 'Trade Setup',
+          strategy: mainTrade ? mainTrade.strategy : 'None',
+          pnl: totalPnl,
+          isProfit: totalPnl >= 0,
+          notes: record.notes || 'No detailed notes recorded.'
+        });
+      });
+    }
+  });
+  return deck;
+}
+
+function startFlashcardSession() {
+  const allCards = getAllCardsWithImages();
+  const container = document.getElementById('flashcardContent');
+
+  if(allCards.length === 0) {
+    container.innerHTML = `
+      <div style="text-align:center; padding: 40px 20px; color:var(--muted);">
+        <div style="font-size:40px; margin-bottom:12px;">📸</div>
+        <div style="font-weight:700; color:var(--text); font-size:16px;">No Chart Screenshots Found</div>
+        <div style="font-size:12px; margin-top:6px;">Upload chart screenshots inside your daily trade logs to populate the Flashcard Deck.</div>
+      </div>
+    `;
+    flashcardOverlay.classList.add('show');
+    return;
+  }
+
+  // Shuffle and pick 5 random cards
+  const shuffled = [...allCards].sort(() => 0.5 - Math.random());
+  flashcardDeck = shuffled.slice(0, 5);
+  currentCardIndex = 0;
+  userScore = 0;
+
+  renderCurrentFlashcard();
+  flashcardOverlay.classList.add('show');
+}
+
+function renderCurrentFlashcard() {
+  const container = document.getElementById('flashcardContent');
+
+  if(currentCardIndex >= flashcardDeck.length) {
+    // End of session summary
+    container.innerHTML = `
+      <div style="text-align:center; padding: 30px 10px;">
+        <div style="font-size:48px; margin-bottom:10px;">🎯</div>
+        <h3 style="margin:0; font-size:20px; color:var(--amber);">Review Session Complete!</h3>
+        <p style="color:var(--muted); font-size:14px; margin-top:8px;">You correctly aligned with <strong>${userScore} / ${flashcardDeck.length}</strong> setup outcomes.</p>
+        <button class="btn btn-save" onclick="startFlashcardSession()" style="margin-top:16px;">Play Another Session</button>
+      </div>
+    `;
+    return;
+  }
+
+  const card = flashcardDeck[currentCardIndex];
+
+  container.innerHTML = `
+    <div class="flashcard-header">
+      <div>Card ${currentCardIndex + 1} of ${flashcardDeck.length}</div>
+      <div>Symbol: <strong style="color:var(--text);">${card.symbol.toUpperCase()}</strong> | Strategy: <strong style="color:var(--amber);">#${card.strategy}</strong></div>
+    </div>
+
+    <div class="flashcard-box">
+      <div class="flashcard-img-wrapper">
+        <img src="${card.img}" alt="Blind Setup Chart">
+      </div>
+
+      <div class="flashcard-actions" id="flashcardActions">
+        <button class="flashcard-btn btn-take" onclick="handleFlashcardChoice(true)">Take Trade 🚀</button>
+        <button class="flashcard-btn btn-pass" onclick="handleFlashcardChoice(false)">Pass Setup ✋</button>
+      </div>
+
+      <div class="flashcard-result-box" id="flashcardResult"></div>
+    </div>
+  `;
+}
+
+function handleFlashcardChoice(userTookTrade) {
+  const card = flashcardDeck[currentCardIndex];
+  const isWinningTrade = card.isProfit;
+
+  // Grade user decision
+  let isCorrect = false;
+  if(userTookTrade && isWinningTrade) isCorrect = true;
+  if(!userTookTrade && !isWinningTrade) isCorrect = true;
+
+  if(isCorrect) userScore++;
+
+  const actionsBox = document.getElementById('flashcardActions');
+  const resultBox = document.getElementById('flashcardResult');
+
+  actionsBox.style.display = 'none';
+
+  resultBox.innerHTML = `
+    <div style="font-weight:700; font-size:15px; margin-bottom:6px; color:${isCorrect ? 'var(--green)' : 'var(--red)'};">
+      ${isCorrect ? '🎯 Great Pattern Recognition!' : '❌ Incorrect Assessment!'}
+    </div>
+    <div style="margin-bottom:8px;">
+      Outcome: <strong class="${card.isProfit ? 'pos' : 'neg'}">${fmtMoney(card.pnl)}</strong>
+    </div>
+    <div style="color:var(--muted); font-size:12px; margin-bottom:12px;">
+      <strong>Notes:</strong> ${card.notes}
+    </div>
+    <button class="btn btn-save" onclick="nextFlashcard()" style="width:100%;">Next Card →</button>
+  `;
+  resultBox.classList.add('show');
+}
+
+function nextFlashcard() {
+  currentCardIndex++;
+  renderCurrentFlashcard();
+}
+
+document.getElementById('closeFlashcardsBtn').addEventListener('click', () => {
+  flashcardOverlay.classList.remove('show');
 });
 
 function render(){
