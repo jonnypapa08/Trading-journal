@@ -294,7 +294,7 @@
     font-size:13px;
   }
   .balance-setup input.num-input { width: 90px; }
-  .balance-setup button, .backup-btn, .trophy-btn {
+  .balance-setup button, .backup-btn {
     background:var(--panel2);
     border:1px solid var(--border);
     color:var(--text);
@@ -305,16 +305,6 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
-  }
-  .trophy-btn {
-    border-color: var(--amber);
-    color: var(--amber);
-    font-weight: 700;
-    background: rgba(212, 167, 44, 0.08);
-  }
-  .trophy-btn:hover {
-    background: var(--amber);
-    color: #000000;
   }
   .balance-setup button:hover, .backup-btn:hover{ border-color:var(--amber); color:var(--amber); }
 
@@ -677,7 +667,7 @@
   .modal h2{ margin:0 0 4px; font-size:16px; }
   .modal .modal-sub{ color:var(--muted); font-size:12px; margin-bottom:18px; }
 
-  /* BADGES TROPHY MODAL INVENTORY (SCROLLABLE CONTAINER) */
+  /* BADGES TROPHY MODAL INVENTORY */
   .badge-modal-container {
     max-height: 70vh;
     overflow-y: auto;
@@ -875,15 +865,22 @@
   }
   .modal-alert.show { display: block; }
 
+  /* TRADE ROW & CHECKLIST STYLING */
+  .trade-row-wrapper {
+    background: var(--panel2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px;
+    margin-bottom: 12px;
+  }
   .trade-row{
     display:grid;
     grid-template-columns:1.2fr 0.8fr 0.7fr 1.2fr 1.2fr 1.1fr auto;
     gap:8px;
-    margin-bottom:8px;
     align-items:center;
   }
   .trade-row input, .trade-row select{
-    background:var(--panel2);
+    background:var(--panel);
     border:1px solid var(--border);
     color:var(--text);
     padding:8px;
@@ -899,6 +896,47 @@
     border-radius:4px;
     cursor:pointer;
   }
+
+  /* Strategy Checklist UI */
+  .strategy-checklist-container {
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px dashed var(--border);
+    display: none;
+  }
+  .strategy-checklist-container.show {
+    display: block;
+  }
+  .checklist-title {
+    font-size: 11px;
+    text-transform: uppercase;
+    color: var(--amber);
+    font-weight: 700;
+    margin-bottom: 6px;
+    display: flex;
+    justify-content: space-between;
+  }
+  .checklist-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .checklist-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text);
+    background: var(--panel);
+    padding: 4px 8px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+  }
+  .checklist-item input[type="checkbox"] {
+    accent-color: var(--amber);
+    cursor: pointer;
+  }
+
   .add-trade{
     background:var(--panel2);
     border:1px dashed var(--border);
@@ -975,6 +1013,18 @@
     border-radius: 4px;
     cursor: pointer;
     font-size: 12px;
+  }
+
+  /* Strategy Rules Config Modal List */
+  .rule-config-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 8px 12px;
+    border-radius: 6px;
+    margin-bottom: 6px;
   }
 
   .notes-field{
@@ -1067,7 +1117,6 @@
   </div>
   <div class="header-controls">
     <div class="settings-row">
-      <button class="trophy-btn" id="openBadgesModalBtn">🏆 Trophy Case</button>
       <div class="balance-setup">
         Theme:
         <select id="themeSelect">
@@ -1207,7 +1256,7 @@
 
     <div class="tag-manager-box">
       <div class="tag-group">
-        <div class="tag-group-title">Custom Strategies</div>
+        <div class="tag-group-title">Custom Strategies & Rule Rules Engine</div>
         <div class="tag-list" id="stratTagList"></div>
       </div>
       <div class="tag-group" style="margin-top:10px;">
@@ -1237,6 +1286,26 @@
         <button class="btn btn-cancel" id="cancelBtn">Cancel</button>
         <button class="btn btn-save" id="saveBtn">Save Day</button>
       </div>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="rulesConfigOverlay">
+  <div class="modal" style="max-width: 600px;">
+    <h2>📋 Strategy Rules Engine: <span id="configStratName" style="color:var(--amber);"></span></h2>
+    <div class="modal-sub">Define mandatory rules that must be checked before taking trades with this strategy.</div>
+
+    <div class="tag-manager-box">
+      <div class="add-tag-inline" style="width:100%; margin-bottom:12px;">
+        <input type="text" id="newRuleInput" placeholder="Add mandatory rule (e.g. Wait for 15M candle close)" style="flex:1;">
+        <button onclick="addRuleToActiveStrategy()">+ Add Rule</button>
+      </div>
+      <div id="strategyRulesList"></div>
+    </div>
+
+    <div class="modal-footer" style="position:static; margin-top:24px; border:none; padding-bottom:0;">
+      <div></div>
+      <button class="btn btn-save" id="closeRulesConfigBtn">Save Rules</button>
     </div>
   </div>
 </div>
@@ -1284,6 +1353,7 @@
 const DATA_KEY = 'tj_data_v1';
 const BALANCE_KEY = 'tj_starting_balance_v1';
 const TAGS_KEY = 'tj_custom_tags_v1';
+const RULES_KEY = 'tj_strategy_rules_v1';
 const GOAL_KEY = 'tj_monthly_goal_v1';
 const THEME_KEY = 'tj_theme_v1';
 const MAX_LOSS_VAL_KEY = 'tj_max_loss_val_v1';
@@ -1298,9 +1368,13 @@ let maxLossUnit = '$';
 let currentTheme = 'default';
 let unlockedBadges = [];
 
-// MASTER BADGES DEFINITION LIST (MAX 3 TIERS PER TIERED BADGE)
+let strategyRules = {
+  "BOS15M": ["Wait for 15M candle close", "Check higher timeframe trend", "Risk defined <= 1%"],
+  "OBNV15M": ["Unmitigated order block present", "Session timing aligns"]
+};
+
+// MASTER BADGES DEFINITION LIST
 const BADGES_DEFINITIONS = [
-  // MILLIONAIRE BADGE
   {
     id: "seven_figure_club",
     icon: "💎",
@@ -1308,8 +1382,6 @@ const BADGES_DEFINITIONS = [
     desc: "Reach your first $1,000,000 in Net P&L. Legendary status.",
     check: (stats) => stats.netPnl >= 1000000
   },
-
-  // TRADE VOLUME TIERS (MAX 3 TIERS)
   {
     id: "trades_tier_1",
     icon: "🥉",
@@ -1331,8 +1403,6 @@ const BADGES_DEFINITIONS = [
     desc: "Log 10,000 total trades in your journal.",
     check: (stats) => stats.totalTrades >= 10000
   },
-
-  // DISCIPLINE TIERS (MAX 3 TIERS)
   {
     id: "discipline_tier_1",
     icon: "🥉",
@@ -1354,8 +1424,6 @@ const BADGES_DEFINITIONS = [
     desc: "Respect your Max Daily Loss limit on 50 trading days.",
     check: (stats) => stats.disciplinedDays >= 50
   },
-
-  // WIN STREAK TIERS (MAX 3 TIERS)
   {
     id: "streak_tier_1",
     icon: "🥉",
@@ -1377,8 +1445,6 @@ const BADGES_DEFINITIONS = [
     desc: "Achieve a winning streak of 15 consecutive trades.",
     check: (stats) => stats.maxWinStreak >= 15
   },
-
-  // STANDALONE DISCIPLINE & PROFIT BADGES
   {
     id: "first_blood",
     icon: "⚔️",
@@ -1460,6 +1526,14 @@ function saveMonthlyGoal(v){ try{ localStorage.setItem(GOAL_KEY, String(v)); }ca
 
 function loadUnlockedBadges(){ try{ const s = localStorage.getItem(UNLOCKED_BADGES_KEY); return s ? JSON.parse(s) : []; } catch(e){ return []; } }
 function saveUnlockedBadges(arr){ try{ localStorage.setItem(UNLOCKED_BADGES_KEY, JSON.stringify(arr)); }catch(e){} }
+
+function loadStrategyRules(){
+  try {
+    const s = localStorage.getItem(RULES_KEY);
+    return s ? JSON.parse(s) : strategyRules;
+  } catch(e) { return strategyRules; }
+}
+function saveStrategyRules(){ try { localStorage.setItem(RULES_KEY, JSON.stringify(strategyRules)); } catch(e){} }
 
 function loadMaxLossSettings(){
   try {
@@ -1613,13 +1687,70 @@ function autoGrowNotes() {
   this.style.height = this.scrollHeight + 'px';
 }
 
+/* STRATEGY RULES CONFIGURATION MODAL ENGINE */
+let activeConfigStrategy = null;
+const rulesConfigOverlay = document.getElementById('rulesConfigOverlay');
+
+function openRulesConfigModal(stratName) {
+  activeConfigStrategy = stratName;
+  document.getElementById('configStratName').textContent = `#${stratName}`;
+  renderStrategyRulesList();
+  rulesConfigOverlay.classList.add('show');
+}
+
+function renderStrategyRulesList() {
+  const container = document.getElementById('strategyRulesList');
+  const rules = strategyRules[activeConfigStrategy] || [];
+
+  if(rules.length === 0) {
+    container.innerHTML = `<div style="font-size:12px; color:var(--muted); padding:8px 0;">No mandatory rules configured for this setup.</div>`;
+    return;
+  }
+
+  container.innerHTML = rules.map((r, idx) => `
+    <div class="rule-config-item">
+      <span style="font-size:12px; font-weight:600;">✓ ${r}</span>
+      <button class="remove" onclick="removeRuleFromActiveStrategy(${idx})" style="background:none; border:none; color:var(--red); cursor:pointer;">&times;</button>
+    </div>
+  `).join('');
+}
+
+function addRuleToActiveStrategy() {
+  const input = document.getElementById('newRuleInput');
+  const ruleText = input.value.trim();
+  if(!ruleText) return;
+
+  if(!strategyRules[activeConfigStrategy]) {
+    strategyRules[activeConfigStrategy] = [];
+  }
+  strategyRules[activeConfigStrategy].push(ruleText);
+  saveStrategyRules();
+  input.value = '';
+  renderStrategyRulesList();
+}
+
+function removeRuleFromActiveStrategy(idx) {
+  strategyRules[activeConfigStrategy].splice(idx, 1);
+  saveStrategyRules();
+  renderStrategyRulesList();
+}
+
+document.getElementById('closeRulesConfigBtn').addEventListener('click', () => {
+  rulesConfigOverlay.classList.remove('show');
+  updateTradeDropdowns();
+});
+
 function renderTagManager() {
   const stratList = document.getElementById('stratTagList');
   const mistakeList = document.getElementById('mistakeTagList');
 
   if(stratList) {
     stratList.innerHTML = customTags.strategies.map((s, idx) => `
-      <div class="tag-chip">#${s} <button onclick="removeTag('strategies', ${idx})">&times;</button></div>
+      <div class="tag-chip">
+        #${s} 
+        <button onclick="openRulesConfigModal('${s}')" title="Configure Rules Checklist" style="color:var(--amber); margin-left:4px;">⚙️ Rules</button>
+        <button onclick="removeTag('strategies', ${idx})">&times;</button>
+      </div>
     `).join('') + `
       <div class="add-tag-inline">
         <input type="text" id="newStratInput" placeholder="New Strategy">
@@ -1647,6 +1778,10 @@ function addTag(type) {
   const val = document.getElementById(inputId).value.trim().replace(/[^a-zA-Z0-9_-]/g, '');
   if(val && !customTags[type].includes(val)) {
     customTags[type].push(val);
+    if(type === 'strategies' && !strategyRules[val]) {
+      strategyRules[val] = [];
+      saveStrategyRules();
+    }
     saveCustomTags();
     renderTagManager();
     updateTradeDropdowns();
@@ -1691,9 +1826,9 @@ document.getElementById('globalSearchInput').addEventListener('input', (e) => {
 });
 
 function updateTradeDropdowns() {
-  document.querySelectorAll('.trade-row').forEach(row => {
-    const stratSelect = row.querySelector('.strategy-input');
-    const mistakeSelect = row.querySelector('.mistake-input');
+  document.querySelectorAll('.trade-row-wrapper').forEach(wrapper => {
+    const stratSelect = wrapper.querySelector('.strategy-input');
+    const mistakeSelect = wrapper.querySelector('.mistake-input');
     
     if(stratSelect) {
       const currentStrat = stratSelect.value;
@@ -1757,10 +1892,6 @@ function renderBadgesInventory() {
 }
 
 const badgesOverlay = document.getElementById('badgesOverlay');
-document.getElementById('openBadgesModalBtn').addEventListener('click', () => {
-  renderBadgesInventory();
-  badgesOverlay.classList.add('show');
-});
 document.getElementById('closeBadgesBtn').addEventListener('click', () => {
   badgesOverlay.classList.remove('show');
 });
@@ -1768,7 +1899,7 @@ badgesOverlay.addEventListener('click', (e) => {
   if(e.target === badgesOverlay) badgesOverlay.classList.remove('show');
 });
 
-/* FLASHCARD / BLIND SETUP REVIEW ENGINE */
+/* FLASHCARD / BLIND REVIEW ENGINE */
 const flashcardOverlay = document.getElementById('flashcardOverlay');
 let flashcardDeck = [];
 let currentCardIndex = 0;
@@ -1780,7 +1911,6 @@ function getAllCardsWithImages() {
     const record = data[dateStr];
     if(record && record.images && record.images.length > 0) {
       record.images.forEach(imgUrl => {
-        // Find associated trades for context if available
         const mainTrade = record.trades && record.trades.length > 0 ? record.trades[0] : null;
         const totalPnl = record.trades ? record.trades.reduce((s,t) => s + (parseFloat(t.pnl)||0), 0) : 0;
         
@@ -1815,7 +1945,6 @@ function startFlashcardSession() {
     return;
   }
 
-  // Shuffle and pick 5 random cards
   const shuffled = [...allCards].sort(() => 0.5 - Math.random());
   flashcardDeck = shuffled.slice(0, 5);
   currentCardIndex = 0;
@@ -1829,7 +1958,6 @@ function renderCurrentFlashcard() {
   const container = document.getElementById('flashcardContent');
 
   if(currentCardIndex >= flashcardDeck.length) {
-    // End of session summary
     container.innerHTML = `
       <div style="text-align:center; padding: 30px 10px;">
         <div style="font-size:48px; margin-bottom:10px;">🎯</div>
@@ -1868,7 +1996,6 @@ function handleFlashcardChoice(userTookTrade) {
   const card = flashcardDeck[currentCardIndex];
   const isWinningTrade = card.isProfit;
 
-  // Grade user decision
   let isCorrect = false;
   if(userTookTrade && isWinningTrade) isCorrect = true;
   if(!userTookTrade && !isWinningTrade) isCorrect = true;
@@ -2038,7 +2165,6 @@ function renderStatsAndPanels(){
     if(pnl !== null) monthPnl += pnl;
   }
 
-  // Goal Progress
   const fillPct = Math.min(Math.max((monthPnl / (monthlyGoal || 1)) * 100, 0), 100);
   document.getElementById('goalProgressFill').style.width = fillPct + '%';
   document.getElementById('goalRatioText').innerText = `${fmtMoney(monthPnl)} / ${fmtMoney(monthlyGoal)}`;
@@ -2103,7 +2229,6 @@ function renderStatsAndPanels(){
   const totalTradesCount = allTradesList.length;
   const winRateCalculated = totalTradesCount > 0 ? ((winTradesCount / totalTradesCount) * 100) : 0;
 
-  // Evaluate Achievement Milestones
   evaluateBadges({
     totalTrades: totalTradesCount,
     netPnl: allTimePl,
@@ -2281,9 +2406,8 @@ document.getElementById('nextBtn').addEventListener('click', () => {
   viewMonth++; if(viewMonth > 11){ viewMonth = 0; viewYear++; } render();
 });
 
-/* Export & Import Backup Functionality */
 document.getElementById('exportJsonBtn').addEventListener('click', () => {
-  const backup = { data, startingBalance, monthlyGoal, customTags, maxLossValue, maxLossUnit, currentTheme, unlockedBadges };
+  const backup = { data, startingBalance, monthlyGoal, customTags, strategyRules, maxLossValue, maxLossUnit, currentTheme, unlockedBadges };
   const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
@@ -2320,6 +2444,7 @@ importFileInput.addEventListener('change', (e) => {
       if(imported.startingBalance !== undefined) startingBalance = imported.startingBalance;
       if(imported.monthlyGoal !== undefined) monthlyGoal = imported.monthlyGoal;
       if(imported.customTags) customTags = imported.customTags;
+      if(imported.strategyRules) strategyRules = imported.strategyRules;
       if(imported.maxLossValue !== undefined) maxLossValue = imported.maxLossValue;
       if(imported.maxLossUnit !== undefined) maxLossUnit = imported.maxLossUnit;
       if(imported.currentTheme) applyTheme(imported.currentTheme);
@@ -2329,6 +2454,7 @@ importFileInput.addEventListener('change', (e) => {
       saveStartingBalance(startingBalance);
       saveMonthlyGoal(monthlyGoal);
       saveCustomTags(customTags);
+      saveStrategyRules();
       saveMaxLossSettings();
       saveUnlockedBadges(unlockedBadges);
 
@@ -2414,7 +2540,7 @@ function openModal(y,m,d){
 
   tradesContainer.innerHTML = '';
   if(rec.trades && rec.trades.length){
-    rec.trades.forEach(t => addTradeRow(t.symbol, t.pnl, t.side, t.qty, t.strategy, t.mistake));
+    rec.trades.forEach(t => addTradeRow(t.symbol, t.pnl, t.side, t.qty, t.strategy, t.mistake, t.ruleChecks));
   } else {
     addTradeRow('', '', 'call', '', 'None', 'None');
   }
@@ -2430,7 +2556,10 @@ function openModal(y,m,d){
   }, 10);
 }
 
-function addTradeRow(symbol='', pnl='', side='call', qty='', strategy='None', mistake='None'){
+function addTradeRow(symbol='', pnl='', side='call', qty='', strategy='None', mistake='None', ruleChecks={}){
+  const wrapper = document.createElement('div');
+  wrapper.className = 'trade-row-wrapper';
+
   const row = document.createElement('div');
   row.className = 'trade-row';
   
@@ -2455,17 +2584,73 @@ function addTradeRow(symbol='', pnl='', side='call', qty='', strategy='None', mi
     <input type="number" step="0.01" class="pnl-input" placeholder="P&L ($)" value="${pnl}">
     <button class="remove">&times;</button>
   `;
-  row.querySelector('.remove').addEventListener('click', () => { row.remove(); updateDayTotal(); });
+
+  const checklistContainer = document.createElement('div');
+  checklistContainer.className = 'strategy-checklist-container';
+
+  wrapper.appendChild(row);
+  wrapper.appendChild(checklistContainer);
+
+  const updateChecklistUI = () => {
+    const selectedStrat = row.querySelector('.strategy-input').value;
+    const rules = strategyRules[selectedStrat] || [];
+
+    if(selectedStrat === 'None' || rules.length === 0) {
+      checklistContainer.classList.remove('show');
+      checklistContainer.innerHTML = '';
+      return;
+    }
+
+    checklistContainer.innerHTML = `
+      <div class="checklist-title">
+        <span>#${selectedStrat} Execution Checklist</span>
+        <span class="compliance-tag" style="color:var(--text);">Compliance: <strong class="pct-val">0%</strong></span>
+      </div>
+      <div class="checklist-items">
+        ${rules.map((r, i) => `
+          <label class="checklist-item">
+            <input type="checkbox" class="rule-chk" data-rule="${r}" ${ruleChecks[r] ? 'checked' : ''}>
+            <span>${r}</span>
+          </label>
+        `).join('')}
+      </div>
+    `;
+
+    checklistContainer.classList.add('show');
+
+    const updateCompliancePct = () => {
+      const chks = checklistContainer.querySelectorAll('.rule-chk');
+      if(chks.length === 0) return;
+      let checked = 0;
+      chks.forEach(c => { if(c.checked) checked++; });
+      const pct = Math.round((checked / chks.length) * 100);
+      const pctEl = checklistContainer.querySelector('.pct-val');
+      if(pctEl) {
+        pctEl.textContent = `${pct}%`;
+        pctEl.style.color = pct === 100 ? 'var(--green)' : (pct > 50 ? 'var(--amber)' : 'var(--red)');
+      }
+    };
+
+    checklistContainer.querySelectorAll('.rule-chk').forEach(chk => {
+      chk.addEventListener('change', updateCompliancePct);
+    });
+    updateCompliancePct();
+  };
+
+  row.querySelector('.strategy-input').addEventListener('change', updateChecklistUI);
+  row.querySelector('.remove').addEventListener('click', () => { wrapper.remove(); updateDayTotal(); });
   row.querySelector('.pnl-input').addEventListener('input', updateDayTotal);
-  tradesContainer.appendChild(row);
+  
+  tradesContainer.appendChild(wrapper);
+  updateChecklistUI();
 }
 
 document.getElementById('addTradeBtn').addEventListener('click', () => addTradeRow());
 
 function updateDayTotal(){
   let total = 0;
-  tradesContainer.querySelectorAll('.trade-row').forEach(row => {
-    const v = parseFloat(row.querySelector('.pnl-input').value);
+  tradesContainer.querySelectorAll('.trade-row-wrapper').forEach(wrapper => {
+    const v = parseFloat(wrapper.querySelector('.pnl-input').value);
     if(!isNaN(v)) total += v;
   });
   dayTotalEl.textContent = fmtMoney(total);
@@ -2488,13 +2673,19 @@ function closeModal(){ overlay.classList.remove('show'); activeKey = null; }
 
 saveBtn.addEventListener('click', () => {
   const trades = [];
-  tradesContainer.querySelectorAll('.trade-row').forEach(row => {
-    const symbol = row.querySelector('.symbol-input').value.trim();
-    const side = row.querySelector('.side-input').value;
-    const qtyVal = row.querySelector('.qty-input').value.trim();
-    const strategy = row.querySelector('.strategy-input').value;
-    const mistake = row.querySelector('.mistake-input').value;
-    const pnlVal = row.querySelector('.pnl-input').value;
+  tradesContainer.querySelectorAll('.trade-row-wrapper').forEach(wrapper => {
+    const symbol = wrapper.querySelector('.symbol-input').value.trim();
+    const side = wrapper.querySelector('.side-input').value;
+    const qtyVal = wrapper.querySelector('.qty-input').value.trim();
+    const strategy = wrapper.querySelector('.strategy-input').value;
+    const mistake = wrapper.querySelector('.mistake-input').value;
+    const pnlVal = wrapper.querySelector('.pnl-input').value;
+
+    const ruleChecks = {};
+    wrapper.querySelectorAll('.rule-chk').forEach(chk => {
+      ruleChecks[chk.getAttribute('data-rule')] = chk.checked;
+    });
+
     if(symbol !== '' || pnlVal !== ''){
       trades.push({ 
         symbol: symbol || 'Trade', 
@@ -2502,7 +2693,8 @@ saveBtn.addEventListener('click', () => {
         qty: qtyVal !== '' ? parseInt(qtyVal) || qtyVal : 1,
         strategy: strategy,
         mistake: mistake,
-        pnl: parseFloat(pnlVal) || 0 
+        pnl: parseFloat(pnlVal) || 0,
+        ruleChecks: ruleChecks
       });
     }
   });
@@ -2526,6 +2718,7 @@ function init(){
     monthlyGoal = loadMonthlyGoal();
     loadMaxLossSettings();
     customTags = loadCustomTags();
+    strategyRules = loadStrategyRules();
     currentTheme = loadTheme();
     unlockedBadges = loadUnlockedBadges();
     
