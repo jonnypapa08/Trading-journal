@@ -10,917 +10,1097 @@
 <link class="apple-touch-icon" href="icon.png.png">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-  :root[data-theme="default"], :root {
-    --bg:#000000;
-    --panel:#0d0d0d;
-    --panel2:#141414;
-    --border:#1f1f1f;
-    --text:#e6edf3;
-    --muted:#767d85;
-    --green:#3fb950;
-    --green-dim:#0e2413;
-    --red:#f85149;
-    --red-dim:#2b1414;
-    --amber:#d4a72c;
-    --sidebar-width: 260px;
-  }
+  :root[data-theme="default"], :root {
+    --bg:#000000;
+    --panel:#0d0d0d;
+    --panel2:#141414;
+    --border:#1f1f1f;
+    --text:#e6edf3;
+    --muted:#767d85;
+    --green:#3fb950;
+    --green-dim:#0e2413;
+    --red:#f85149;
+    --red-dim:#2b1414;
+    --amber:#d4a72c;
+    --sidebar-width: 260px;
+  }
 
-  :root[data-theme="cyberpunk"] {
-    --bg:#080711;
-    --panel:#0f0d21;
-    --panel2:#181533;
-    --border:#2b2659;
-    --text:#f0f0ff;
-    --muted:#807ebb;
-    --green:#00ff9d;
-    --green-dim:#003320;
-    --red:#ff0055;
-    --red-dim:#330011;
-    --amber:#ff00ea;
-  }
+  :root[data-theme="cyberpunk"] {
+    --bg:#080711;
+    --panel:#0f0d21;
+    --panel2:#181533;
+    --border:#2b2659;
+    --text:#f0f0ff;
+    --muted:#807ebb;
+    --green:#00ff9d;
+    --green-dim:#003320;
+    --red:#ff0055;
+    --red-dim:#330011;
+    --amber:#ff00ea;
+  }
 
-  :root[data-theme="nordic"] {
-    --bg:#0f141c;
-    --panel:#161d29;
-    --panel2:#1f293a;
-    --border:#2c3b52;
-    --text:#e2e8f0;
-    --muted:#7f93b0;
-    --green:#38bdf8;
-    --green-dim:#0c2838;
-    --red:#f43f5e;
-    --red-dim:#380e16;
-    --amber:#818cf8;
-  }
+  :root[data-theme="nordic"] {
+    --bg:#0f141c;
+    --panel:#161d29;
+    --panel2:#1f293a;
+    --border:#2c3b52;
+    --text:#e2e8f0;
+    --muted:#7f93b0;
+    --green:#38bdf8;
+    --green-dim:#0c2838;
+    --red:#f43f5e;
+    --red-dim:#380e16;
+    --amber:#818cf8;
+  }
 
-  :root[data-theme="emerald"] {
-    --bg:#06120e;
-    --panel:#0b1d17;
-    --panel2:#122a22;
-    --border:#1c3e32;
-    --text:#e6f5f0;
-    --muted:#6da391;
-    --green:#10b981;
-    --green-dim:#052a1e;
-    --red:#ef4444;
-    --red-dim:#350f0f;
-    --amber:#f59e0b;
-  }
+  :root[data-theme="emerald"] {
+    --bg:#06120e;
+    --panel:#0b1d17;
+    --panel2:#122a22;
+    --border:#1c3e32;
+    --text:#e6f5f0;
+    --muted:#6da391;
+    --green:#10b981;
+    --green-dim:#052a1e;
+    --red:#ef4444;
+    --red-dim:#350f0f;
+    --amber:#f59e0b;
+  }
 
-  *{box-sizing:border-box;}
-  body{
-    margin:0;
-    background:var(--bg);
-    color:var(--text);
-    font-family:'Segoe UI', system-ui, -apple-system, sans-serif;
-    min-height:100vh;
-    display: flex;
-    overflow-x: hidden;
-    transition: background 0.2s ease, color 0.2s ease;
-  }
-  .mono{ font-family:'Consolas','SFMono-Regular',Menlo,monospace; }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Segoe UI', system-ui, -apple-system, sans-serif;
+    min-height:100vh;
+    display: flex;
+    overflow-x: hidden;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+  .mono{ font-family:'Consolas','SFMono-Regular',Menlo,monospace; }
 
-  /* SIDEBAR STYLING */
-  .sidebar {
-    width: var(--sidebar-width);
-    background: var(--panel);
-    border-right: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 1000;
-    transition: transform 0.25s ease;
-    transform: translateX(-100%);
-  }
-  .sidebar.open {
-    transform: translateX(0);
-  }
-  .sidebar-header {
-    padding: 18px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 1px solid var(--border);
-  }
-  .sidebar-title {
-    font-size: 14px;
-    font-weight: 700;
-    letter-spacing: 0.05em;
-    color: var(--amber);
-    text-transform: uppercase;
-  }
-  .sidebar-close-btn {
-    background: transparent;
-    border: none;
-    color: var(--muted);
-    font-size: 18px;
-    cursor: pointer;
-  }
-  .sidebar-close-btn:hover { color: var(--text); }
+  /* SIDEBAR STYLING */
+  .sidebar {
+    width: var(--sidebar-width);
+    background: var(--panel);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+    transition: transform 0.25s ease;
+    transform: translateX(-100%);
+  }
+  .sidebar.open {
+    transform: translateX(0);
+  }
+  .sidebar-header {
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+  }
+  .sidebar-title {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--amber);
+    text-transform: uppercase;
+  }
+  .sidebar-close-btn {
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    font-size: 18px;
+    cursor: pointer;
+  }
+  .sidebar-close-btn:hover { color: var(--text); }
 
-  .sidebar-nav {
-    padding: 16px 12px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    flex: 1;
-  }
-  .sidebar-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 10px 14px;
-    border-radius: 6px;
-    color: var(--text);
-    background: transparent;
-    border: 1px solid transparent;
-    cursor: pointer;
-    font-size: 13px;
-    font-weight: 600;
-    text-align: left;
-    width: 100%;
-    transition: all 0.15s ease;
-  }
-  .sidebar-item:hover {
-    background: var(--panel2);
-    border-color: var(--border);
-    color: var(--amber);
-  }
-  .sidebar-item-icon {
-    font-size: 16px;
-  }
+  .sidebar-nav {
+    padding: 16px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+  }
+  .sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: 6px;
+    color: var(--text);
+    background: transparent;
+    border: 1px solid transparent;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: left;
+    width: 100%;
+    transition: all 0.15s ease;
+  }
+  .sidebar-item:hover {
+    background: var(--panel2);
+    border-color: var(--border);
+    color: var(--amber);
+  }
+  .sidebar-item-icon {
+    font-size: 16px;
+  }
 
-  .main-wrapper {
-    flex: 1;
-    transition: margin-left 0.25s ease;
-    width: 100%;
-  }
+  .main-wrapper {
+    flex: 1;
+    transition: margin-left 0.25s ease;
+    width: 100%;
+  }
 
-  /* GAME-STYLE ACHIEVEMENT BANNER POPUP */
-  .achievement-toast-container {
-    position: fixed;
-    top: -120px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 9999;
-    transition: top 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    pointer-events: none;
-  }
-  .achievement-toast-container.show {
-    top: 20px;
-  }
-  .achievement-toast {
-    background: #11141a;
-    border: 2px solid var(--amber);
-    box-shadow: 0 0 20px rgba(212, 167, 44, 0.4), inset 0 0 10px rgba(212, 167, 44, 0.2);
-    border-radius: 10px;
-    padding: 12px 20px;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    min-width: 320px;
-    max-width: 480px;
-  }
-  .toast-icon {
-    font-size: 36px;
-    background: rgba(212, 167, 44, 0.15);
-    border: 1px solid var(--amber);
-    border-radius: 8px;
-    width: 52px;
-    height: 52px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-  .toast-body {
-    display: flex;
-    flex-direction: column;
-  }
-  .toast-header {
-    color: var(--amber);
-    font-size: 10px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    font-weight: 800;
-  }
-  .toast-title {
-    color: #ffffff;
-    font-size: 15px;
-    font-weight: 700;
-    margin: 2px 0 3px 0;
-  }
-  .toast-desc {
-    color: var(--muted);
-    font-size: 12px;
-  }
+  /* GAME-STYLE ACHIEVEMENT BANNER POPUP */
+  .achievement-toast-container {
+    position: fixed;
+    top: -120px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    transition: top 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    pointer-events: none;
+  }
+  .achievement-toast-container.show {
+    top: 20px;
+  }
+  .achievement-toast {
+    background: #11141a;
+    border: 2px solid var(--amber);
+    box-shadow: 0 0 20px rgba(212, 167, 44, 0.4), inset 0 0 10px rgba(212, 167, 44, 0.2);
+    border-radius: 10px;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    min-width: 320px;
+    max-width: 480px;
+  }
+  .toast-icon {
+    font-size: 36px;
+    background: rgba(212, 167, 44, 0.15);
+    border: 1px solid var(--amber);
+    border-radius: 8px;
+    width: 52px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .toast-body {
+    display: flex;
+    flex-direction: column;
+  }
+  .toast-header {
+    color: var(--amber);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-weight: 800;
+  }
+  .toast-title {
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 700;
+    margin: 2px 0 3px 0;
+  }
+  .toast-desc {
+    color: var(--muted);
+    font-size: 12px;
+  }
 
-  header{
-    padding:24px 32px 12px;
-    display:flex;
-    align-items:flex-start;
-    justify-content:space-between;
-    flex-wrap:wrap;
-    gap:12px;
-  }
-  .header-left {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-  }
-  .sidebar-toggle-btn {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    color: var(--text);
-    font-size: 18px;
-    padding: 8px 12px;
-    border-radius: 6px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .sidebar-toggle-btn:hover {
-    border-color: var(--amber);
-    color: var(--amber);
-  }
-  header h1{
-    margin:0;
-    font-size:20px;
-    letter-spacing:0.02em;
-    color:var(--text);
-    font-weight:700;
-    text-transform: uppercase;
-  }
-  .header-quote {
-    margin: 6px 0 0 0;
-    font-size: 13px;
-    color: var(--muted);
-    font-style: italic;
-  }
+  header{
+    padding:24px 32px 12px;
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:12px;
+  }
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .sidebar-toggle-btn {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-size: 18px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .sidebar-toggle-btn:hover {
+    border-color: var(--amber);
+    color: var(--amber);
+  }
+  header h1{
+    margin:0;
+    font-size:20px;
+    letter-spacing:0.02em;
+    color:var(--text);
+    font-weight:700;
+    text-transform: uppercase;
+  }
+  .header-quote {
+    margin: 6px 0 0 0;
+    font-size: 13px;
+    color: var(--muted);
+    font-style: italic;
+  }
 
-  .header-controls {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 8px;
-  }
+  .header-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+  }
 
-  .settings-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-  }
+  .settings-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
 
-  .balance-setup{
-    display:flex;
-    align-items:center;
-    gap:6px;
-    font-size:12px;
-    color:var(--muted);
-  }
-  .balance-setup input, .balance-setup select{
-    background:var(--panel2);
-    border:1px solid var(--border);
-    color:var(--amber);
-    font-family:'Consolas',monospace;
-    padding:5px 8px;
-    border-radius:4px;
-    font-size:13px;
-  }
-  .balance-setup input.num-input { width: 90px; }
-  .balance-setup button, .backup-btn {
-    background:var(--panel2);
-    border:1px solid var(--border);
-    color:var(--text);
-    padding:6px 12px;
-    border-radius:4px;
-    cursor:pointer;
-    font-size:12px;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .balance-setup button:hover, .backup-btn:hover{ border-color:var(--amber); color:var(--amber); }
+  .balance-setup{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    font-size:12px;
+    color:var(--muted);
+  }
+  .balance-setup input, .balance-setup select{
+    background:var(--panel2);
+    border:1px solid var(--border);
+    color:var(--amber);
+    font-family:'Consolas',monospace;
+    padding:5px 8px;
+    border-radius:4px;
+    font-size:13px;
+  }
+  .balance-setup input.num-input { width: 90px; }
+  .balance-setup button, .backup-btn {
+    background:var(--panel2);
+    border:1px solid var(--border);
+    color:var(--text);
+    padding:6px 12px;
+    border-radius:4px;
+    cursor:pointer;
+    font-size:12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .balance-setup button:hover, .backup-btn:hover{ border-color:var(--amber); color:var(--amber); }
 
-  .backup-actions {
-    display: flex;
-    gap: 6px;
-  }
+  .backup-actions {
+    display: flex;
+    gap: 6px;
+  }
 
-  /* Top Grid Layout */
-  .stats-bar{
-    display:grid;
-    grid-template-columns:repeat(5,1fr);
-    gap:12px;
-    margin:0 32px 12px;
-  }
-  @media(max-width: 900px) {
-    .stats-bar { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
-  }
-  .stat{
-    background:var(--panel);
-    border:1px solid var(--border);
-    padding:16px;
-    border-radius:8px;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-  }
-  .stat .label{
-    font-size:10px;
-    text-transform:uppercase;
-    letter-spacing:0.08em;
-    color:var(--muted);
-    margin-bottom:8px;
-  }
-  .stat .value{
-    font-size:18px;
-    font-weight:600;
-    font-family:'Consolas',monospace;
-  }
+  /* Top Grid Layout */
+  .stats-bar{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:12px;
+    margin:0 32px 12px;
+  }
+  @media(max-width: 900px) {
+    .stats-bar { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+  }
+  .stat{
+    background:var(--panel);
+    border:1px solid var(--border);
+    padding:16px;
+    border-radius:8px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+  }
+  .stat .label{
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    color:var(--muted);
+    margin-bottom:8px;
+  }
+  .stat .value{
+    font-size:18px;
+    font-weight:600;
+    font-family:'Consolas',monospace;
+  }
+  .split-stat-box {
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+  }
+  .split-stat-row {
+    display:flex;
+    justify-content:space-between;
+    font-size:13px;
+    font-family:'Consolas',monospace;
+  }
 
-  /* Goal Progress Bar Section */
-  .goal-section {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    margin: 0 32px 20px;
-    padding: 14px 20px;
-  }
-  .goal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 8px;
-    font-size: 12px;
-  }
-  .goal-title {
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    font-weight: 600;
-  }
-  .goal-amount-setup {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    color: var(--muted);
-  }
-  .goal-amount-setup input {
-    background: var(--panel2);
-    border: 1px solid var(--border);
-    color: var(--amber);
-    font-family: 'Consolas', monospace;
-    padding: 3px 8px;
-    border-radius: 4px;
-    width: 90px;
-    font-size: 12px;
-  }
-  .goal-progress-bg {
-    background: var(--panel2);
-    border: 1px solid var(--border);
-    height: 12px;
-    border-radius: 6px;
-    overflow: hidden;
-    position: relative;
-  }
-  .goal-progress-fill {
-    background: linear-gradient(90deg, var(--amber), var(--green));
-    height: 100%;
-    width: 0%;
-    transition: width 0.3s ease;
-  }
+  /* Goal Progress Bar Section */
+  .goal-section {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin: 0 32px 20px;
+    padding: 14px 20px;
+  }
+  .goal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    font-size: 12px;
+  }
+  .goal-title {
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+  }
+  .goal-amount-setup {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--muted);
+  }
+  .goal-amount-setup input {
+    background: var(--panel2);
+    border: 1px solid var(--border);
+    color: var(--amber);
+    font-family: 'Consolas', monospace;
+    padding: 3px 8px;
+    border-radius: 4px;
+    width: 90px;
+    font-size: 12px;
+  }
+  .goal-progress-bg {
+    background: var(--panel2);
+    border: 1px solid var(--border);
+    height: 12px;
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+  }
+  .goal-progress-fill {
+    background: linear-gradient(90deg, var(--amber), var(--green));
+    height: 100%;
+    width: 0%;
+    transition: width 0.3s ease;
+  }
 
-  /* Alert Banner */
-  .alert-banner {
-    display: none;
-    background: var(--red-dim);
-    border: 1px solid var(--red);
-    color: var(--red);
-    padding: 12px 20px;
-    margin: 0 32px 16px;
-    border-radius: 8px;
-    font-size: 13px;
-    font-weight: bold;
-    align-items: center;
-    gap: 10px;
-  }
-  .alert-banner.show { display: flex; }
+  /* Alert Banner */
+  .alert-banner {
+    display: none;
+    background: var(--red-dim);
+    border: 1px solid var(--red);
+    color: var(--red);
+    padding: 12px 20px;
+    margin: 0 32px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: bold;
+    align-items: center;
+    gap: 10px;
+  }
+  .alert-banner.show { display: flex; }
 
-  /* Filter & Search Toolbar */
-  .filter-toolbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 12px;
-    margin: 10px 32px 0;
-    background: var(--panel);
-    border: 1px solid var(--border);
-    padding: 12px 16px;
-    border-radius: 8px;
-  }
-  .filter-group-wrapper {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
-  }
-  .filter-group {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 12px;
-    color: var(--muted);
-  }
-  .filter-group select, .search-box input {
-    background: var(--panel2);
-    border: 1px solid var(--border);
-    color: var(--text);
-    padding: 6px 10px;
-    border-radius: 4px;
-    font-size: 12px;
-  }
-  .search-box input {
-    width: 240px;
-    font-family: monospace;
-  }
+  /* Filter & Search Toolbar */
+  .filter-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 10px 32px 0;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 12px 16px;
+    border-radius: 8px;
+  }
+  .filter-group-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .filter-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .filter-group select, .search-box input {
+    background: var(--panel2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+  }
+  .search-box input {
+    width: 240px;
+    font-family: monospace;
+  }
 
-  /* Mid Section Layout: Win Rate Left, Recent Trades Right */
-  .mid-section {
-    display: grid;
-    grid-template-columns: 320px 1fr;
-    gap: 20px;
-    margin: 20px 32px;
-  }
-  @media(max-width: 850px) {
-    .mid-section { grid-template-columns: 1fr; }
-  }
+  /* Mid Section Layout: Win Rate Left, Recent Trades Right */
+  .mid-section {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 20px;
+    margin: 20px 32px;
+  }
+  @media(max-width: 850px) {
+    .mid-section { grid-template-columns: 1fr; }
+  }
 
-  .winrate-panel {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  .panel-title {
-    align-self: flex-start;
-    color: var(--muted);
-    font-size: 11px;
-    letter-spacing: 1.5px;
-    margin-bottom: 15px;
-    font-family: monospace;
-    font-weight: 700;
-  }
-  .chart-wrapper {
-    position: relative;
-    width: 170px;
-    height: 170px;
-    margin-top: 5px;
-  }
-  .chart-inner-text {
-    position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    font-family: 'Consolas', monospace;
-    pointer-events: none;
-  }
-  .chart-inner-text .pct {
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--text);
-  }
-  .chart-inner-text .counts {
-    font-size: 12px;
-    color: var(--muted);
-    margin-top: 2px;
-  }
+  .winrate-panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .panel-title {
+    align-self: flex-start;
+    color: var(--muted);
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    margin-bottom: 15px;
+    font-family: monospace;
+    font-weight: 700;
+  }
+  .chart-wrapper {
+    position: relative;
+    width: 170px;
+    height: 170px;
+    margin-top: 5px;
+  }
+  .chart-inner-text {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    font-family: 'Consolas', monospace;
+    pointer-events: none;
+  }
+  .chart-inner-text .pct {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .chart-inner-text .counts {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
 
-  .recent-panel {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-  }
-  .recent-table {
-    width: 100%;
-    border-collapse: collapse;
-    text-align: left;
-    font-family: monospace;
-  }
-  .recent-table th {
-    color: var(--muted);
-    font-size: 11px;
-    padding: 10px 5px;
-    font-weight: normal;
-    border-bottom: 1px solid var(--border);
-  }
-  .recent-table td {
-    padding: 10px 5px;
-    font-size: 13px;
-    color: var(--text);
-    border-bottom: 1px solid var(--panel2);
-  }
+  .recent-panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  }
+  .recent-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-family: monospace;
+  }
+  .recent-table th {
+    color: var(--muted);
+    font-size: 11px;
+    padding: 10px 5px;
+    font-weight: normal;
+    border-bottom: 1px solid var(--border);
+  }
+  .recent-table td {
+    padding: 10px 5px;
+    font-size: 13px;
+    color: var(--text);
+    border-bottom: 1px solid var(--panel2);
+  }
 
-  /* Equity Chart Container */
-  .chart-container {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    margin: 0 32px 20px;
-    padding: 20px;
-    border-radius: 12px;
-    position: relative;
-    height: 240px;
-  }
+  /* Equity Chart Container */
+  .chart-container {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    margin: 0 32px 20px;
+    padding: 20px;
+    border-radius: 12px;
+    position: relative;
+    height: 240px;
+  }
 
-  .cal-nav{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:20px;
-    margin:14px 0 12px;
-  }
-  .cal-nav button{
-    background:var(--panel2);
-    border:1px solid var(--border);
-    color:var(--text);
-    width:34px;height:34px;
-    border-radius:4px;
-    cursor:pointer;
-    font-size:16px;
-  }
-  .cal-nav button:hover{ border-color:var(--amber); color:var(--amber); }
-  .cal-nav .month-label{
-    font-size:16px;
-    font-weight:700;
-    letter-spacing:0.05em;
-    min-width:200px;
-    text-align:center;
-    text-transform: uppercase;
-  }
+  .cal-nav{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:20px;
+    margin:14px 0 12px;
+  }
+  .cal-nav button{
+    background:var(--panel2);
+    border:1px solid var(--border);
+    color:var(--text);
+    width:34px;height:34px;
+    border-radius:4px;
+    cursor:pointer;
+    font-size:16px;
+  }
+  .cal-nav button:hover{ border-color:var(--amber); color:var(--amber); }
+  .cal-nav .month-label{
+    font-size:16px;
+    font-weight:700;
+    letter-spacing:0.05em;
+    min-width:200px;
+    text-align:center;
+    text-transform: uppercase;
+  }
 
-  .calendar{
-    max-width:100%;
-    margin:0 32px 40px;
-  }
-  .dow-row{
-    display:grid;
-    grid-template-columns:repeat(7,1fr);
-    gap:6px;
-    margin-bottom:6px;
-  }
-  .dow-row div{
-    text-align:center;
-    font-size:11px;
-    letter-spacing:0.08em;
-    color:var(--muted);
-    text-transform:uppercase;
-    padding-bottom:4px;
-  }
-  .grid{
-    display:grid;
-    grid-template-columns:repeat(7,1fr);
-    gap:6px;
-  }
-  .cell{
-    background:var(--panel);
-    border:1px solid var(--border);
-    border-radius:6px;
-    min-height:92px;
-    padding:8px;
-    cursor:pointer;
-    position:relative;
-    display:flex;
-    flex-direction:column;
-    justify-content:space-between;
-    transition:transform .08s ease, border-color .08s ease;
-  }
-  .cell:hover{ border-color:var(--amber); transform:translateY(-1px); }
-  .cell.empty{ background:transparent; border:none; cursor:default; }
-  .cell.empty:hover{ transform:none; }
-  .cell.profit{ background:var(--green-dim); border-color:var(--green-dim); }
-  .cell.loss{ background:var(--red-dim); border-color:var(--red-dim); }
-  .cell.filtered-out { opacity: 0.18; filter: grayscale(1); }
-  .cell .daynum{
-    font-size:12px;
-    color:var(--muted);
-  }
-  .cell.profit .daynum, .cell.loss .daynum{ color:var(--text); }
-  .cell .pnl{
-    font-family:'Consolas',monospace;
-    font-size:15px;
-    font-weight:700;
-  }
-  .cell .meta-row{
-    display:flex;
-    align-items:baseline;
-    gap:4px;
-    font-family:'Consolas',monospace;
-    font-size:10px;
-    color:var(--muted);
-  }
-  .cell.today{ box-shadow:inset 0 0 0 2px var(--amber); }
+  .calendar{
+    max-width:100%;
+    margin:0 32px 40px;
+  }
+  .dow-row{
+    display:grid;
+    grid-template-columns:repeat(7,1fr);
+    gap:6px;
+    margin-bottom:6px;
+  }
+  .dow-row div{
+    text-align:center;
+    font-size:11px;
+    letter-spacing:0.08em;
+    color:var(--muted);
+    text-transform:uppercase;
+    padding-bottom:4px;
+  }
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(7,1fr);
+    gap:6px;
+  }
+  .cell{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:6px;
+    min-height:92px;
+    padding:8px;
+    cursor:pointer;
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    transition:transform .08s ease, border-color .08s ease;
+  }
+  .cell:hover{ border-color:var(--amber); transform:translateY(-1px); }
+  .cell.empty{ background:transparent; border:none; cursor:default; }
+  .cell.empty:hover{ transform:none; }
+  .cell.profit{ background:var(--green-dim); border-color:var(--green-dim); }
+  .cell.loss{ background:var(--red-dim); border-color:var(--red-dim); }
+  .cell.filtered-out { opacity: 0.18; filter: grayscale(1); }
+  .cell .daynum{
+    font-size:12px;
+    color:var(--muted);
+  }
+  .cell.profit .daynum, .cell.loss .daynum{ color:var(--text); }
+  .cell .pnl{
+    font-family:'Consolas',monospace;
+    font-size:15px;
+    font-weight:700;
+  }
+  .cell .meta-row{
+    display:flex;
+    align-items:baseline;
+    gap:4px;
+    font-family:'Consolas',monospace;
+    font-size:10px;
+    color:var(--muted);
+  }
+  .cell.today{ box-shadow:inset 0 0 0 2px var(--amber); }
 
-  /* Modal Settings */
-  .overlay{
-    display:none;
-    position:fixed; inset:0;
-    background:rgba(0,0,0,0.85);
-    align-items:center;
-    justify-content:center;
-    z-index:1100;
-    padding:16px;
-  }
-  .overlay.show{ display:flex; }
-  .modal{
-    background:var(--panel);
-    border:1px solid var(--border);
-    border-radius:8px;
-    width:100%;
-    max-width:920px;
-    max-height:90vh;
-    overflow-y:auto;
-    padding:28px;
-  }
-  .modal h2{ margin:0 0 4px; font-size:16px; }
-  .modal .modal-sub{ color:var(--muted); font-size:12px; margin-bottom:18px; }
+  /* Modal Settings */
+  .overlay{
+    display:none;
+    position:fixed; inset:0;
+    background:rgba(0,0,0,0.85);
+    align-items:center;
+    justify-content:center;
+    z-index:1100;
+    padding:16px;
+  }
+  .overlay.show{ display:flex; }
+  .modal{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:8px;
+    width:100%;
+    max-width:920px;
+    max-height:90vh;
+    overflow-y:auto;
+    padding:28px;
+  }
+  .modal h2{ margin:0 0 4px; font-size:16px; }
+  .modal .modal-sub{ color:var(--muted); font-size:12px; margin-bottom:18px; }
 
-  /* BADGES TROPHY MODAL INVENTORY */
-  .badge-modal-container {
-    max-height: 70vh;
-    overflow-y: auto;
-    padding-right: 8px;
-  }
-  .badge-modal-container::-webkit-scrollbar {
-    width: 6px;
-  }
-  .badge-modal-container::-webkit-scrollbar-thumb {
-    background: var(--border);
-    border-radius: 4px;
-  }
-  .badge-modal-container::-webkit-scrollbar-thumb:hover {
-    background: var(--amber);
-  }
+  /* BADGES TROPHY MODAL INVENTORY */
+  .badge-modal-container {
+    max-height: 70vh;
+    overflow-y: auto;
+    padding-right: 8px;
+  }
+  .badge-modal-container::-webkit-scrollbar {
+    width: 6px;
+  }
+  .badge-modal-container::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 4px;
+  }
+  .badge-modal-container::-webkit-scrollbar-thumb:hover {
+    background: var(--amber);
+  }
 
-  .badge-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 16px;
-    margin-top: 16px;
-  }
-  .badge-card {
-    background: var(--panel2);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 16px;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    position: relative;
-    opacity: 0.45;
-    filter: grayscale(1);
-    transition: all 0.2s ease;
-  }
-  .badge-card.unlocked {
-    opacity: 1;
-    filter: grayscale(0);
-    border-color: var(--amber);
-    background: rgba(212, 167, 44, 0.05);
-    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-  }
-  .badge-card-icon {
-    font-size: 32px;
-    width: 48px;
-    height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    flex-shrink: 0;
-  }
-  .badge-card.unlocked .badge-card-icon {
-    border-color: var(--amber);
-    background: rgba(212, 167, 44, 0.15);
-  }
-  .badge-card-info {
-    display: flex;
-    flex-direction: column;
-  }
-  .badge-card-title {
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--text);
-  }
-  .badge-card.unlocked .badge-card-title {
-    color: var(--amber);
-  }
-  .badge-card-desc {
-    font-size: 11px;
-    color: var(--muted);
-    margin-top: 2px;
-  }
-  .badge-status-tag {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 9px;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    font-weight: 700;
-    padding: 2px 6px;
-    border-radius: 3px;
-    background: var(--panel);
-    color: var(--muted);
-  }
-  .badge-card.unlocked .badge-status-tag {
-    background: var(--amber);
-    color: #000;
-  }
-  
-  .modal-alert {
-    display: none;
-    background: var(--red-dim);
-    border: 1px solid var(--red);
-    color: var(--red);
-    padding: 10px 14px;
-    border-radius: 6px;
-    font-size: 12px;
-    font-weight: bold;
-    margin-bottom: 16px;
-  }
-  .modal-alert.show { display: block; }
+  .badge-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+    margin-top: 16px;
+  }
+  .badge-card {
+    background: var(--panel2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    position: relative;
+    opacity: 0.45;
+    filter: grayscale(1);
+    transition: all 0.2s ease;
+  }
+  .badge-card.unlocked {
+    opacity: 1;
+    filter: grayscale(0);
+    border-color: var(--amber);
+    background: rgba(212, 167, 44, 0.05);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  }
+  .badge-card-icon {
+    font-size: 32px;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    flex-shrink: 0;
+  }
+  .badge-card.unlocked .badge-card-icon {
+    border-color: var(--amber);
+    background: rgba(212, 167, 44, 0.15);
+  }
+  .badge-card-info {
+    display: flex;
+    flex-direction: column;
+  }
+  .badge-card-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .badge-card.unlocked .badge-card-title {
+    color: var(--amber);
+  }
+  .badge-card-desc {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+  .badge-status-tag {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 3px;
+    background: var(--panel);
+    color: var(--muted);
+  }
+  .badge-card.unlocked .badge-status-tag {
+    background: var(--amber);
+    color: #000;
+  }
 
-  /* TRADE ROW & CHECKLIST STYLING */
-  .trade-row-wrapper {
-    background: var(--panel2);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 10px;
-    margin-bottom: 12px;
-  }
-  .trade-row{
-    display:grid;
-    grid-template-columns:1.2fr 0.8fr 0.7fr 1.2fr 1.2fr 1.1fr auto;
-    gap:8px;
-    align-items:center;
-  }
-  .trade-row input, .trade-row select{
-    background:var(--panel);
-    border:1px solid var(--border);
-    color:var(--text);
-    padding:8px;
-    border-radius:4px;
-    font-size:13px;
-    width:100%;
-  }
-  .trade-row button.remove{
-    background:transparent;
-    border:1px solid var(--border);
-    color:var(--red);
-    width:32px;height:32px;
-    border-radius:4px;
-    cursor:pointer;
-  }
+  /* FLASHCARD MODAL STYLING */
+  .flashcard-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    margin-top: 10px;
+  }
+  .flashcard-header {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    align-items: center;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .flashcard-box {
+    width: 100%;
+    background: var(--panel2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+  }
+  .flashcard-img-wrapper {
+    width: 100%;
+    max-height: 380px;
+    overflow: hidden;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .flashcard-img-wrapper img {
+    max-width: 100%;
+    max-height: 380px;
+    object-fit: contain;
+  }
+  .flashcard-actions {
+    display: flex;
+    gap: 16px;
+    margin-top: 20px;
+    width: 100%;
+  }
+  .flashcard-btn {
+    flex: 1;
+    padding: 12px;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    transition: all 0.2s ease;
+  }
+  .btn-take {
+    background: rgba(63, 185, 80, 0.15);
+    color: var(--green);
+    border-color: var(--green);
+  }
+  .btn-take:hover {
+    background: var(--green);
+    color: #000;
+  }
+  .btn-pass {
+    background: rgba(248, 81, 73, 0.15);
+    color: var(--red);
+    border-color: var(--red);
+  }
+  .btn-pass:hover {
+    background: var(--red);
+    color: #000;
+  }
+  .flashcard-result-box {
+    display: none;
+    margin-top: 16px;
+    padding: 14px;
+    border-radius: 6px;
+    width: 100%;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .flashcard-result-box.show {
+    display: block;
+  }
+  
+  .modal-alert {
+    display: none;
+    background: var(--red-dim);
+    border: 1px solid var(--red);
+    color: var(--red);
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 16px;
+  }
+  .modal-alert.show { display: block; }
 
-  .add-trade{
-    background:var(--panel2);
-    border:1px dashed var(--border);
-    color:var(--muted);
-    padding:8px;
-    border-radius:4px;
-    width:100%;
-    cursor:pointer;
-    font-size:13px;
-  }
-  .add-trade:hover{ color:var(--amber); border-color:var(--amber); }
-  
-  /* Tag Manager Styling */
-  .tag-manager-box {
-    background: var(--panel2);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 12px;
-    margin-bottom: 16px;
-  }
-  .tag-group { margin-bottom: 10px; }
-  .tag-group:last-child { margin-bottom: 0; }
-  .tag-group-title {
-    font-size: 11px;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    margin-bottom: 6px;
-  }
-  .tag-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    align-items: center;
-  }
-  .tag-chip {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 3px 8px;
-    font-size: 12px;
-    font-family: monospace;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .tag-chip button {
-    background: none;
-    border: none;
-    color: var(--red);
-    cursor: pointer;
-    font-weight: bold;
-    padding: 0;
-    font-size: 12px;
-  }
+  /* TRADE ROW & CHECKLIST STYLING */
+  .trade-row-wrapper {
+    background: var(--panel2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px;
+    margin-bottom: 12px;
+  }
+  .trade-row{
+    display:grid;
+    grid-template-columns:1.2fr 0.8fr 0.7fr 1.2fr 1.2fr 1.1fr auto;
+    gap:8px;
+    align-items:center;
+  }
+  .trade-row input, .trade-row select{
+    background:var(--panel);
+    border:1px solid var(--border);
+    color:var(--text);
+    padding:8px;
+    border-radius:4px;
+    font-size:13px;
+    width:100%;
+  }
+  .trade-row button.remove{
+    background:transparent;
+    border:1px solid var(--border);
+    color:var(--red);
+    width:32px;height:32px;
+    border-radius:4px;
+    cursor:pointer;
+  }
 
-  .notes-field{
-    width:100%; 
-    background:transparent; 
-    border:none; 
-    outline:none; 
-    color:var(--text);
-    font-size:14px; 
-    margin-top:8px; 
-    resize:none; 
-    min-height:160px;
-    font-family:inherit;
-    line-height:1.5;
-  }
-  
-  .image-section{ margin-top:14px; }
-  .image-label{ display:block; font-size:10px; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); margin-bottom:6px; }
-  .image-grid{ display:flex; flex-direction:column; gap:16px; margin-top:10px; }
-  .image-thumb{ position:relative; border-radius:8px; overflow:hidden; border:1px solid var(--border); background:var(--panel2); }
-  .image-thumb img{ width:100%; display:block; cursor:zoom-in; }
-  .image-thumb .thumb-remove{
-    position:absolute; top:8px; right:8px; width:28px; height:28px; border-radius:4px;
-    background:rgba(0,0,0,0.85); color:var(--red); cursor:pointer; display:flex; align-items:center; justify-content:center; border:1px solid var(--border);
-  }
+  /* Strategy Checklist UI */
+  .strategy-checklist-container {
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px dashed var(--border);
+    display: none;
+  }
+  .strategy-checklist-container.show {
+    display: block;
+  }
+  .checklist-title {
+    font-size: 11px;
+    text-transform: uppercase;
+    color: var(--amber);
+    font-weight: 700;
+    margin-bottom: 6px;
+    display: flex;
+    justify-content: space-between;
+  }
+  .checklist-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .checklist-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text);
+    background: var(--panel);
+    padding: 4px 8px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+  }
+  .checklist-item input[type="checkbox"] {
+    accent-color: var(--amber);
+    cursor: pointer;
+  }
 
-  .lightbox-overlay{
-    display:none; position:fixed; inset:0; background:rgba(0,0,0,0.92);
-    align-items:center; justify-content:center; z-index:2000; cursor:zoom-out;
-  }
-  .lightbox-overlay.show{ display:flex; }
-  .lightbox-overlay img{ max-width:90%; max-height:90%; border-radius:6px; }
+  .add-trade{
+    background:var(--panel2);
+    border:1px dashed var(--border);
+    color:var(--muted);
+    padding:8px;
+    border-radius:4px;
+    width:100%;
+    cursor:pointer;
+    font-size:13px;
+  }
+  .add-trade:hover{ color:var(--amber); border-color:var(--amber); }
+  
+  /* Tag Manager Styling */
+  .tag-manager-box {
+    background: var(--panel2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px;
+    margin-bottom: 16px;
+  }
+  .tag-group { margin-bottom: 10px; }
+  .tag-group:last-child { margin-bottom: 0; }
+  .tag-group-title {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 6px;
+  }
+  .tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+  }
+  .tag-chip {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 3px 8px;
+    font-size: 12px;
+    font-family: monospace;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .tag-chip button {
+    background: none;
+    border: none;
+    color: var(--red);
+    cursor: pointer;
+    font-weight: bold;
+    padding: 0;
+    font-size: 12px;
+  }
+  .add-tag-inline {
+    display: flex;
+    gap: 6px;
+  }
+  .add-tag-inline input {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    width: 110px;
+  }
+  .add-tag-inline button {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    color: var(--amber);
+    padding: 3px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+  }
 
-  .modal-footer{ display:flex; justify-content:space-between; align-items:center; margin-top:18px; position:sticky; bottom:-28px; background:var(--panel); padding:16px 0; border-top:1px solid var(--border); }
-  .modal-buttons{ display:flex; gap:8px; }
-  .btn{ padding:9px 16px; border-radius:4px; border:1px solid var(--border); cursor:pointer; font-size:13px; font-weight:600; }
-  .btn-save{ background:var(--amber); color:#1a1200; border-color:var(--amber); }
-  .btn-cancel{ background:transparent; color:var(--muted); }
-  
-  footer{ text-align:center; color:var(--muted); font-size:11px; padding:20px; }
-  .loading-screen{ display:flex; align-items:center; justify-content:center; min-height:60vh; color:var(--muted); font-size:13px; text-transform:uppercase; }
-  .pos{ color:var(--green); }
-  .neg{ color:var(--red); }
-  .neu{ color:var(--text); }
+  /* Strategy Rules Config Modal List */
+  .rule-config-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 8px 12px;
+    border-radius: 6px;
+    margin-bottom: 6px;
+  }
+
+  .notes-field{
+    width:100%; 
+    background:transparent; 
+    border:none; 
+    outline:none; 
+    color:var(--text);
+    font-size:14px; 
+    margin-top:8px; 
+    resize:none; 
+    min-height:160px;
+    font-family:inherit;
+    line-height:1.5;
+  }
+  
+  .image-section{ margin-top:14px; }
+  .image-label{ display:block; font-size:10px; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); margin-bottom:6px; }
+  .image-grid{ display:flex; flex-direction:column; gap:16px; margin-top:10px; }
+  .image-thumb{ position:relative; border-radius:8px; overflow:hidden; border:1px solid var(--border); background:var(--panel2); }
+  .image-thumb img{ width:100%; display:block; cursor:zoom-in; }
+  .image-thumb .thumb-remove{
+    position:absolute; top:8px; right:8px; width:28px; height:28px; border-radius:4px;
+    background:rgba(0,0,0,0.85); color:var(--red); cursor:pointer; display:flex; align-items:center; justify-content:center; border:1px solid var(--border);
+  }
+
+  .lightbox-overlay{
+    display:none; position:fixed; inset:0; background:rgba(0,0,0,0.92);
+    align-items:center; justify-content:center; z-index:2000; cursor:zoom-out;
+  }
+  .lightbox-overlay.show{ display:flex; }
+  .lightbox-overlay img{ max-width:90%; max-height:90%; border-radius:6px; }
+
+  .modal-footer{ display:flex; justify-content:space-between; align-items:center; margin-top:18px; position:sticky; bottom:-28px; background:var(--panel); padding:16px 0; border-top:1px solid var(--border); }
+  .modal-buttons{ display:flex; gap:8px; }
+  .btn{ padding:9px 16px; border-radius:4px; border:1px solid var(--border); cursor:pointer; font-size:13px; font-weight:600; }
+  .btn-save{ background:var(--amber); color:#1a1200; border-color:var(--amber); }
+  .btn-cancel{ background:transparent; color:var(--muted); }
+  
+  footer{ text-align:center; color:var(--muted); font-size:11px; padding:20px; }
+  .loading-screen{ display:flex; align-items:center; justify-content:center; min-height:60vh; color:var(--muted); font-size:13px; text-transform:uppercase; }
+  .pos{ color:var(--green); }
+  .neg{ color:var(--red); }
+  .neu{ color:var(--text); }
 </style>
 </head>
 <body>
 
 <div class="sidebar" id="appSidebar">
-  <div class="sidebar-header">
-    <div class="sidebar-title">TradeFlow Hub</div>
-    <button class="sidebar-close-btn" id="closeSidebarBtn">&times;</button>
-  </div>
-  <div class="sidebar-nav">
-    <button class="sidebar-item" id="sidebarTrophyBtn">
-      <span class="sidebar-item-icon">🏆</span>
-      <span>Trophy Case</span>
-    </button>
-  </div>
+  <div class="sidebar-header">
+    <div class="sidebar-title">TradeFlow Hub</div>
+    <button class="sidebar-close-btn" id="closeSidebarBtn">&times;</button>
+  </div>
+  <div class="sidebar-nav">
+    <button class="sidebar-item" id="sidebarTrophyBtn">
+      <span class="sidebar-item-icon">🏆</span>
+      <span>Trophy Case</span>
+    </button>
+    <button class="sidebar-item" id="sidebarFlashcardBtn">
+      <span class="sidebar-item-icon">🎴</span>
+      <span>Blind Review Mode</span>
+    </button>
+  </div>
 </div>
 
 <div class="main-wrapper" id="mainWrapper">
 
 <div class="achievement-toast-container" id="achievementToastContainer">
-  <div class="achievement-toast">
-    <div class="toast-icon" id="toastIcon">🏆</div>
-    <div class="toast-body">
-      <div class="toast-header">ACHIEVEMENT UNLOCKED!</div>
-      <div class="toast-title" id="toastTitle">Achievement Title</div>
-      <div class="toast-desc" id="toastDesc">Short description of what was earned.</div>
-    </div>
-  </div>
+  <div class="achievement-toast">
+    <div class="toast-icon" id="toastIcon">🏆</div>
+    <div class="toast-body">
+      <div class="toast-header">ACHIEVEMENT UNLOCKED!</div>
+      <div class="toast-title" id="toastTitle">Achievement Title</div>
+      <div class="toast-desc" id="toastDesc">Short description of what was earned.</div>
+    </div>
+  </div>
 </div>
 
 <div id="loadingScreen" class="loading-screen">Loading TradeFlow&hellip;</div>
@@ -928,1030 +1108,173 @@
 <div id="app" style="display:none;">
 
 <header>
-  <div class="header-left">
-    <button class="sidebar-toggle-btn" id="openSidebarBtn">☰</button>
-    <div>
-      <h1>Welcome back, Jonathan</h1>
-      <p class="header-quote">“Dont fuck up the progress trying to speed up the process”</p>
-    </div>
-  </div>
-  <div class="header-controls">
-    <div class="settings-row">
-      <div class="balance-setup">
-        Theme:
-        <select id="themeSelect">
-          <option value="default">Default Dark</option>
-          <option value="cyberpunk">Cyberpunk Neon</option>
-          <option value="nordic">Nordic Frost</option>
-          <option value="emerald">Emerald & Gold</option>
-        </select>
-      </div>
-      <div class="balance-setup">
-        Start Balance
-        <input type="number" id="startingBalanceInput" class="mono num-input" step="0.01">
-        <button id="saveBalanceBtn">Set</button>
-      </div>
-    </div>
-    
-    <div class="settings-row" style="margin-top:2px;">
-      <div class="balance-setup">
-        Max Loss Limit
-        <input type="number" id="maxLossValueInput" class="mono num-input" step="1" value="500">
-        <select id="maxLossUnitSelect" style="padding:5px;">
-          <option value="$">$</option>
-          <option value="%">%</option>
-        </select>
-        <button id="saveMaxLossBtn">Set Limit</button>
-      </div>
-      <div class="backup-actions">
-        <button class="backup-btn" id="exportJsonBtn">Export JSON</button>
-        <button class="backup-btn" id="exportCsvBtn">Export CSV</button>
-        <button class="backup-btn" id="importJsonBtn">Import Backup</button>
-        <input type="file" id="importFileInput" accept=".json" style="display:none">
-      </div>
-    </div>
-  </div>
+  <div class="header-left">
+    <button class="sidebar-toggle-btn" id="openSidebarBtn">☰</button>
+    <div>
+      <h1>Welcome back, Jonathan</h1>
+      <p class="header-quote">“Dont fuck up the progress trying to speed up the process”</p>
+    </div>
+  </div>
+  <div class="header-controls">
+    <div class="settings-row">
+      <div class="balance-setup">
+        Theme:
+        <select id="themeSelect">
+          <option value="default">Default Dark</option>
+          <option value="cyberpunk">Cyberpunk Neon</option>
+          <option value="nordic">Nordic Frost</option>
+          <option value="emerald">Emerald & Gold</option>
+        </select>
+      </div>
+      <div class="balance-setup">
+        Start Balance
+        <input type="number" id="startingBalanceInput" class="mono num-input" step="0.01">
+        <button id="saveBalanceBtn">Set</button>
+      </div>
+    </div>
+    
+    <div class="settings-row" style="margin-top:2px;">
+      <div class="balance-setup">
+        Max Loss Limit
+        <input type="number" id="maxLossValueInput" class="mono num-input" step="1" value="500">
+        <select id="maxLossUnitSelect" style="padding:5px;">
+          <option value="$">$</option>
+          <option value="%">%</option>
+        </select>
+        <button id="saveMaxLossBtn">Set Limit</button>
+      </div>
+      <div class="backup-actions">
+        <button class="backup-btn" id="exportJsonBtn">Export JSON</button>
+        <button class="backup-btn" id="exportCsvBtn">Export CSV</button>
+        <button class="backup-btn" id="importJsonBtn">Import Backup</button>
+        <input type="file" id="importFileInput" accept=".json" style="display:none">
+      </div>
+    </div>
+  </div>
 </header>
 
 <div class="alert-banner" id="globalAlertBanner">
-  <span>🚨 MAX DAILY LOSS EXCEEDED TODAY — STOP TRADING FOR THE DAY!</span>
+  <span>🚨 MAX DAILY LOSS EXCEEDED TODAY — STOP TRADING FOR THE DAY!</span>
 </div>
 
 <div class="stats-bar" id="statsBar"></div>
 
 <div class="goal-section">
-  <div class="goal-header">
-    <div class="goal-title">Monthly Goal Progress</div>
-    <div class="goal-amount-setup">
-      Target: $
-      <input type="number" id="targetGoalInput" class="mono" step="100" value="5000">
-      <span id="goalRatioText" class="mono" style="color:var(--text); font-weight:600; margin-left:8px;">$0 / $5,000</span>
-    </div>
-  </div>
-  <div class="goal-progress-bg">
-    <div class="goal-progress-fill" id="goalProgressFill"></div>
-  </div>
+  <div class="goal-header">
+    <div class="goal-title">Monthly Goal Progress</div>
+    <div class="goal-amount-setup">
+      Target: $
+      <input type="number" id="targetGoalInput" class="mono" step="100" value="5000">
+      <span id="goalRatioText" class="mono" style="color:var(--text); font-weight:600; margin-left:8px;">$0 / $5,000</span>
+    </div>
+  </div>
+  <div class="goal-progress-bg">
+    <div class="goal-progress-fill" id="goalProgressFill"></div>
+  </div>
 </div>
 
 <div class="mid-section">
-  <div class="winrate-panel">
-    <div class="panel-title">// WIN RATE</div>
-    <div class="chart-wrapper">
-      <canvas id="winRateChart"></canvas>
-      <div class="chart-inner-text">
-        <div class="pct" id="winRatePctText">0%</div>
-        <div class="counts" id="winRateCountsText">0W / 0L</div>
-      </div>
-    </div>
-  </div>
+  <div class="winrate-panel">
+    <div class="panel-title">// WIN RATE</div>
+    <div class="chart-wrapper">
+      <canvas id="winRateChart"></canvas>
+      <div class="chart-inner-text">
+        <div class="pct" id="winRatePctText">0%</div>
+        <div class="counts" id="winRateCountsText">0W / 0L</div>
+      </div>
+    </div>
+  </div>
 
-  <div class="recent-panel">
-    <div class="panel-title">// RECENT TRADES</div>
-    <div style="overflow-x:auto;">
-      <table class="recent-table">
-          <thead>
-              <tr>
-                  <th>DATE</th>
-                  <th>SYMBOL</th>
-                  <th>SIDE</th>
-                  <th>QTY</th>
-                  <th>STRATEGY</th>
-                  <th>MISTAKE</th>
-                  <th style="text-align: right;">P&amp;L</th>
-              </tr>
-          </thead>
-          <tbody id="recentTradesBody"></tbody>
-      </table>
-    </div>
-  </div>
+  <div class="recent-panel">
+    <div class="panel-title">// RECENT TRADES</div>
+    <div style="overflow-x:auto;">
+      <table class="recent-table">
+          <thead>
+              <tr>
+                  <th>DATE</th>
+                  <th>SYMBOL</th>
+                  <th>SIDE</th>
+                  <th>QTY</th>
+                  <th>STRATEGY</th>
+                  <th>MISTAKE</th>
+                  <th style="text-align: right;">P&amp;L</th>
+              </tr>
+          </thead>
+          <tbody id="recentTradesBody"></tbody>
+      </table>
+    </div>
+  </div>
 </div>
 
 <div class="chart-container">
-  <canvas id="equityChart"></canvas>
+  <canvas id="equityChart"></canvas>
 </div>
 
 <div class="filter-toolbar">
-  <div class="filter-group-wrapper">
-    <div class="filter-group">
-      Filter Strategy:
-      <select id="filterStrategySelect">
-        <option value="ALL">All Strategies</option>
-      </select>
-    </div>
-    <div class="filter-group">
-      Filter Mistake:
-      <select id="filterMistakeSelect">
-        <option value="ALL">All Mistakes</option>
-      </select>
-    </div>
-  </div>
-  <div class="search-box">
-    <input type="text" id="globalSearchInput" placeholder="🔍 Search Trades (Symbol, P&L, Strategy...)">
-  </div>
+  <div class="filter-group-wrapper">
+    <div class="filter-group">
+      Filter Strategy:
+      <select id="filterStrategySelect">
+        <option value="ALL">All Strategies</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      Filter Mistake:
+      <select id="filterMistakeSelect">
+        <option value="ALL">All Mistakes</option>
+      </select>
+    </div>
+  </div>
+  <div class="search-box">
+    <input type="text" id="globalSearchInput" placeholder="🔍 Search Symbol, P&L, Notes...">
+  </div>
 </div>
 
 <div class="cal-nav">
-  <button id="prevBtn">&#8592;</button>
-  <div class="month-label" id="monthLabel"></div>
-  <button id="nextBtn">&#8594;</button>
+  <button id="prevBtn">&#8592;</button>
+  <div class="month-label" id="monthLabel"></div>
+  <button id="nextBtn">&#8594;</button>
 </div>
 
 <div class="calendar">
-  <div class="dow-row">
-    <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
-  </div>
-  <div class="grid" id="calGrid"></div>
+  <div class="dow-row">
+    <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+  </div>
+  <div class="grid" id="calGrid"></div>
 </div>
 
 <footer>Data saved automatically inside browser memory storage.</footer>
 
 <div class="overlay" id="overlay">
-  <div class="modal">
-    <h2 id="modalDate">Date</h2>
-    <div class="modal-sub">Log individual setup profiles or executions for this calendar day.</div>
-    
-    <div class="modal-alert" id="modalMaxLossAlert">
-      🚨 MAX DAILY LOSS EXCEEDED FOR THIS DAY! STOP TRADING.
-    </div>
-
-    <div class="tag-manager-box">
-      <div class="tag-group">
-        <div class="tag-group-title">Custom Strategies</div>
-        <div class="tag-list" id="stratTagList"></div>
-      </div>
-      <div class="tag-group" style="margin-top:10px;">
-        <div class="tag-group-title">Custom Mistakes</div>
-        <div class="tag-list" id="mistakeTagList"></div>
-      </div>
-    </div>
-
-    <div id="tradesContainer"></div>
-    <button class="add-trade" id="addTradeBtn" style="margin-top:8px; margin-bottom:15px;">+ Add trade</button>
-
-    <div class="image-section">
-      <label class="image-label">Visual Screenshots</label>
-      <input type="file" id="imageInput" accept="image/*" multiple style="display:none">
-      <button type="button" class="add-trade" id="importImageBtn">+ Import picture(s)</button>
-      <div class="image-grid" id="imageGrid"></div>
-    </div>
-
-    <div class="notes-section" style="margin-top:20px; border-top:1px solid var(--border); padding-top:15px;">
-      <label class="image-label">Journal Notes</label>
-      <textarea class="notes-field" id="notesField" placeholder="Review mechanics, setups, psychological state..."></textarea>
-    </div>
-
-    <div class="modal-footer">
-      <button class="btn btn-cancel" id="cancelBtn">Cancel</button>
-      <div class="modal-buttons">
-        <button class="btn btn-save" id="saveBtn">Save Entry</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="overlay" id="trophyOverlay">
-  <div class="modal" style="max-width: 800px;">
-    <h2>🏆 Trophy Case & Achievements</h2>
-    <div class="modal-sub">Track your operational milestones and trading achievements.</div>
-    
-    <div class="badge-modal-container">
-      <div class="badge-grid" id="badgeContainer"></div>
-    </div>
-
-    <div class="modal-footer" style="position: static; margin-top: 20px; padding-top: 15px;">
-      <div></div>
-      <button class="btn btn-cancel" id="closeTrophyBtn">Close</button>
-    </div>
-  </div>
-</div>
-
-<div class="lightbox-overlay" id="lightbox">
-  <img id="lightboxImg" src="" alt="Full view">
-</div>
-
-</div>
-</div>
-
-<script>
-(function(){
-  // Key state variables
-  let currentYear, currentMonth;
-  let activeDateKey = null;
-  let journalData = {};
-  let startBalance = 10000;
-  let monthlyGoal = 5000;
-  let maxLossLimit = { value: 500, unit: '$' };
-  let currentTheme = 'default';
-
-  let customStrategies = ["Breakout", "Reversal", "VWAP Pullback", "Trend Continuation"];
-  let customMistakes = ["FOMO", "Chasing", "Early Exit", "No Stop Loss", "Overleveraged"];
-
-  let activeSearchQuery = "";
-  let activeFilterStrategy = "ALL";
-  let activeFilterMistake = "ALL";
-
-  let equityChartInstance = null;
-  let winRateChartInstance = null;
-  let activeModalImages = [];
-
-  // DOM Elements
-  const loadingScreen = document.getElementById('loadingScreen');
-  const app = document.getElementById('app');
-  const appSidebar = document.getElementById('appSidebar');
-  const openSidebarBtn = document.getElementById('openSidebarBtn');
-  const closeSidebarBtn = document.getElementById('closeSidebarBtn');
-  
-  const trophyOverlay = document.getElementById('trophyOverlay');
-  const sidebarTrophyBtn = document.getElementById('sidebarTrophyBtn');
-  const closeTrophyBtn = document.getElementById('closeTrophyBtn');
-
-  const themeSelect = document.getElementById('themeSelect');
-  const startingBalanceInput = document.getElementById('startingBalanceInput');
-  const saveBalanceBtn = document.getElementById('saveBalanceBtn');
-  const maxLossValueInput = document.getElementById('maxLossValueInput');
-  const maxLossUnitSelect = document.getElementById('maxLossUnitSelect');
-  const saveMaxLossBtn = document.getElementById('saveMaxLossBtn');
-  const targetGoalInput = document.getElementById('targetGoalInput');
-  const goalRatioText = document.getElementById('goalRatioText');
-  const goalProgressFill = document.getElementById('goalProgressFill');
-
-  const globalAlertBanner = document.getElementById('globalAlertBanner');
-  const modalMaxLossAlert = document.getElementById('modalMaxLossAlert');
-
-  const filterStrategySelect = document.getElementById('filterStrategySelect');
-  const filterMistakeSelect = document.getElementById('filterMistakeSelect');
-  const globalSearchInput = document.getElementById('globalSearchInput');
-
-  const exportJsonBtn = document.getElementById('exportJsonBtn');
-  const exportCsvBtn = document.getElementById('exportCsvBtn');
-  const importJsonBtn = document.getElementById('importJsonBtn');
-  const importFileInput = document.getElementById('importFileInput');
-
-  const overlay = document.getElementById('overlay');
-  const modalDate = document.getElementById('modalDate');
-  const tradesContainer = document.getElementById('tradesContainer');
-  const addTradeBtn = document.getElementById('addTradeBtn');
-  const notesField = document.getElementById('notesField');
-  const saveBtn = document.getElementById('saveBtn');
-  const cancelBtn = document.getElementById('cancelBtn');
-
-  const importImageBtn = document.getElementById('importImageBtn');
-  const imageInput = document.getElementById('imageInput');
-  const imageGrid = document.getElementById('imageGrid');
-
-  const lightbox = document.getElementById('lightbox');
-  const lightboxImg = document.getElementById('lightboxImg');
-
-  const calGrid = document.getElementById('calGrid');
-  const monthLabel = document.getElementById('monthLabel');
-  const prevBtn = document.getElementById('prevBtn');
-  const nextBtn = document.getElementById('nextBtn');
-
-  // Achievements List
-  const ACHIEVEMENTS = [
-    { id: 'first_trade', title: 'First Blood', desc: 'Log your very first trade entry.', icon: '🎯' },
-    { id: 'green_day', title: 'In the Green', desc: 'Log a profitable trading day.', icon: '🟢' },
-    { id: 'hat_trick', title: 'Hat Trick', desc: 'Achieve 3 profitable days in a row.', icon: '🎩' },
-    { id: 'goal_reached', title: 'Target Smashed', desc: 'Reach your monthly goal progress target.', icon: '🚀' },
-    { id: 'disciplined', title: 'Risk Manager', desc: 'Log 5 trades with a mistake category set to None.', icon: '🛡️' }
-  ];
-
-  function init() {
-    const today = new Date();
-    currentYear = today.getFullYear();
-    currentMonth = today.getMonth();
-
-    loadLocalStorage();
-    applyTheme(currentTheme);
-    setupEventListeners();
-    renderAll();
-
-    loadingScreen.style.display = 'none';
-    app.style.display = 'block';
-  }
-
-  function loadLocalStorage() {
-    try {
-      const stored = localStorage.getItem('tradeflow_data');
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        journalData = parsed.journalData || {};
-        startBalance = parsed.startBalance ?? 10000;
-        monthlyGoal = parsed.monthlyGoal ?? 5000;
-        maxLossLimit = parsed.maxLossLimit || { value: 500, unit: '$' };
-        currentTheme = parsed.currentTheme || 'default';
-        if (parsed.customStrategies) customStrategies = parsed.customStrategies;
-        if (parsed.customMistakes) customMistakes = parsed.customMistakes;
-      }
-    } catch(e) {
-      console.error(e);
-    }
-
-    startingBalanceInput.value = startBalance;
-    targetGoalInput.value = monthlyGoal;
-    maxLossValueInput.value = maxLossLimit.value;
-    maxLossUnitSelect.value = maxLossLimit.unit;
-    themeSelect.value = currentTheme;
-  }
-
-  function saveData() {
-    const payload = {
-      journalData,
-      startBalance,
-      monthlyGoal,
-      maxLossLimit,
-      currentTheme,
-      customStrategies,
-      customMistakes
-    };
-    localStorage.setItem('tradeflow_data', JSON.stringify(payload));
-  }
-
-  function setupEventListeners() {
-    openSidebarBtn.addEventListener('click', () => appSidebar.classList.add('open'));
-    closeSidebarBtn.addEventListener('click', () => appSidebar.classList.remove('open'));
-
-    sidebarTrophyBtn.addEventListener('click', () => {
-      renderTrophyCase();
-      trophyOverlay.classList.add('show');
-    });
-    closeTrophyBtn.addEventListener('click', () => trophyOverlay.classList.remove('show'));
-
-    themeSelect.addEventListener('change', (e) => {
-      currentTheme = e.target.value;
-      applyTheme(currentTheme);
-      saveData();
-    });
-
-    saveBalanceBtn.addEventListener('click', () => {
-      const val = parseFloat(startingBalanceInput.value);
-      if (!isNaN(val)) {
-        startBalance = val;
-        saveData();
-        renderAll();
-      }
-    });
-
-    saveMaxLossBtn.addEventListener('click', () => {
-      const val = parseFloat(maxLossValueInput.value);
-      if (!isNaN(val)) {
-        maxLossLimit = { value: val, unit: maxLossUnitSelect.value };
-        saveData();
-        renderAll();
-      }
-    });
-
-    targetGoalInput.addEventListener('change', () => {
-      const val = parseFloat(targetGoalInput.value);
-      if (!isNaN(val)) {
-        monthlyGoal = val;
-        saveData();
-        renderAll();
-      }
-    });
-
-    prevBtn.addEventListener('click', () => {
-      currentMonth--;
-      if (currentMonth < 0) { currentMonth = 11; currentYear--; }
-      renderAll();
-    });
-
-    nextBtn.addEventListener('click', () => {
-      currentMonth++;
-      if (currentMonth > 11) { currentMonth = 0; currentYear++; }
-      renderAll();
-    });
-
-    filterStrategySelect.addEventListener('change', (e) => {
-      activeFilterStrategy = e.target.value;
-      renderCalendar();
-    });
-
-    filterMistakeSelect.addEventListener('change', (e) => {
-      activeFilterMistake = e.target.value;
-      renderCalendar();
-    });
-
-    globalSearchInput.addEventListener('input', (e) => {
-      activeSearchQuery = e.target.value.trim().toLowerCase();
-      renderCalendar();
-    });
-
-    exportJsonBtn.addEventListener('click', exportJSON);
-    exportCsvBtn.addEventListener('click', exportCSV);
-    importJsonBtn.addEventListener('click', () => importFileInput.click());
-    importFileInput.addEventListener('change', importJSON);
-
-    addTradeBtn.addEventListener('click', () => addTradeRow());
-    importImageBtn.addEventListener('click', () => imageInput.click());
-    imageInput.addEventListener('change', handleImageUpload);
-
-    saveBtn.addEventListener('click', saveModalEntry);
-    cancelBtn.addEventListener('click', closeModal);
-    lightbox.addEventListener('click', () => lightbox.classList.remove('show'));
-  }
-
-  function applyTheme(theme) {
-    document.documentElement.setAttribute('data-theme', theme);
-  }
-
-  function renderAll() {
-    populateFilterDropdowns();
-    renderCalendar();
-    renderStatsAndCharts();
-    checkDailyMaxLoss();
-  }
-
-  function populateFilterDropdowns() {
-    filterStrategySelect.innerHTML = '<option value="ALL">All Strategies</option>';
-    customStrategies.forEach(s => {
-      filterStrategySelect.innerHTML += `<option value="${s}">${s}</option>`;
-    });
-
-    filterMistakeSelect.innerHTML = '<option value="ALL">All Mistakes</option>';
-    customMistakes.forEach(m => {
-      filterMistakeSelect.innerHTML += `<option value="${m}">${m}</option>`;
-    });
-  }
-
-  function checkDailyMaxLoss() {
-    const todayStr = getTodayKey();
-    const todayData = journalData[todayStr];
-    let dailyPnl = 0;
-    if (todayData && todayData.trades) {
-      dailyPnl = todayData.trades.reduce((acc, t) => acc + (parseFloat(t.pnl) || 0), 0);
-    }
-
-    let maxLossAmount = maxLossLimit.value;
-    if (maxLossLimit.unit === '%') {
-      maxLossAmount = (startBalance * maxLossLimit.value) / 100;
-    }
-
-    if (dailyPnl < 0 && Math.abs(dailyPnl) >= maxLossAmount) {
-      globalAlertBanner.classList.add('show');
-    } else {
-      globalAlertBanner.classList.remove('show');
-    }
-  }
-
-  function getTodayKey() {
-    const d = new Date();
-    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-  }
-
-  function renderCalendar() {
-    calGrid.innerHTML = '';
-    const monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-    monthLabel.textContent = `${monthNames[currentMonth]} ${currentYear}`;
-
-    const firstDay = new Date(currentYear, currentMonth, 1).getDay();
-    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-
-    for (let i = 0; i < firstDay; i++) {
-      const emptyCell = document.createElement('div');
-      emptyCell.className = 'cell empty';
-      calGrid.appendChild(emptyCell);
-    }
-
-    const todayKey = getTodayKey();
-
-    for (let day = 1; day <= daysInMonth; day++) {
-      const dateKey = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-      const dayData = journalData[dateKey];
-
-      const cell = document.createElement('div');
-      cell.className = 'cell';
-      if (dateKey === todayKey) cell.classList.add('today');
-
-      let cellPnl = 0;
-      let tradeCount = 0;
-      let matchesFilter = true;
-
-      if (dayData) {
-        const trades = dayData.trades || [];
-        tradeCount = trades.length;
-        cellPnl = trades.reduce((sum, t) => sum + (parseFloat(t.pnl) || 0), 0);
-
-        // Apply filters
-        if (activeFilterStrategy !== "ALL") {
-          const hasStrat = trades.some(t => t.strategy === activeFilterStrategy);
-          if (!hasStrat) matchesFilter = false;
-        }
-
-        if (activeFilterMistake !== "ALL") {
-          const hasMistake = trades.some(t => t.mistake === activeFilterMistake);
-          if (!hasMistake) matchesFilter = false;
-        }
-
-        // STRICT TRADE SEARCH FILTER ONLY (Excludes notes)
-        if (activeSearchQuery) {
-          const tradeMatch = trades.some(t => {
-            const sym = (t.symbol || '').toLowerCase();
-            const strat = (t.strategy || '').toLowerCase();
-            const mis = (t.mistake || '').toLowerCase();
-            const side = (t.side || '').toLowerCase();
-            const pnlStr = String(t.pnl || '').toLowerCase();
-            const qtyStr = String(t.qty || '').toLowerCase();
-            return sym.includes(activeSearchQuery) || 
-                   strat.includes(activeSearchQuery) || 
-                   mis.includes(activeSearchQuery) || 
-                   side.includes(activeSearchQuery) || 
-                   pnlStr.includes(activeSearchQuery) || 
-                   qtyStr.includes(activeSearchQuery);
-          });
-          if (!tradeMatch) matchesFilter = false;
-        }
-      } else {
-        if (activeFilterStrategy !== "ALL" || activeFilterMistake !== "ALL" || activeSearchQuery) {
-          matchesFilter = false;
-        }
-      }
-
-      if (!matchesFilter && (activeFilterStrategy !== "ALL" || activeFilterMistake !== "ALL" || activeSearchQuery)) {
-        cell.classList.add('filtered-out');
-      }
-
-      if (dayData && tradeCount > 0) {
-        if (cellPnl > 0) cell.classList.add('profit');
-        else if (cellPnl < 0) cell.classList.add('loss');
-      }
-
-      const formattedPnl = cellPnl >= 0 ? `+$${cellPnl.toFixed(2)}` : `-$${Math.abs(cellPnl).toFixed(2)}`;
-
-      cell.innerHTML = `
-        <div class="daynum">${day}</div>
-        <div class="pnl ${cellPnl > 0 ? 'pos' : cellPnl < 0 ? 'neg' : 'neu'}">${tradeCount > 0 ? formattedPnl : ''}</div>
-        <div class="meta-row">
-          <span>${tradeCount > 0 ? `${tradeCount} trade${tradeCount > 1 ? 's' : ''}` : ''}</span>
-        </div>
-      `;
-
-      cell.addEventListener('click', () => openModal(dateKey));
-      calGrid.appendChild(cell);
-    }
-  }
-
-  function renderStatsAndCharts() {
-    let totalPnl = 0;
-    let totalWins = 0;
-    let totalLosses = 0;
-    let winPnl = 0;
-    let lossPnl = 0;
-    let totalTrades = 0;
-
-    let recentTradesList = [];
-    const monthlyKeyPrefix = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}`;
-    let monthlyPnl = 0;
-
-    Object.keys(journalData).sort().forEach(dKey => {
-      const entry = journalData[dKey];
-      if (entry && entry.trades) {
-        entry.trades.forEach(t => {
-          totalTrades++;
-          const pnl = parseFloat(t.pnl) || 0;
-          totalPnl += pnl;
-
-          if (dKey.startsWith(monthlyKeyPrefix)) {
-            monthlyPnl += pnl;
-          }
-
-          if (pnl > 0) {
-            totalWins++;
-            winPnl += pnl;
-          } else if (pnl < 0) {
-            totalLosses++;
-            lossPnl += Math.abs(pnl);
-          }
-
-          recentTradesList.push({ date: dKey, ...t });
-        });
-      }
-    });
-
-    const winRate = totalTrades > 0 ? ((totalWins / (totalWins + totalLosses || 1)) * 100).toFixed(1) : 0;
-    const avgWin = totalWins > 0 ? (winPnl / totalWins).toFixed(2) : '0.00';
-    const avgLoss = totalLosses > 0 ? (lossPnl / totalLosses).toFixed(2) : '0.00';
-    const profitFactor = lossPnl > 0 ? (winPnl / lossPnl).toFixed(2) : winPnl > 0 ? '∞' : '0.00';
-
-    // Stats Bar DOM
-    const statsBar = document.getElementById('statsBar');
-    statsBar.innerHTML = `
-      <div class="stat">
-        <div class="label">Net P&L</div>
-        <div class="value ${totalPnl >= 0 ? 'pos' : 'neg'}">$${totalPnl.toFixed(2)}</div>
-      </div>
-      <div class="stat">
-        <div class="label">Win Rate</div>
-        <div class="value">${winRate}%</div>
-      </div>
-      <div class="stat">
-        <div class="label">Profit Factor</div>
-        <div class="value">${profitFactor}</div>
-      </div>
-      <div class="stat">
-        <div class="label">Avg Win / Loss</div>
-        <div class="value"><span class="pos">$${avgWin}</span> / <span class="neg">$${avgLoss}</span></div>
-      </div>
-      <div class="stat">
-        <div class="label">Total Trades</div>
-        <div class="value">${totalTrades}</div>
-      </div>
-    `;
-
-    // Monthly Goal Progress
-    const pctGoal = Math.max(0, Math.min(100, (monthlyPnl / monthlyGoal) * 100));
-    goalProgressFill.style.width = `${pctGoal}%`;
-    goalRatioText.textContent = `$${monthlyPnl.toFixed(2)} / $${monthlyGoal.toLocaleString()}`;
-
-    // Winrate Donut Chart
-    document.getElementById('winRatePctText').textContent = `${winRate}%`;
-    document.getElementById('winRateCountsText').textContent = `${totalWins}W / ${totalLosses}L`;
-    renderWinRateChart(totalWins, totalLosses);
-
-    // Recent Trades Table
-    recentTradesList.sort((a, b) => b.date.localeCompare(a.date));
-    const recentBody = document.getElementById('recentTradesBody');
-    recentBody.innerHTML = '';
-    recentTradesList.slice(0, 5).forEach(t => {
-      const tr = document.createElement('tr');
-      const pnlVal = parseFloat(t.pnl) || 0;
-      tr.innerHTML = `
-        <td>${t.date}</td>
-        <td><strong>${t.symbol || '-'}</strong></td>
-        <td>${t.side || '-'}</td>
-        <td>${t.qty || '-'}</td>
-        <td>${t.strategy || '-'}</td>
-        <td>${t.mistake || 'None'}</td>
-        <td style="text-align: right;" class="${pnlVal >= 0 ? 'pos' : 'neg'}">$${pnlVal.toFixed(2)}</td>
-      `;
-      recentBody.appendChild(tr);
-    });
-
-    // Equity Curve Chart
-    renderEquityChart();
-  }
-
-  function renderWinRateChart(wins, losses) {
-    const ctx = document.getElementById('winRateChart').getContext('2d');
-    if (winRateChartInstance) winRateChartInstance.destroy();
-
-    const data = (wins === 0 && losses === 0) ? [0, 0, 1] : [wins, losses, 0];
-    const colors = ['#3fb950', '#f85149', '#1f1f1f'];
-
-    winRateChartInstance = new Chart(ctx, {
-      type: 'doughnut',
-      data: {
-        labels: ['Wins', 'Losses', 'Empty'],
-        datasets: [{
-          data: data,
-          backgroundColor: colors,
-          borderWidth: 0
-        }]
-      },
-      options: {
-        cutout: '78%',
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: { legend: { display: false }, tooltip: { enabled: wins > 0 || losses > 0 } }
-      }
-    });
-  }
-
-  function renderEquityChart() {
-    const ctx = document.getElementById('equityChart').getContext('2d');
-    if (equityChartInstance) equityChartInstance.destroy();
-
-    const sortedDates = Object.keys(journalData).sort();
-    let currentBal = startBalance;
-    const labels = ['Start'];
-    const dataPoints = [startBalance];
-
-    sortedDates.forEach(dKey => {
-      const entry = journalData[dKey];
-      if (entry && entry.trades && entry.trades.length > 0) {
-        const dayPnl = entry.trades.reduce((sum, t) => sum + (parseFloat(t.pnl) || 0), 0);
-        currentBal += dayPnl;
-        labels.push(dKey);
-        dataPoints.push(currentBal);
-      }
-    });
-
-    equityChartInstance = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: labels,
-        datasets: [{
-          label: 'Account Equity',
-          data: dataPoints,
-          borderColor: '#d4a72c',
-          backgroundColor: 'rgba(212, 167, 44, 0.05)',
-          fill: true,
-          tension: 0.2,
-          pointRadius: 3,
-          pointHoverRadius: 6
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-          x: { grid: { color: '#1f1f1f' }, ticks: { color: '#767d85', font: { size: 10 } } },
-          y: { grid: { color: '#1f1f1f' }, ticks: { color: '#767d85', font: { size: 10 } } }
-        },
-        plugins: { legend: { display: false } }
-      }
-    });
-  }
-
-  // MODAL FUNCTIONS
-  function openModal(dateKey) {
-    activeDateKey = dateKey;
-    modalDate.textContent = `Log Entry — ${dateKey}`;
-    tradesContainer.innerHTML = '';
-    imageGrid.innerHTML = '';
-    activeModalImages = [];
-
-    const dayData = journalData[dateKey] || { trades: [], notes: '', images: [] };
-
-    if (dayData.trades && dayData.trades.length > 0) {
-      dayData.trades.forEach(t => addTradeRow(t));
-    } else {
-      addTradeRow();
-    }
-
-    notesField.value = dayData.notes || '';
-
-    if (dayData.images) {
-      activeModalImages = [...dayData.images];
-      renderImageGrid();
-    }
-
-    renderTagLists();
-    checkModalMaxLoss(dateKey);
-    overlay.classList.add('show');
-  }
-
-  function checkModalMaxLoss(dateKey) {
-    const dayData = journalData[dateKey];
-    if (dayData && dayData.trades) {
-      const pnl = dayData.trades.reduce((a, b) => a + (parseFloat(b.pnl) || 0), 0);
-      let limitVal = maxLossLimit.value;
-      if (maxLossLimit.unit === '%') limitVal = (startBalance * maxLossLimit.value) / 100;
-      if (pnl < 0 && Math.abs(pnl) >= limitVal) {
-        modalMaxLossAlert.classList.add('show');
-        return;
-      }
-    }
-    modalMaxLossAlert.classList.remove('show');
-  }
-
-  function closeModal() {
-    overlay.classList.remove('show');
-    activeDateKey = null;
-  }
-
-  function renderTagLists() {
-    const stratList = document.getElementById('stratTagList');
-    stratList.innerHTML = customStrategies.map(s => `<div class="tag-chip">${s}</div>`).join('');
-
-    const mistakeList = document.getElementById('mistakeTagList');
-    mistakeList.innerHTML = customMistakes.map(m => `<div class="tag-chip">${m}</div>`).join('');
-  }
-
-  function addTradeRow(data = {}) {
-    const rowWrapper = document.createElement('div');
-    rowWrapper.className = 'trade-row-wrapper';
-
-    const tradeRow = document.createElement('div');
-    tradeRow.className = 'trade-row';
-
-    tradeRow.innerHTML = `
-      <input type="text" class="t-symbol" placeholder="Symbol (e.g. QQQ)" value="${data.symbol || ''}">
-      <select class="t-side">
-        <option value="Long" ${data.side === 'Long' ? 'selected' : ''}>Long</option>
-        <option value="Short" ${data.side === 'Short' ? 'selected' : ''}>Short</option>
-      </select>
-      <input type="number" class="t-qty" placeholder="Qty" value="${data.qty || ''}">
-      <select class="t-strategy">
-        <option value="">-- Strategy --</option>
-        ${customStrategies.map(s => `<option value="${s}" ${data.strategy === s ? 'selected' : ''}>${s}</option>`).join('')}
-      </select>
-      <select class="t-mistake">
-        <option value="None">No Mistake</option>
-        ${customMistakes.map(m => `<option value="${m}" ${data.mistake === m ? 'selected' : ''}>${m}</option>`).join('')}
-      </select>
-      <input type="number" step="0.01" class="t-pnl" placeholder="P&L ($)" value="${data.pnl ?? ''}">
-      <button class="remove" title="Delete Trade">&times;</button>
-    `;
-
-    tradeRow.querySelector('.remove').addEventListener('click', () => {
-      rowWrapper.remove();
-    });
-
-    rowWrapper.appendChild(tradeRow);
-    tradesContainer.appendChild(rowWrapper);
-  }
-
-  function handleImageUpload(e) {
-    const files = Array.from(e.target.files);
-    files.forEach(file => {
-      const reader = new FileReader();
-      reader.onload = (evt) => {
-        activeModalImages.push(evt.target.result);
-        renderImageGrid();
-      };
-      reader.readAsDataURL(file);
-    });
-  }
-
-  function renderImageGrid() {
-    imageGrid.innerHTML = '';
-    activeModalImages.forEach((imgSrc, idx) => {
-      const thumb = document.createElement('div');
-      thumb.className = 'image-thumb';
-      thumb.innerHTML = `
-        <img src="${imgSrc}" alt="Trade Screenshot">
-        <button class="thumb-remove" data-idx="${idx}">&times;</button>
-      `;
-      thumb.querySelector('img').addEventListener('click', () => {
-        lightboxImg.src = imgSrc;
-        lightbox.classList.add('show');
-      });
-      thumb.querySelector('.thumb-remove').addEventListener('click', (e) => {
-        e.stopPropagation();
-        activeModalImages.splice(idx, 1);
-        renderImageGrid();
-      });
-      imageGrid.appendChild(thumb);
-    });
-  }
-
-  function saveModalEntry() {
-    if (!activeDateKey) return;
-
-    const tradeRows = Array.from(tradesContainer.querySelectorAll('.trade-row-wrapper'));
-    const trades = [];
-
-    tradeRows.forEach(row => {
-      const symbol = row.querySelector('.t-symbol').value.trim();
-      const side = row.querySelector('.t-side').value;
-      const qty = row.querySelector('.t-qty').value;
-      const strategy = row.querySelector('.t-strategy').value;
-      const mistake = row.querySelector('.t-mistake').value;
-      const pnl = row.querySelector('.t-pnl').value;
-
-      if (symbol || pnl) {
-        trades.push({
-          symbol,
-          side,
-          qty: qty ? parseFloat(qty) : '',
-          strategy,
-          mistake,
-          pnl: pnl ? parseFloat(pnl) : 0
-        });
-      }
-    });
-
-    journalData[activeDateKey] = {
-      trades,
-      notes: notesField.value,
-      images: activeModalImages
-    };
-
-    saveData();
-    closeModal();
-    renderAll();
-    checkAchievements();
-  }
-
-  // TROPHY CASE / ACHIEVEMENTS SYSTEM
-  function checkAchievements() {
-    let unlocked = JSON.parse(localStorage.getItem('unlocked_badges') || '[]');
-
-    // First trade
-    let hasTrades = false;
-    let greenDays = 0;
-    let maxConsecutiveGreen = 0;
-    let tempGreen = 0;
-    let cleanTradesCount = 0;
-
-    Object.keys(journalData).sort().forEach(dKey => {
-      const entry = journalData[dKey];
-      if (entry && entry.trades && entry.trades.length > 0) {
-        hasTrades = true;
-        const dayPnl = entry.trades.reduce((a, b) => a + (parseFloat(b.pnl) || 0), 0);
-        if (dayPnl > 0) {
-          greenDays++;
-          tempGreen++;
-          if (tempGreen > maxConsecutiveGreen) maxConsecutiveGreen = tempGreen;
-        } else {
-          tempGreen = 0;
-        }
-
-        entry.trades.forEach(t => {
-          if (t.mistake === 'None' || !t.mistake) cleanTradesCount++;
-        });
-      }
-    });
-
-    if (hasTrades) unlockBadge('first_trade', unlocked);
-    if (greenDays > 0) unlockBadge('green_day', unlocked);
-    if (maxConsecutiveGreen >= 3) unlockBadge('hat_trick', unlocked);
-    if (cleanTradesCount >= 5) unlockBadge('disciplined', unlocked);
-  }
-
-  function unlockBadge(id, unlockedList) {
-    if (!unlockedList.includes(id)) {
-      unlockedList.push(id);
-      localStorage.setItem('unlocked_badges', JSON.stringify(unlockedList));
-      const badge = ACHIEVEMENTS.find(a => a.id === id);
-      if (badge) showAchievementToast(badge);
-    }
-  }
-
-  function showAchievementToast(badge) {
-    const toast = document.getElementById('achievementToastContainer');
-    document.getElementById('toastIcon').textContent = badge.icon;
-    document.getElementById('toastTitle').textContent = badge.title;
-    document.getElementById('toastDesc').textContent = badge.desc;
-
-    toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), 4000);
-  }
-
-  function renderTrophyCase() {
-    const unlocked = JSON.parse(localStorage.getItem('unlocked_badges') || '[]');
-    const container = document.getElementById('badgeContainer');
-    container.innerHTML = '';
-
-    ACHIEVEMENTS.forEach(badge => {
-      const isUnlocked = unlocked.includes(badge.id);
-      const card = document.createElement('div');
-      card.className = `badge-card ${isUnlocked ? 'unlocked' : ''}`;
-      card.innerHTML = `
-        <div class="badge-card-icon">${badge.icon}</div>
-        <div class="badge-card-info">
-          <div class="badge-card-title">${badge.title}</div>
-          <div class="badge-card-desc">${badge.desc}</div>
-        </div>
-        <div class="badge-status-tag">${isUnlocked ? 'UNLOCKED' : 'LOCKED'}</div>
-      `;
-      container.appendChild(card);
-    });
-  }
-
-  // EXPORT / IMPORT
-  function exportJSON() {
-    const blob = new Blob([JSON.stringify({ journalData, startBalance, monthlyGoal, maxLossLimit }, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `TradeFlow_Backup_${getTodayKey()}.json`;
-    a.click();
-  }
-
-  function exportCSV() {
-    let csv = 'Date,Symbol,Side,Qty,Strategy,Mistake,PnL,Notes\n';
-    Object.keys(journalData).forEach(dKey => {
-      const entry = journalData[dKey];
-      if (entry && entry.trades) {
-        entry.trades.forEach(t => {
-          const notesClean = (entry.notes || '').replace(/"/g, '""');
-          csv += `"${dKey}","${t.symbol || ''}","${t.side || ''}","${t.qty || ''}","${t.strategy || ''}","${t.mistake || ''}","${t.pnl || 0}","${notesClean}"\n`;
-        });
-      }
-    });
-    const blob = new Blob([csv], { type: 'text/csv' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `TradeFlow_Export_${getTodayKey()}.csv`;
-    a.click();
-  }
-
-  function importJSON(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (evt) => {
-      try {
-        const parsed = JSON.parse(evt.target.result);
-        if (parsed.journalData) journalData = parsed.journalData;
-        if (parsed.startBalance) startBalance = parsed.startBalance;
-        if (parsed.monthlyGoal) monthlyGoal = parsed.monthlyGoal;
-        if (parsed.maxLossLimit) maxLossLimit = parsed.maxLossLimit;
-        saveData();
-        renderAll();
-        alert('Backup restored successfully!');
-      } catch(err) {
-        alert('Invalid JSON backup file.');
-      }
-    };
-    reader.readAsText(file);
-  }
-
-  window.addEventListener('DOMContentLoaded', init);
-})();
-</script>
-</body>
-</html>
+  <div class="modal">
+    <h2 id="modalDate">Date</h2>
+    <div class="modal-sub">Log individual setup profiles or executions for this calendar day.</div>
+    
+    <div class="modal-alert" id="modalMaxLossAlert">
+      🚨 MAX DAILY LOSS EXCEEDED FOR THIS DAY! STOP TRADING.
+    </div>
+
+    <div class="tag-manager-box">
+      <div class="tag-group">
+        <div class="tag-group-title">Custom Strategies & Rule Rules Engine</div>
+        <div class="tag-list" id="stratTagList"></div>
+      </div>
+      <div class="tag-group" style="margin-top:10px;">
+        <div class="tag-group-title">Custom Mistakes</div>
+        <div class="tag-list" id="mistakeTagList"></div>
+      </div>
+    </div>
+
+    <div id="tradesContainer"></div>
+    <button class="add-trade" id="addTradeBtn" style="margin-top:8px; margin-bottom:15px;">+ Add trade</button>
+
+    <div class="image-section">
+      <label class="image-label">Visual Screenshots</label>
+      <input type="file" id="imageInput" accept="image/*" multiple style="display:none">
+      <button type="button" class="add-trade" id="importImageBtn">+ Import picture(s)</button>
+      <div class="image-grid" id="imageGrid"></div>
+    </div>
+
+    <div class="notes-section" style="margin-top:20px; border-top:1px solid var(--border); padding-top:15px;">
+      <label class="image-label">Journal Notes</label>
+      <textarea class="notes-field" id="notesField" placeholder="Review mechanics, set
