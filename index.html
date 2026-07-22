@@ -1299,7 +1299,7 @@ const TAGS_KEY = 'tj_custom_tags_v1';
 const RULES_KEY = 'tj_strategy_rules_v1';
 const THEME_KEY = 'tj_theme_v1';
 
-let activeAccount = 'live'; // 'live' or 'paper'
+let activeAccount = 'paper'; // Default to Paper so migrated trades show immediately
 
 let data = {}; 
 let startingBalance = 0;
@@ -1921,7 +1921,6 @@ function dayMatchesFilter(key) {
 
   let matchSearch = searchQuery === "";
   if(searchQuery !== "") {
-    // Strictly filter searching based ONLY on actual trade parameters (Symbol, P&L, Strategy, Mistake)
     if(rec.trades && rec.trades.length > 0) {
       matchSearch = rec.trades.some(t => 
         (t.symbol && t.symbol.toLowerCase().includes(searchQuery)) ||
@@ -2564,6 +2563,30 @@ saveBtn.addEventListener('click', () => {
 
 function init(){
   try {
+    // --- AUTOMATIC DATA MIGRATION TO PAPER ACCOUNT ---
+    const legacyKeys = ['tj_data_v1', 'trades', 'journal_trades', 'tj_data_v1_live'];
+    let legacyDataFound = false;
+    let paperData = JSON.parse(localStorage.getItem('tj_data_v1_paper') || '{}');
+
+    legacyKeys.forEach(k => {
+      const raw = localStorage.getItem(k);
+      if (raw) {
+        try {
+          const parsed = JSON.parse(raw);
+          if (parsed && typeof parsed === 'object') {
+            Object.assign(paperData, parsed);
+            legacyDataFound = true;
+            localStorage.removeItem(k); // Clean up after migration
+          }
+        } catch(e){}
+      }
+    });
+
+    if (legacyDataFound) {
+      localStorage.setItem('tj_data_v1_paper', JSON.stringify(paperData));
+      localStorage.setItem(ACTIVE_ACCOUNT_KEY, 'paper');
+    }
+
     const savedAccount = localStorage.getItem(ACTIVE_ACCOUNT_KEY);
     if(savedAccount) activeAccount = savedAccount;
 
