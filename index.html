@@ -1257,7 +1257,7 @@
     <div class="tag-manager-box">
       <div class="add-tag-inline" style="width:100%; margin-bottom:12px;">
         <input type="text" id="newRuleInput" placeholder="Add mandatory rule (e.g. Wait for 15M candle close)" style="flex:1;">
-        <button onclick="addRuleToActiveStrategy()">+ Add Rule</button>
+        <button id="addRuleBtn">+ Add Rule</button>
       </div>
       <div id="strategyRulesList"></div>
     </div>
@@ -1692,9 +1692,16 @@ function renderStrategyRulesList() {
   container.innerHTML = rules.map((r, idx) => `
     <div class="rule-config-item">
       <span style="font-size:12px; font-weight:600;">✓ ${r}</span>
-      <button class="remove" onclick="removeRuleFromActiveStrategy(${idx})" style="background:none; border:none; color:var(--red); cursor:pointer;">&times;</button>
+      <button class="remove remove-rule-btn" data-idx="${idx}" style="background:none; border:none; color:var(--red); cursor:pointer;">&times;</button>
     </div>
   `).join('');
+
+  container.querySelectorAll('.remove-rule-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const idx = parseInt(e.target.getAttribute('data-idx'));
+      removeRuleFromActiveStrategy(idx);
+    });
+  });
 }
 
 function addRuleToActiveStrategy() {
@@ -1717,6 +1724,8 @@ function removeRuleFromActiveStrategy(idx) {
   renderStrategyRulesList();
 }
 
+document.getElementById('addRuleBtn').addEventListener('click', addRuleToActiveStrategy);
+
 document.getElementById('closeRulesConfigBtn').addEventListener('click', () => {
   rulesConfigOverlay.classList.remove('show');
   updateTradeDropdowns();
@@ -1730,27 +1739,45 @@ function renderTagManager() {
     stratList.innerHTML = customTags.strategies.map((s, idx) => `
       <div class="tag-chip">
         #${s} 
-        <button onclick="openRulesConfigModal('${s}')" title="Configure Rules Checklist" style="color:var(--amber); margin-left:4px;">⚙️ Rules</button>
-        <button onclick="removeTag('strategies', ${idx})">&times;</button>
+        <button class="config-rules-btn" data-strat="${s}" title="Configure Rules Checklist" style="color:var(--amber); margin-left:4px;">⚙️ Rules</button>
+        <button class="remove-tag-btn" data-type="strategies" data-idx="${idx}">&times;</button>
       </div>
     `).join('') + `
       <div class="add-tag-inline">
         <input type="text" id="newStratInput" placeholder="New Strategy">
-        <button onclick="addTag('strategies')">+ Add</button>
+        <button id="addStratBtn">+ Add</button>
       </div>
     `;
+
+    stratList.querySelectorAll('.config-rules-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => openRulesConfigModal(e.target.getAttribute('data-strat')));
+    });
+
+    const addStratBtn = document.getElementById('addStratBtn');
+    if(addStratBtn) addStratBtn.addEventListener('click', () => addTag('strategies'));
   }
 
   if(mistakeList) {
     mistakeList.innerHTML = customTags.mistakes.map((m, idx) => `
-      <div class="tag-chip">#${m} <button onclick="removeTag('mistakes', ${idx})">&times;</button></div>
+      <div class="tag-chip">#${m} <button class="remove-tag-btn" data-type="mistakes" data-idx="${idx}">&times;</button></div>
     `).join('') + `
       <div class="add-tag-inline">
         <input type="text" id="newMistakeInput" placeholder="New Mistake">
-        <button onclick="addTag('mistakes')">+ Add</button>
+        <button id="addMistakeBtn">+ Add</button>
       </div>
     `;
+
+    const addMistakeBtn = document.getElementById('addMistakeBtn');
+    if(addMistakeBtn) addMistakeBtn.addEventListener('click', () => addTag('mistakes'));
   }
+
+  document.querySelectorAll('.remove-tag-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const type = e.target.getAttribute('data-type');
+      const idx = parseInt(e.target.getAttribute('data-idx'));
+      removeTag(type, idx);
+    });
+  });
 
   updateFilterOptions();
 }
@@ -2457,7 +2484,7 @@ function addTradeRow(symbol='', pnl='', side='call', qty='', strategy='None', mi
         <span class="compliance-tag" style="color:var(--text);">Compliance: <strong class="pct-val">0%</strong></span>
       </div>
       <div class="checklist-items">
-        ${rules.map((r, i) => `
+        ${rules.map((r) => `
           <label class="checklist-item">
             <input type="checkbox" class="rule-chk" data-rule="${r}" ${ruleChecks[r] ? 'checked' : ''}>
             <span>${r}</span>
