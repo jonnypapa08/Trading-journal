@@ -1025,6 +1025,26 @@
 </style>
 </head>
 <body>
+  <div id="loginOverlay" style="position:fixed; inset:0; background:#000000; z-index:9999; display:flex; align-items:center; justify-content:center; padding:20px;">
+  <div style="background:var(--panel, #0d0d0d); border:1px solid var(--border, #1f1f1f); padding:32px; border-radius:12px; width:100%; max-width:380px; box-shadow:0 8px 32px rgba(0,0,0,0.8);">
+    <h2 style="margin:0 0 6px 0; font-size:20px; color:var(--text, #e6edf3); font-weight:700; text-transform:uppercase; letter-spacing:0.05em;">TradeFlow Login</h2>
+    <p style="margin:0 0 20px 0; font-size:12px; color:var(--muted, #767d85);">Enter your credentials to access your trading journal.</p>
+    
+    <div style="margin-bottom:14px;">
+      <label style="display:block; font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted, #767d85); margin-bottom:6px;">Username</label>
+      <input type="text" id="loginUsername" placeholder="Enter username" style="width:100%; background:var(--panel2, #141414); border:1px solid var(--border, #1f1f1f); color:var(--text, #e6edf3); padding:10px; border-radius:6px; font-size:14px; outline:none;">
+    </div>
+    
+    <div style="margin-bottom:20px;">
+      <label style="display:block; font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted, #767d85); margin-bottom:6px;">Password</label>
+      <input type="password" id="loginPassword" placeholder="Enter password" style="width:100%; background:var(--panel2, #141414); border:1px solid var(--border, #1f1f1f); color:var(--text, #e6edf3); padding:10px; border-radius:6px; font-size:14px; outline:none;">
+    </div>
+
+    <div id="loginError" style="color:var(--red, #f85149); font-size:12px; margin-bottom:12px; display:none; font-weight:600;">Invalid username or password.</div>
+
+    <button id="loginBtn" style="width:100%; background:var(--amber, #d4a72c); color:#1a1200; border:none; padding:11px; border-radius:6px; font-weight:700; font-size:14px; cursor:pointer; text-transform:uppercase; letter-spacing:0.05em;">Log In</button>
+  </div>
+</div>
 
 <div class="sidebar" id="appSidebar">
   <div class="sidebar-header">
@@ -1633,10 +1653,18 @@ function fmtMoney(n){
 function padNumber(n){ return n < 10 ? '0'+n : ''+n; }
 function dateKey(y,m,d){ return `${y}-${padNumber(m+1)}-${padNumber(d)}`; }
 
+const COMMISSION_PER_CONTRACT = 1.30; // $1.30 per contract
+
+function getTradeNetPnl(t) {
+  const grossPnl = parseFloat(t.pnl) || 0;
+  const qty = parseFloat(t.qty) || 0;
+  return grossPnl - (qty * COMMISSION_PER_CONTRACT);
+}
+
 function dayTotalPnl(key){
-  const rec = data[key];
-  if(!rec || !rec.trades || rec.trades.length === 0) return null;
-  return rec.trades.reduce((s,t)=> s + (parseFloat(t.pnl)||0), 0);
+  const day = data[key];
+  if(!day || !day.trades || day.trades.length === 0) return null;
+  return day.trades.reduce((s, t) => s + getTradeNetPnl(t), 0);
 }
 
 function balanceBefore(y,m,d){
@@ -2063,7 +2091,7 @@ function renderStatsAndPanels(){
           if(dTotal >= 0) disciplinedDays++;
 
           day.trades.forEach(t => {
-              const pnl = parseFloat(t.pnl) || 0;
+              const pnl = getTradeNetPnl(t);
               const qty = t.qty || '—';
               allTimePl += pnl;
 
@@ -2525,19 +2553,30 @@ function addTradeRow(symbol='', pnl='', side='call', qty='', strategy='None', mi
 document.getElementById('addTradeBtn').addEventListener('click', () => addTradeRow());
 
 function updateDayTotal(){
-  let total = 0;
+  let gross = 0;
+  let totalComm = 0;
+
   tradesContainer.querySelectorAll('.trade-row-wrapper').forEach(wrapper => {
     const v = parseFloat(wrapper.querySelector('.pnl-input').value);
-    if(!isNaN(v)) total += v;
+    const q = parseFloat(wrapper.querySelector('.qty-input')?.value);
+    
+    if(!isNaN(v)) gross += v;
+    if(!isNaN(q)) totalComm += q * COMMISSION_PER_CONTRACT;
   });
-  dayTotalEl.textContent = fmtMoney(total);
-  dayTotalEl.className = 'day-total mono ' + (total >= 0 ? 'pos' : 'neg');
+
+  const net = gross - totalComm;
+
+  dayTotalEl.innerHTML = `
+    <span style="font-size:12px; color:var(--muted);">Gross: ${fmtMoney(gross)} | Comm: -$${totalComm.toFixed(2)} | </span>
+    <span>Net: ${fmtMoney(net)}</span>
+  `;
+  dayTotalEl.className = 'day-total mono ' + (net >= 0 ? 'pos' : 'neg');
 
   const alertBox = document.getElementById('modalMaxLossAlert');
   const limitThreshold = getMaxLossDollarThreshold();
 
-  if(total < 0 && Math.abs(total) >= limitThreshold && limitThreshold > 0) {
-    alertBox.textContent = `🚨 MAX DAILY LOSS EXCEEDED FOR THIS DAY (${fmtMoney(total)} / Limit: $${limitThreshold.toFixed(2)})! STOP TRADING.`;
+  if(net < 0 && Math.abs(net) >= limitThreshold && limitThreshold > 0) {
+    alertBox.textContent = `🚨 MAX DAILY LOSS EXCEEDED FOR THIS DAY (${fmtMoney(net)} / Limit: $${limitThreshold.toFixed(2)})! STOP TRADING.`;
     alertBox.classList.add('show');
   } else {
     alertBox.classList.remove('show');
@@ -2587,9 +2626,36 @@ saveBtn.addEventListener('click', () => {
   closeModal();
   render();
 });
+function initAuth() {
+  const DEFAULT_USER = "admin";
+  const DEFAULT_PASS = "tradeflow123";
 
+  const isLoggedIn = sessionStorage.getItem('tf_logged_in');
+  const loginOverlay = document.getElementById('loginOverlay');
+
+  if (isLoggedIn === 'true') {
+    if (loginOverlay) loginOverlay.style.display = 'none';
+  } else {
+    if (loginOverlay) loginOverlay.style.display = 'flex';
+  }
+
+  document.getElementById('loginBtn')?.addEventListener('click', () => {
+    const u = document.getElementById('loginUsername').value.trim();
+    const p = document.getElementById('loginPassword').value.trim();
+    const errEl = document.getElementById('loginError');
+
+    if (u === DEFAULT_USER && p === DEFAULT_PASS) {
+      sessionStorage.setItem('tf_logged_in', 'true');
+      if (loginOverlay) loginOverlay.style.display = 'none';
+      if (errEl) errEl.style.display = 'none';
+    } else {
+      if (errEl) errEl.style.display = 'block';
+    }
+  });
+}
 function init(){
   try {
+    initAuth();
     // --- AUTOMATIC DATA MIGRATION TO PAPER ACCOUNT ---
     const legacyKeys = ['tj_data_v1', 'trades', 'journal_trades', 'tj_data_v1_live'];
     let legacyDataFound = false;
