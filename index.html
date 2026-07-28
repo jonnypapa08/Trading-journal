@@ -2670,50 +2670,37 @@ function initAuth() {
 function init(){
   try {
     initAuth();
-    // --- AUTOMATIC DATA MIGRATION TO PAPER ACCOUNT ---
-    const legacyKeys = ['tj_data_v1', 'trades', 'journal_trades', 'tj_data_v1_live'];
-    let legacyDataFound = false;
-    let paperData = JSON.parse(localStorage.getItem('tj_data_v1_paper') || '{}');
 
-    legacyKeys.forEach(k => {
-      const raw = localStorage.getItem(k);
-      if (raw) {
-        try {
-          const parsed = JSON.parse(raw);
-          if (parsed && typeof parsed === 'object') {
-            Object.assign(paperData, parsed);
-            legacyDataFound = true;
-            localStorage.removeItem(k); // Clean up after migration
-          }
-        } catch(e){}
-      }
-    });
-
-    if (legacyDataFound) {
-      localStorage.setItem('tj_data_v1_paper', JSON.stringify(paperData));
-      localStorage.setItem(ACTIVE_ACCOUNT_KEY, 'paper');
-    }
-
+    // 1. Restore saved active account choice ('paper' or 'live')
     const savedAccount = localStorage.getItem(ACTIVE_ACCOUNT_KEY);
     if(savedAccount) activeAccount = savedAccount;
+    
+    // 2. Load data specifically for the active account
     data = loadData();
 
+    // 3. Load user tags, rules, and themes
     customTags = loadCustomTags();
     strategyRules = loadStrategyRules();
     currentTheme = loadTheme();
     applyTheme(currentTheme);
 
+    // 4. Switch account UI state
     switchAccount(activeAccount);
   } catch(err) {
     console.error("Data load error:", err);
     data = {};
   }
   
-  document.getElementById('loadingScreen').style.display = 'none';
-  document.getElementById('app').style.display = 'block';
+  // 5. Hide loading screen and show app
+  const loadingScreen = document.getElementById('loadingScreen');
+  if (loadingScreen) loadingScreen.style.display = 'none';
+  
+  const appEl = document.getElementById('app');
+  if (appEl) appEl.style.display = 'block';
   
   render();
 }
+
 init();
 </script>
 </body>
