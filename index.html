@@ -885,46 +885,7 @@
     border-radius: 4px;
     border: 1px solid var(--border);
   }
-  .checklist-item input[type="checkbox"] {
-    accent-color: var(--amber);
-    cursor: pointer;
-  }
 
-  .add-trade{
-    background:var(--panel2);
-    border:1px dashed var(--border);
-    color:var(--muted);
-    padding:8px;
-    border-radius:4px;
-    width:100%;
-    cursor:pointer;
-    font-size:13px;
-  }
-  .add-trade:hover{ color:var(--amber); border-color:var(--amber); }
-  
-  /* Tag Manager Styling */
-  .tag-manager-box {
-    background: var(--panel2);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 12px;
-    margin-bottom: 16px;
-  }
-  .tag-group { margin-bottom: 10px; }
-  .tag-group:last-child { margin-bottom: 0; }
-  .tag-group-title {
-    font-size: 11px;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    margin-bottom: 6px;
-  }
-  .tag-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    align-items: center;
-  }
   .tag-chip {
     background: var(--panel);
     border: 1px solid var(--border);
@@ -945,6 +906,7 @@
     padding: 0;
     font-size: 12px;
   }
+
   .add-tag-inline {
     display: flex;
     gap: 6px;
@@ -968,7 +930,6 @@
     font-size: 12px;
   }
 
-  /* Strategy Rules Config Modal List */
   .rule-config-item {
     display: flex;
     align-items: center;
@@ -981,801 +942,865 @@
   }
 
   .notes-field{
-    width:100%; 
-    background:transparent; 
-    border:none; 
-    outline:none; 
+    width:100%;
+    background:transparent;
+    border:none;
+    outline:none;
     color:var(--text);
-    font-size:14px; 
-    margin-top:8px; 
-    resize:none; 
+    font-size:14px;
+    margin-top:8px;
+    resize:none;
     min-height:160px;
     font-family:inherit;
     line-height:1.5;
   }
-  
+
   .image-section{ margin-top:14px; }
-  .image-label{ display:block; font-size:10px; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); margin-bottom:6px; }
+  .image-label{
+    display:block;
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    color:var(--muted);
+    margin-bottom:6px;
+  }
   .image-grid{ display:flex; flex-direction:column; gap:16px; margin-top:10px; }
-  .image-thumb{ position:relative; border-radius:8px; overflow:hidden; border:1px solid var(--border); background:var(--panel2); }
-  .image-thumb img{ width:100%; display:block; cursor:zoom-in; }
-  .image-thumb .thumb-remove{
-    position:absolute; top:8px; right:8px; width:28px; height:28px; border-radius:4px;
-    background:rgba(0,0,0,0.85); color:var(--red); cursor:pointer; display:flex; align-items:center; justify-content:center; border:1px solid var(--border);
+  .image-thumb{ position:relative; display:inline-block; }
+  .image-thumb img{ width:100%; height:auto; border-radius:6px; border:1px solid var(--border); display:block; cursor:pointer; }
+  .image-thumb button{
+    position:absolute; top:8px; right:8px;
+    background:rgba(0,0,0,0.8); color:var(--red);
+    border:1px solid var(--red); width:28px; height:28px;
+    border-radius:4px; cursor:pointer; font-weight:bold;
   }
 
-  .lightbox-overlay{
-    display:none; position:fixed; inset:0; background:rgba(0,0,0,0.92);
-    align-items:center; justify-content:center; z-index:2000; cursor:zoom-out;
+  .modal-footer{
+    margin-top:20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
   }
-  .lightbox-overlay.show{ display:flex; }
-  .lightbox-overlay img{ max-width:90%; max-height:90%; border-radius:6px; }
+  .btn{
+    background:var(--panel2);
+    border:1px solid var(--border);
+    color:var(--text);
+    padding:8px 16px;
+    border-radius:4px;
+    cursor:pointer;
+    font-size:13px;
+  }
+  .btn.primary{ background:var(--amber); color:#000; font-weight:bold; border-color:var(--amber); }
+  .btn:hover{ opacity:0.9; }
 
-  .modal-footer{ display:flex; justify-content:space-between; align-items:center; margin-top:18px; position:sticky; bottom:-28px; background:var(--panel); padding:16px 0; border-top:1px solid var(--border); }
-  .modal-buttons{ display:flex; gap:8px; }
-  .btn{ padding:9px 16px; border-radius:4px; border:1px solid var(--border); cursor:pointer; font-size:13px; font-weight:600; }
-  .btn-save{ background:var(--amber); color:#1a1200; border-color:var(--amber); }
-  .btn-cancel{ background:transparent; color:var(--muted); }
-  
-  footer{ text-align:center; color:var(--muted); font-size:11px; padding:20px; }
-  .loading-screen{ display:flex; align-items:center; justify-content:center; min-height:60vh; color:var(--muted); font-size:13px; text-transform:uppercase; }
-  .pos{ color:var(--green); }
-  .neg{ color:var(--red); }
-  .neu{ color:var(--text); }
+  /* LIGHTBOX OVERLAY */
+  .lightbox-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.92);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .lightbox-overlay.show { display: flex; }
+  .lightbox-overlay img {
+    max-width: 95vw;
+    max-height: 90vh;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.8);
+    border: 1px solid var(--border);
+  }
+
+  /* LOADING SCREEN OVERLAY */
+  #loadingScreen {
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    color: var(--amber);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999;
+    font-family: 'Consolas', monospace;
+  }
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--border);
+    border-top: 3px solid var(--amber);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-bottom: 16px;
+  }
+  @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 </style>
 </head>
 <body>
-  <div id="loginOverlay" style="position:fixed; inset:0; background:#000000; z-index:9999; display:flex; align-items:center; justify-content:center; padding:20px;">
-  <div style="background:var(--panel, #0d0d0d); border:1px solid var(--border, #1f1f1f); padding:32px; border-radius:12px; width:100%; max-width:380px; box-shadow:0 8px 32px rgba(0,0,0,0.8);">
-    <h2 style="margin:0 0 6px 0; font-size:20px; color:var(--text, #e6edf3); font-weight:700; text-transform:uppercase; letter-spacing:0.05em;">TradeFlow Login</h2>
-    <p style="margin:0 0 20px 0; font-size:12px; color:var(--muted, #767d85);">Enter your credentials to access your trading journal.</p>
-    
-    <div style="margin-bottom:14px;">
-      <label style="display:block; font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted, #767d85); margin-bottom:6px;">Username</label>
-      <input type="text" id="loginUsername" placeholder="Enter username" style="width:100%; background:var(--panel2, #141414); border:1px solid var(--border, #1f1f1f); color:var(--text, #e6edf3); padding:10px; border-radius:6px; font-size:14px; outline:none;">
-    </div>
-    
-    <div style="margin-bottom:20px;">
-      <label style="display:block; font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted, #767d85); margin-bottom:6px;">Password</label>
-      <input type="password" id="loginPassword" placeholder="Enter password" style="width:100%; background:var(--panel2, #141414); border:1px solid var(--border, #1f1f1f); color:var(--text, #e6edf3); padding:10px; border-radius:6px; font-size:14px; outline:none;">
-    </div>
 
-    <div id="loginError" style="color:var(--red, #f85149); font-size:12px; margin-bottom:12px; display:none; font-weight:600;">Invalid username or password.</div>
-
-    <button id="loginBtn" style="width:100%; background:var(--amber, #d4a72c); color:#1a1200; border:none; padding:11px; border-radius:6px; font-weight:700; font-size:14px; cursor:pointer; text-transform:uppercase; letter-spacing:0.05em;">Log In</button>
-  </div>
+<div id="loadingScreen">
+  <div class="spinner"></div>
+  <div style="font-size: 14px; font-weight: bold; letter-spacing: 0.1em; text-transform: uppercase;">Loading TradeFlow...</div>
 </div>
 
-<div class="sidebar" id="appSidebar">
-  <div class="sidebar-header">
-    <div class="sidebar-title">TradeFlow Hub</div>
-    <button class="sidebar-close-btn" id="closeSidebarBtn">&times;</button>
-  </div>
-  <div class="sidebar-nav">
-    <div class="sidebar-section-label">Account Switcher</div>
-    <select id="accountSelect" class="sidebar-select">
-      <option value="live">🔴 Live Account</option>
-      <option value="paper">🟡 Paper Money</option>
-    </select>
-
-    <div class="sidebar-section-label" style="margin-top:16px;">Navigation</div>
-    <button class="sidebar-item" id="sidebarTrophyBtn">
-      <span class="sidebar-item-icon">🏆</span>
-      <span>Trophy Case</span>
-    </button>
-  </div>
-</div>
-
-<div class="main-wrapper" id="mainWrapper">
-
-<div class="achievement-toast-container" id="achievementToastContainer">
+<div class="achievement-toast-container" id="achievementToast">
   <div class="achievement-toast">
     <div class="toast-icon" id="toastIcon">🏆</div>
     <div class="toast-body">
-      <div class="toast-header">ACHIEVEMENT UNLOCKED!</div>
-      <div class="toast-title" id="toastTitle">Achievement Title</div>
-      <div class="toast-desc" id="toastDesc">Short description of what was earned.</div>
+      <div class="toast-header">Achievement Unlocked!</div>
+      <div class="toast-title" id="toastTitle">Badge Name</div>
+      <div class="toast-desc" id="toastDesc">Description of achievement.</div>
     </div>
   </div>
 </div>
 
-<div id="loadingScreen" class="loading-screen">Loading TradeFlow&hellip;</div>
+<div id="app" style="display:none; width: 100%;">
 
-<div id="app" style="display:none;">
-
-<header>
-  <div class="header-left">
-    <button class="sidebar-toggle-btn" id="openSidebarBtn">☰</button>
-    <div>
-      <h1>
-        Welcome back, Jonathan 
-        <span class="account-badge live" id="accountBadgeHeader">LIVE</span>
-      </h1>
-      <p class="header-quote">“Dont fuck up the progress trying to speed up the process”</p>
-    </div>
-  </div>
-  <div class="header-controls">
-    <div class="settings-row">
-      <div class="balance-setup">
-        Theme:
-        <select id="themeSelect">
-          <option value="default">Default Dark</option>
-          <option value="cyberpunk">Cyberpunk Neon</option>
-          <option value="nordic">Nordic Frost</option>
-          <option value="emerald">Emerald & Gold</option>
-        </select>
+  <div id="loginOverlay" style="position:fixed; inset:0; background:var(--bg, #000); z-index:9999; display:flex; align-items:center; justify-content:center; padding:20px;">
+    <div style="background:var(--panel, #0d0d0d); border:1px solid var(--border, #1f1f1f); border-radius:12px; width:100%; max-width:380px; padding:32px; box-shadow:0 10px 30px rgba(0,0,0,0.8);">
+      <div style="text-align:center; margin-bottom:24px;">
+        <h2 style="margin:0; font-size:20px; color:var(--amber, #d4a72c); text-transform:uppercase; letter-spacing:0.05em;">TradeFlow Login</h2>
+        <p style="margin:6px 0 0 0; font-size:12px; color:var(--muted, #767d85);">Enter your credentials to access your journal</p>
       </div>
-      <div class="balance-setup">
-        Start Balance
-        <input type="number" id="startingBalanceInput" class="mono num-input" step="0.01">
-        <button id="saveBalanceBtn">Set</button>
+      <div style="margin-bottom:16px;">
+        <label style="display:block; font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:var(--muted, #767d85); margin-bottom:6px;">Username</label>
+        <input type="text" id="loginUsername" placeholder="Enter username" style="width:100%; background:var(--panel2, #141414); border:1px solid var(--border, #1f1f1f); color:var(--text, #e6edf3); padding:10px; border-radius:6px; font-size:14px; outline:none;">
       </div>
-    </div>
-    
-    <div class="settings-row" style="margin-top:2px;">
-      <div class="balance-setup">
-        Max Loss Limit
-        <input type="number" id="maxLossValueInput" class="mono num-input" step="1" value="500">
-        <select id="maxLossUnitSelect" style="padding:5px;">
-          <option value="$">$</option>
-          <option value="%">%</option>
-        </select>
-        <button id="saveMaxLossBtn">Set Limit</button>
+      <div style="margin-bottom:20px;">
+        <label style="display:block; font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:var(--muted, #767d85); margin-bottom:6px;">Password</label>
+        <input type="password" id="loginPassword" placeholder="Enter password" style="width:100%; background:var(--panel2, #141414); border:1px solid var(--border, #1f1f1f); color:var(--text, #e6edf3); padding:10px; border-radius:6px; font-size:14px; outline:none;">
       </div>
-      <div class="backup-actions">
-        <button class="backup-btn" id="exportJsonBtn">Export JSON</button>
-        <button class="backup-btn" id="exportCsvBtn">Export CSV</button>
-        <button class="backup-btn" id="importJsonBtn">Import Backup</button>
-        <input type="file" id="importFileInput" accept=".json" style="display:none">
-      </div>
-    </div>
-  </div>
-</header>
-
-<div class="alert-banner" id="globalAlertBanner">
-  <span>🚨 MAX DAILY LOSS EXCEEDED TODAY — STOP TRADING FOR THE DAY!</span>
-</div>
-
-<div class="stats-bar" id="statsBar"></div>
-
-<div class="goal-section">
-  <div class="goal-header">
-    <div class="goal-title">Monthly Goal Progress</div>
-    <div class="goal-amount-setup">
-      Target: $
-      <input type="number" id="targetGoalInput" class="mono" step="100" value="5000">
-      <span id="goalRatioText" class="mono" style="color:var(--text); font-weight:600; margin-left:8px;">$0 / $5,000</span>
-    </div>
-  </div>
-  <div class="goal-progress-bg">
-    <div class="goal-progress-fill" id="goalProgressFill"></div>
-  </div>
-</div>
-
-<div class="mid-section">
-  <div class="winrate-panel">
-    <div class="panel-title">// WIN RATE</div>
-    <div class="chart-wrapper">
-      <canvas id="winRateChart"></canvas>
-      <div class="chart-inner-text">
-        <div class="pct" id="winRatePctText">0%</div>
-        <div class="counts" id="winRateCountsText">0W / 0L</div>
-      </div>
+      <div id="loginError" style="color:var(--red, #f85149); font-size:12px; margin-bottom:12px; display:none; font-weight:600;">Invalid username or password.</div>
+      <button id="loginBtn" style="width:100%; background:var(--amber, #d4a72c); color:#1a1200; border:none; padding:11px; border-radius:6px; font-weight:700; font-size:14px; cursor:pointer; text-transform:uppercase; letter-spacing:0.05em;">Log In</button>
     </div>
   </div>
 
-  <div class="recent-panel">
-    <div class="panel-title">// RECENT TRADES</div>
-    <div style="overflow-x:auto;">
-      <table class="recent-table">
-          <thead>
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-title">Navigation</div>
+      <button class="sidebar-close-btn" id="closeSidebarBtn">&times;</button>
+    </div>
+    <div class="sidebar-nav">
+      <div class="sidebar-section-label">Account Switcher</div>
+      <select class="sidebar-select" id="accountSelect">
+        <option value="paper">📝 Paper Trading</option>
+        <option value="live">⚡ Live Account</option>
+      </select>
+
+      <div class="sidebar-section-label" style="margin-top: 20px;">Journal Views</div>
+      <button class="sidebar-item" id="navBadgesBtn">
+        <span class="sidebar-item-icon">🏆</span> Achievements & Badges
+      </button>
+      <button class="sidebar-item" id="navTagsBtn">
+        <span class="sidebar-item-icon">🏷️</span> Custom Tags & Rules
+      </button>
+      <button class="sidebar-item" id="navBackupBtn">
+        <span class="sidebar-item-icon">💾</span> Backup & Export
+      </button>
+    </div>
+  </div>
+
+  <div class="main-wrapper">
+    <header>
+      <div class="header-left">
+        <button class="sidebar-toggle-btn" id="openSidebarBtn" title="Open Sidebar">☰</button>
+        <div>
+          <h1>TradeFlow <span id="accountBadge" class="account-badge paper">Paper</span></h1>
+          <p class="header-quote" id="dailyQuote">"Plan the trade, trade the plan."</p>
+        </div>
+      </div>
+
+      <div class="header-controls">
+        <div class="settings-row">
+          <div class="balance-setup">
+            <span>Theme:</span>
+            <select id="themeSelect" style="background:var(--panel2); border:1px solid var(--border); color:var(--text); padding:4px 8px; border-radius:4px; font-size:12px;">
+              <option value="default">Default Dark</option>
+              <option value="cyberpunk">Cyberpunk Neon</option>
+              <option value="nordic">Nordic Frost</option>
+              <option value="emerald">Emerald City</option>
+            </select>
+          </div>
+
+          <div class="balance-setup">
+            <span>Starting Bal:</span>
+            <input type="number" id="startingBalanceInput" class="num-input" value="10000" step="100">
+            <button id="saveBalanceBtn">Save</button>
+          </div>
+
+          <div class="balance-setup">
+            <span>Max Daily Loss:</span>
+            <input type="number" id="maxLossValueInput" class="num-input" value="500" step="10" style="width: 70px;">
+            <select id="maxLossUnitSelect" style="background:var(--panel2); border:1px solid var(--border); color:var(--amber); padding:4px; border-radius:4px; font-size:12px;">
+              <option value="$">$</option>
+              <option value="%">%</option>
+            </select>
+            <button id="saveMaxLossBtn">Save</button>
+          </div>
+
+          <div class="backup-actions">
+            <button class="backup-btn" id="exportJsonBtn">Export JSON</button>
+            <button class="backup-btn" id="importJsonBtn">Import JSON</button>
+            <input type="file" id="importFileInput" accept=".json" style="display:none;">
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="stats-bar">
+      <div class="stat">
+        <div class="label">Starting Balance</div>
+        <div class="value" id="statStartBal">$10,000.00</div>
+      </div>
+      <div class="stat">
+        <div class="label">Current Balance</div>
+        <div class="value" id="statCurrentBal">$10,000.00</div>
+      </div>
+      <div class="stat">
+        <div class="label">Total P&L (Net)</div>
+        <div class="value" id="statTotalPnl">$0.00</div>
+      </div>
+      <div class="stat">
+        <div class="label">Win / Loss Days</div>
+        <div class="value" id="statWinLossDays">0W - 0L</div>
+      </div>
+      <div class="stat">
+        <div class="label">Profit Factor / Avg Win</div>
+        <div class="split-stat-box">
+          <div class="split-stat-row"><span>PF:</span><span id="statProfitFactor">0.00</span></div>
+          <div class="split-stat-row"><span>Avg W:</span><span id="statAvgWin">$0.00</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="goal-section">
+      <div class="goal-header">
+        <span class="goal-title">Monthly Profit Goal Progress</span>
+        <div class="goal-amount-setup">
+          <span>Target: $</span>
+          <input type="number" id="monthlyGoalInput" value="2500" step="100">
+          <button class="backup-btn" id="saveGoalBtn" style="padding: 2px 8px; font-size: 11px;">Set</button>
+        </div>
+      </div>
+      <div class="goal-progress-bg">
+        <div class="goal-progress-fill" id="goalProgressFill"></div>
+      </div>
+      <div style="display: flex; justify-content: space-between; margin-top: 6px; font-size: 11px; font-family: monospace; color: var(--muted);">
+        <span id="goalCurrentText">$0.00 achieved</span>
+        <span id="goalPctText">0%</span>
+      </div>
+    </div>
+
+    <div class="alert-banner" id="maxLossAlertBanner">
+      <span>🚨 MAX DAILY LOSS EXCEEDED TODAY! STOP TRADING IMMEDIATELY.</span>
+    </div>
+
+    <div class="filter-toolbar">
+      <div class="filter-group-wrapper">
+        <div class="filter-group">
+          <span>Filter Strategy:</span>
+          <select id="filterStrategySelect"><option value="ALL">All Strategies</option></select>
+        </div>
+        <div class="filter-group">
+          <span>Filter Mistake:</span>
+          <select id="filterMistakeSelect"><option value="ALL">All Mistakes</option></select>
+        </div>
+        <div class="filter-group">
+          <span>Side:</span>
+          <select id="filterSideSelect">
+            <option value="ALL">All Sides</option>
+            <option value="call">CALLS</option>
+            <option value="put">PUTS</option>
+          </select>
+        </div>
+      </div>
+      <div class="search-box">
+        <input type="text" id="symbolSearchInput" placeholder="🔍 Search Symbol (e.g. SPY, AAPL)...">
+      </div>
+    </div>
+
+    <div class="mid-section">
+      <div class="winrate-panel">
+        <div class="panel-title">WIN / LOSS RATIO</div>
+        <div class="chart-wrapper">
+          <canvas id="winrateChart"></canvas>
+          <div class="chart-inner-text">
+            <div class="pct" id="winratePct">0%</div>
+            <div class="counts" id="winrateCounts">0W - 0L</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="recent-panel">
+        <div class="panel-title">RECENT TRADES LOG</div>
+        <div style="overflow-x: auto;">
+          <table class="recent-table">
+            <thead>
               <tr>
-                  <th>DATE</th>
-                  <th>SYMBOL</th>
-                  <th>SIDE</th>
-                  <th>QTY</th>
-                  <th>STRATEGY</th>
-                  <th>MISTAKE</th>
-                  <th style="text-align: right;">P&amp;L</th>
+                <th>DATE</th>
+                <th>SYMBOL</th>
+                <th>SIDE</th>
+                <th>QTY</th>
+                <th>STRATEGY</th>
+                <th>MISTAKE</th>
+                <th style="text-align: right;">P&L (NET)</th>
               </tr>
-          </thead>
-          <tbody id="recentTradesBody"></tbody>
-      </table>
+            </thead>
+            <tbody id="recentTradesTbody">
+              <tr><td colspan="7" style="text-align:center; color: var(--muted); padding: 20px;">No trades recorded yet.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-container">
+      <div class="panel-title" style="margin-bottom: 10px;">CUMULATIVE EQUITY CURVE</div>
+      <canvas id="equityChart"></canvas>
+    </div>
+
+    <div class="cal-nav">
+      <button id="prevMonthBtn">&lt;</button>
+      <div class="month-label" id="monthLabel">MONTH YEAR</div>
+      <button id="nextMonthBtn">&gt;</button>
+    </div>
+
+    <div class="calendar">
+      <div class="dow-row">
+        <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+      </div>
+      <div class="grid" id="calendarGrid"></div>
     </div>
   </div>
 </div>
 
-<div class="chart-container">
-  <canvas id="equityChart"></canvas>
-</div>
-
-<div class="filter-toolbar">
-  <div class="filter-group-wrapper">
-    <div class="filter-group">
-      Filter Strategy:
-      <select id="filterStrategySelect">
-        <option value="ALL">All Strategies</option>
-      </select>
-    </div>
-    <div class="filter-group">
-      Filter Mistake:
-      <select id="filterMistakeSelect">
-        <option value="ALL">All Mistakes</option>
-      </select>
-    </div>
-  </div>
-  <div class="search-box">
-    <input type="text" id="globalSearchInput" placeholder="🔍 Search Symbol, P&L, Strategy...">
-  </div>
-</div>
-
-<div class="cal-nav">
-  <button id="prevBtn">&#8592;</button>
-  <div class="month-label" id="monthLabel"></div>
-  <button id="nextBtn">&#8594;</button>
-</div>
-
-<div class="calendar">
-  <div class="dow-row">
-    <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
-  </div>
-  <div class="grid" id="calGrid"></div>
-</div>
-
-<footer>Data saved automatically inside browser memory storage.</footer>
-
-<div class="overlay" id="overlay">
+<div class="overlay" id="modalOverlay">
   <div class="modal">
-    <h2 id="modalDate">Date</h2>
-    <div class="modal-sub">Log individual setup profiles or executions for this calendar day.</div>
-    
-    <div class="modal-alert" id="modalMaxLossAlert">
-      🚨 MAX DAILY LOSS EXCEEDED FOR THIS DAY! STOP TRADING.
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div>
+        <h2 id="modalDateTitle">Date</h2>
+        <div class="modal-sub">Log trades, strategies, checklists, and notes.</div>
+      </div>
+      <button id="cancelBtn" style="background:transparent; border:none; color:var(--muted); font-size:20px; cursor:pointer;">&times;</button>
     </div>
 
-    <div class="tag-manager-box">
-      <div class="tag-group">
-        <div class="tag-group-title">Custom Strategies & Rule Rules Engine</div>
-        <div class="tag-list" id="stratTagList"></div>
+    <div class="modal-alert" id="modalMaxLossAlert"></div>
+
+    <div style="margin-bottom:16px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+        <span style="font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); font-weight:700;">Trades Executed</span>
+        <button class="btn" id="addTradeBtn" style="padding:4px 10px; font-size:12px;">+ Add Trade Row</button>
       </div>
-      <div class="tag-group" style="margin-top:10px;">
-        <div class="tag-group-title">Custom Mistakes</div>
-        <div class="tag-list" id="mistakeTagList"></div>
-      </div>
+      <div id="tradesContainer"></div>
     </div>
 
-    <div id="tradesContainer"></div>
-    <button class="add-trade" id="addTradeBtn" style="margin-top:8px; margin-bottom:15px;">+ Add trade</button>
+    <div style="margin-top:20px;">
+      <span class="image-label">Daily Notes & Observations</span>
+      <textarea id="modalNotes" class="notes-field" placeholder="What went well? What rules did you follow or break? Write details here..."></textarea>
+    </div>
 
     <div class="image-section">
-      <label class="image-label">Visual Screenshots</label>
-      <input type="file" id="imageInput" accept="image/*" multiple style="display:none">
-      <button type="button" class="add-trade" id="importImageBtn">+ Import picture(s)</button>
+      <span class="image-label">Chart Screenshots & Attachments</span>
+      <input type="file" id="imageInput" accept="image/*" multiple style="display:none;">
+      <button class="btn" id="uploadImageBtn" style="padding:6px 12px; font-size:12px;">📷 Upload Screenshots</button>
       <div class="image-grid" id="imageGrid"></div>
     </div>
 
-    <div class="notes-section" style="margin-top:20px; border-top:1px solid var(--border); padding-top:15px;">
-      <label class="image-label">Journal Notes</label>
-      <textarea class="notes-field" id="notesField" placeholder="Review mechanics, setups played, psychological states..."></textarea>
+    <div class="modal-footer">
+      <div style="font-size:12px; color:var(--muted);">
+        Day Net P&L: <span id="modalDayTotalNet" class="mono" style="font-weight:bold; font-size:14px; color:var(--text);">$0.00</span>
+      </div>
+      <div style="display:flex; gap:8px;">
+        <button class="btn primary" id="saveModalBtn">Save Entry</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="tagsModalOverlay">
+  <div class="modal" style="max-width: 600px;">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 16px;">
+      <div>
+        <h2>Custom Tags & Strategy Rules</h2>
+        <div class="modal-sub" style="margin-bottom: 0;">Manage your trade strategies, checklist requirements, and mistakes.</div>
+      </div>
+      <button id="closeTagsModalBtn" style="background:transparent; border:none; color:var(--muted); font-size:20px; cursor:pointer;">&times;</button>
     </div>
 
-    <div class="modal-footer">
-      <div class="day-total mono" id="dayTotal" style="font-size:16px; font-weight:700;">$0.00</div>
-      <div class="modal-buttons">
-        <button class="btn btn-cancel" id="cancelBtn">Cancel</button>
-        <button class="btn btn-save" id="saveBtn">Save Day</button>
-      </div>
+    <div style="margin-bottom: 20px;">
+      <span class="image-label" style="margin-bottom: 8px;">Custom Strategies</span>
+      <div id="strategyTagList" style="display:flex; flex-wrap:wrap; gap:8px;"></div>
+    </div>
+
+    <div>
+      <span class="image-label" style="margin-bottom: 8px;">Custom Mistakes / Bad Habits</span>
+      <div id="mistakeTagList" style="display:flex; flex-wrap:wrap; gap:8px;"></div>
     </div>
   </div>
 </div>
 
 <div class="overlay" id="rulesConfigOverlay">
-  <div class="modal" style="max-width: 600px;">
-    <h2>📋 Strategy Rules Engine: <span id="configStratName" style="color:var(--amber);"></span></h2>
-    <div class="modal-sub">Define mandatory rules that must be checked before taking trades with this strategy.</div>
-
-    <div class="tag-manager-box">
-      <div class="add-tag-inline" style="width:100%; margin-bottom:12px;">
-        <input type="text" id="newRuleInput" placeholder="Add mandatory rule (e.g. Wait for 15M candle close)" style="flex:1;">
-        <button id="addRuleBtn">+ Add Rule</button>
+  <div class="modal" style="max-width: 500px;">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 16px;">
+      <div>
+        <h2 id="rulesConfigTitle">Strategy Rules</h2>
+        <div class="modal-sub" style="margin-bottom: 0;">Define mandatory execution checklists for this strategy.</div>
       </div>
-      <div id="strategyRulesList"></div>
+      <button id="closeRulesConfigBtn" style="background:transparent; border:none; color:var(--muted); font-size:20px; cursor:pointer;">&times;</button>
     </div>
 
-    <div class="modal-footer" style="position:static; margin-top:24px; border:none; padding-bottom:0;">
-      <div></div>
-      <button class="btn btn-save" id="closeRulesConfigBtn">Save Rules</button>
+    <div id="rulesListContainer" style="margin-bottom: 16px;"></div>
+
+    <div class="add-tag-inline" style="width: 100%;">
+      <input type="text" id="newRuleInput" placeholder="Add rule (e.g., VWAP confirmation)..." style="flex:1;">
+      <button id="addRuleBtn">+ Add Rule</button>
     </div>
   </div>
 </div>
 
-<div class="overlay" id="badgesOverlay">
-  <div class="modal" style="max-width: 880px;">
-    <h2>🏆 Trophy Case & Trader Milestones</h2>
-    <div class="modal-sub">Track your consistency badges, tier levels, and 7-figure milestones over time.</div>
+<div class="overlay" id="badgesModalOverlay">
+  <div class="modal" style="max-width: 750px;">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 16px;">
+      <div>
+        <h2>Trading Trophies & Achievements</h2>
+        <div class="modal-sub" style="margin-bottom: 0;">Unlock achievements by staying disciplined and executing well.</div>
+      </div>
+      <button id="closeBadgesModalBtn" style="background:transparent; border:none; color:var(--muted); font-size:20px; cursor:pointer;">&times;</button>
+    </div>
 
     <div class="badge-modal-container">
-      <div class="badge-grid" id="badgeInventoryGrid"></div>
-    </div>
-
-    <div class="modal-footer" style="position:static; margin-top:24px; border:none; padding-bottom:0;">
-      <div></div>
-      <button class="btn btn-save" id="closeBadgesBtn">Close</button>
+      <div class="badge-grid" id="badgesGrid"></div>
     </div>
   </div>
-</div>
-
 </div>
 
 <div class="lightbox-overlay" id="lightboxOverlay">
-  <img id="lightboxImg" alt="Enlarged screenshot view">
-</div>
-
+  <img id="lightboxImg" src="" alt="Full view">
 </div>
 
 <script>
-const ACTIVE_ACCOUNT_KEY = 'tj_active_account_v1';
-const TAGS_KEY = 'tj_custom_tags_v1';
-const RULES_KEY = 'tj_strategy_rules_v1';
-const THEME_KEY = 'tj_theme_v1';
+  const STORAGE_KEY_PREFIX = 'tradeflow_data_';
+  const STARTING_BAL_KEY_PREFIX = 'tradeflow_start_bal_';
+  const MONTHLY_GOAL_KEY_PREFIX = 'tradeflow_goal_';
+  const MAX_LOSS_VAL_PREFIX = 'tradeflow_max_loss_val_';
+  const MAX_LOSS_UNIT_PREFIX = 'tradeflow_max_loss_unit_';
 
-let activeAccount = localStorage.getItem('tj_active_account') || 'paper';
-let data = {}; 
-let startingBalance = 0;
-let monthlyGoal = 5000;
-let maxLossValue = 500;
-let maxLossUnit = '$';
-let currentTheme = 'default';
-let unlockedBadges = [];
+  const CUSTOM_TAGS_KEY = 'tradeflow_custom_tags';
+  const STRATEGY_RULES_KEY = 'tradeflow_strategy_rules';
+  const THEME_KEY = 'tradeflow_theme';
+  const ACTIVE_ACCOUNT_KEY = 'tradeflow_active_account';
+  const UNLOCKED_BADGES_KEY = 'tradeflow_unlocked_badges';
 
-let strategyRules = {
-  "BOS15M": ["Wait for 15M candle close", "Check higher timeframe trend", "Risk defined <= 1%"],
-  "OBNV15M": ["Unmitigated order block present", "Session timing aligns"]
-};
+  // BADGES DEFINITION
+  const BADGES_LIST = [
+    { id: 'first_trade', title: 'First Blood', desc: 'Log your very first trade in TradeFlow.', icon: '🎯' },
+    { id: 'win_streak_3', title: 'On Fire', desc: 'Achieve a 3-day winning streak.', icon: '🔥' },
+    { id: 'win_streak_5', title: 'Unstoppable', desc: 'Achieve a 5-day winning streak.', icon: '⚡' },
+    { id: 'green_month', title: 'Monthly Mastery', desc: 'Finish a entire calendar month net green.', icon: '👑' },
+    { id: 'risk_manager', title: 'Iron Discipline', desc: 'Trade 10 days without breaking your Max Daily Loss.', icon: '🛡️' },
+    { id: 'goal_slayer', title: 'Goal Slayer', desc: 'Hit 100% of your monthly profit goal.', icon: '🎯' },
+    { id: 'journal_master', title: 'Detailed Scribe', desc: 'Log detailed notes on 10 different trading days.', icon: '📜' }
+  ];
 
-// MASTER BADGES DEFINITION LIST
-const BADGES_DEFINITIONS = [
-  {
-    id: "seven_figure_club",
-    icon: "💎",
-    title: "7-Figure Club",
-    desc: "Reach your first $1,000,000 in Net P&L. Legendary status.",
-    check: (stats) => stats.netPnl >= 1000000
-  },
-  {
-    id: "trades_tier_1",
-    icon: "🥉",
-    title: "Novice Executioner",
-    desc: "Log 10 total trades in TradeFlow.",
-    check: (stats) => stats.totalTrades >= 10
-  },
-  {
-    id: "trades_tier_2",
-    icon: "🥈",
-    title: "Century Club",
-    desc: "Log 100 total trades in your journal.",
-    check: (stats) => stats.totalTrades >= 100
-  },
-  {
-    id: "trades_tier_3",
-    icon: "🥇",
-    title: "10k Titan",
-    desc: "Log 10,000 total trades in your journal.",
-    check: (stats) => stats.totalTrades >= 10000
-  },
-  {
-    id: "discipline_tier_1",
-    icon: "🥉",
-    title: "Iron Discipline",
-    desc: "Respect your Max Daily Loss limit on 5 trading days.",
-    check: (stats) => stats.disciplinedDays >= 5
-  },
-  {
-    id: "discipline_tier_2",
-    icon: "🥈",
-    title: "Fortress Mindset",
-    desc: "Respect your Max Daily Loss limit on 20 trading days.",
-    check: (stats) => stats.disciplinedDays >= 20
-  },
-  {
-    id: "discipline_tier_3",
-    icon: "🥇",
-    title: "Unshakable Professional",
-    desc: "Respect your Max Daily Loss limit on 50 trading days.",
-    check: (stats) => stats.disciplinedDays >= 50
-  },
-  {
-    id: "streak_tier_1",
-    icon: "🥉",
-    title: "On Fire",
-    desc: "Achieve a winning streak of 3 consecutive trades.",
-    check: (stats) => stats.maxWinStreak >= 3
-  },
-  {
-    id: "streak_tier_2",
-    icon: "🥈",
-    title: "Unstoppable Streak",
-    desc: "Achieve a winning streak of 7 consecutive trades.",
-    check: (stats) => stats.maxWinStreak >= 7
-  },
-  {
-    id: "streak_tier_3",
-    icon: "🥇",
-    title: "Apex Dominance",
-    desc: "Achieve a winning streak of 15 consecutive trades.",
-    check: (stats) => stats.maxWinStreak >= 15
-  },
-  {
-    id: "first_blood",
-    icon: "⚔️",
-    title: "First Blood",
-    desc: "Log your first trade execution in TradeFlow.",
-    check: (stats) => stats.totalTrades >= 1
-  },
-  {
-    id: "zen_master",
-    icon: "🧘",
-    title: "Zen Master",
-    desc: "Log 5 trades with Zero recorded mistake tags.",
-    check: (stats) => stats.cleanTrades >= 5
-  },
-  {
-    id: "profit_hunter",
-    icon: "🦅",
-    title: "Profit Hunter",
-    desc: "Accumulate at least +$1,000 in Net P&L.",
-    check: (stats) => stats.netPnl >= 1000
-  },
-  {
-    id: "goal_crusher",
-    icon: "🏆",
-    title: "Goal Crusher",
-    desc: "Reach 100% of your monthly profit goal.",
-    check: (stats) => stats.monthlyPnl >= stats.goalAmount && stats.goalAmount > 0
-  },
-  {
-    id: "precision_trader",
-    icon: "🎯",
-    title: "Precision Trader",
-    desc: "Maintain a win rate of 60% or higher with at least 20 trades.",
-    check: (stats) => stats.totalTrades >= 20 && stats.winRatePct >= 60
-  },
-  {
-    id: "growth_leader",
-    icon: "📈",
-    title: "Growth Leader",
-    desc: "Grow your account balance by +20% overall.",
-    check: (stats) => stats.startingBal > 0 && ((stats.netPnl / stats.startingBal) * 100) >= 20
-  },
-  {
-    id: "master_historian",
-    icon: "📜",
-    title: "Master Historian",
-    desc: "Write detailed journal notes on 5 separate trading days.",
-    check: (stats) => stats.daysWithNotes >= 5
+  const QUOTES = [
+    '"Plan the trade, trade the plan."',
+    '"Cut your losses quickly and let your winners run."',
+    '"Risk comes from not knowing what you are doing."',
+    '"In trading, discipline is key to longevity."',
+    '"Focus on process, not just profit."'
+  ];
+
+  let activeAccount = 'paper';
+  let data = {};
+  let startingBalance = 10000;
+  let monthlyGoal = 2500;
+  let maxLossValue = 500;
+  let maxLossUnit = '$';
+
+  let customTags = {
+    strategies: ['Breakout', 'Reversal', 'Scalp', 'Trend Following'],
+    mistakes: ['FOMO', 'Chased', 'Sizing Too Big', 'No Stop Loss', 'Overtrading']
+  };
+
+  let strategyRules = {
+    'Breakout': ['Volume spike confirmed', 'Level tested 2+ times', 'Stop placed below key support'],
+    'Reversal': ['RSI divergence', 'Key support/resistance hit', 'Confirmation candle close']
+  };
+
+  let unlockedBadges = [];
+  let currentTheme = 'default';
+
+  let viewYear = new Date().getFullYear();
+  let viewMonth = new Date().getMonth();
+  let activeKey = null;
+
+  let currentImages = [];
+  let winrateChartInstance = null;
+  let equityChartInstance = null;
+
+  function getAccountKey(base) {
+    return base + activeAccount;
   }
-];
 
-let customTags = {
-  strategies: ["BOS15M", "BOS1H", "OBNV15M", "MAGM1H"],
-  mistakes: ["FOMO", "EarlyExit", "LateEntry", "RevengeTrade"]
-};
-
-let activeStrategyFilter = "ALL";
-let activeMistakeFilter = "ALL";
-let searchQuery = "";
-
-let viewYear, viewMonth; 
-let equityChartInstance = null; 
-let winRateChartInstance = null;
-
-const today = new Date();
-viewYear = today.getFullYear();
-viewMonth = today.getMonth();
-
-// Get account-specific keys
-function getKey(baseKey) {
-  const currentAccount = activeAccount || localStorage.getItem('tj_active_account') || 'paper';
-  localStorage.setItem('tj_active_account', currentAccount);
-  return `${baseKey}_${currentAccount}`;
-}
-
-function loadData(){
-  try{ const stored = localStorage.getItem(getKey('tj_data_v1')); return stored ? JSON.parse(stored) : {}; } catch(e){ return {}; }
-}
-function saveData(d){ try{ localStorage.setItem(getKey('tj_data_v1'), JSON.stringify(d)); }catch(e){} }
-
-function loadStartingBalance(){ try{ const s = localStorage.getItem(getKey('tj_starting_balance_v1')); return s !== null ? parseFloat(s) : 0; } catch(e){ return 0; } }
-function saveStartingBalance(v){ try{ localStorage.setItem(getKey('tj_starting_balance_v1'), String(v)); }catch(e){} }
-
-function loadMonthlyGoal(){ try{ const s = localStorage.getItem(getKey('tj_monthly_goal_v1')); return s !== null ? parseFloat(s) : 5000; } catch(e){ return 5000; } }
-function saveMonthlyGoal(v){ try{ localStorage.setItem(getKey('tj_monthly_goal_v1'), String(v)); }catch(e){} }
-
-function loadUnlockedBadges(){ try{ const s = localStorage.getItem(getKey('tj_unlocked_badges_v1')); return s ? JSON.parse(s) : []; } catch(e){ return []; } }
-function saveUnlockedBadges(arr){ try{ localStorage.setItem(getKey('tj_unlocked_badges_v1'), JSON.stringify(arr)); }catch(e){} }
-
-function loadStrategyRules(){
-  try {
-    const s = localStorage.getItem(RULES_KEY);
-    return s ? JSON.parse(s) : strategyRules;
-  } catch(e) { return strategyRules; }
-}
-function saveStrategyRules(){ try { localStorage.setItem(RULES_KEY, JSON.stringify(strategyRules)); } catch(e){} }
-
-function loadMaxLossSettings(){
-  try {
-    const v = localStorage.getItem(getKey('tj_max_loss_val_v1'));
-    const u = localStorage.getItem(getKey('tj_max_loss_unit_v1'));
-    if(v !== null) maxLossValue = parseFloat(v); else maxLossValue = 500;
-    if(u !== null) maxLossUnit = u; else maxLossUnit = '$';
-  } catch(e){}
-}
-function saveMaxLossSettings(){
-  try {
-    localStorage.setItem(getKey('tj_max_loss_val_v1'), String(maxLossValue));
-    localStorage.setItem(getKey('tj_max_loss_unit_v1'), maxLossUnit);
-  } catch(e){}
-}
-
-function loadTheme(){ try{ return localStorage.getItem(THEME_KEY) || 'default'; }catch(e){ return 'default'; } }
-function saveTheme(t){ try{ localStorage.setItem(THEME_KEY, t); }catch(e){} }
-
-function applyTheme(themeName){
-  currentTheme = themeName;
-  document.documentElement.setAttribute('data-theme', themeName);
-  saveTheme(themeName);
-}
-
-function loadCustomTags(){
-  try {
-    const stored = localStorage.getItem(TAGS_KEY);
-    if(stored) {
-      const parsed = JSON.parse(stored);
-      if(parsed.strategies && parsed.mistakes) return parsed;
-    }
-  } catch(e){}
-  return customTags;
-}
-function saveCustomTags(){ try { localStorage.setItem(TAGS_KEY, JSON.stringify(customTags)); } catch(e){} }
-
-function getMaxLossDollarThreshold(){
-  if(maxLossUnit === '%') {
-    return (startingBalance * maxLossValue) / 100;
+  function loadData() {
+    const raw = localStorage.getItem(getAccountKey(STORAGE_KEY_PREFIX));
+    return raw ? JSON.parse(raw) : {};
   }
-  return maxLossValue;
-}
+  function saveData(d) {
+    localStorage.setItem(getAccountKey(STORAGE_KEY_PREFIX), JSON.stringify(d));
+    checkAndGrantBadges();
+  }
 
-/* SIDEBAR TOGGLE HANDLERS */
-const appSidebar = document.getElementById('appSidebar');
-const openSidebarBtn = document.getElementById('openSidebarBtn');
-const closeSidebarBtn = document.getElementById('closeSidebarBtn');
+  function loadStartingBalance() {
+    const raw = localStorage.getItem(getAccountKey(STARTING_BAL_KEY_PREFIX));
+    return raw !== null ? parseFloat(raw) : 10000;
+  }
+  function saveStartingBalance(v) {
+    localStorage.setItem(getAccountKey(STARTING_BAL_KEY_PREFIX), v);
+  }
 
-if(openSidebarBtn) {
-  openSidebarBtn.addEventListener('click', () => {
-    if(appSidebar) appSidebar.classList.add('open');
-  });
-}
-if(closeSidebarBtn) {
-  closeSidebarBtn.addEventListener('click', () => {
-    if(appSidebar) appSidebar.classList.remove('open');
-  });
-}
+  function loadMonthlyGoal() {
+    const raw = localStorage.getItem(getAccountKey(MONTHLY_GOAL_KEY_PREFIX));
+    return raw !== null ? parseFloat(raw) : 2500;
+  }
+  function saveMonthlyGoal(v) {
+    localStorage.setItem(getAccountKey(MONTHLY_GOAL_KEY_PREFIX), v);
+  }
 
-const trophyBtn = document.getElementById('sidebarTrophyBtn');
-if(trophyBtn) {
-  trophyBtn.addEventListener('click', () => {
-    if(appSidebar) appSidebar.classList.remove('open');
-    if(typeof renderBadgesInventory === 'function') renderBadgesInventory();
-    const badgesOverlay = document.getElementById('badgesOverlay');
-    if(badgesOverlay) badgesOverlay.classList.add('show');
-  });
-}
+  function loadMaxLossSettings() {
+    const val = localStorage.getItem(getAccountKey(MAX_LOSS_VAL_PREFIX));
+    const unit = localStorage.getItem(getAccountKey(MAX_LOSS_UNIT_PREFIX));
+    maxLossValue = val !== null ? parseFloat(val) : 500;
+    maxLossUnit = unit !== null ? unit : '$';
+  }
+  function saveMaxLossSettings() {
+    localStorage.setItem(getAccountKey(MAX_LOSS_VAL_PREFIX), maxLossValue);
+    localStorage.setItem(getAccountKey(MAX_LOSS_UNIT_PREFIX), maxLossUnit);
+  }
 
-/* ACCOUNT SWITCHER HANDLER */
-const accountSelect = document.getElementById('accountSelect');
-if(accountSelect) {
-  accountSelect.value = activeAccount;
-  accountSelect.addEventListener('change', (e) => {
-    switchAccount(e.target.value);
-  });
-}
+  function loadCustomTags() {
+    const raw = localStorage.getItem(CUSTOM_TAGS_KEY);
+    return raw ? JSON.parse(raw) : customTags;
+  }
+  function saveCustomTags() {
+    localStorage.setItem(CUSTOM_TAGS_KEY, JSON.stringify(customTags));
+  }
 
-function switchAccount(accType) {
-  activeAccount = accType;
-  localStorage.setItem(ACTIVE_ACCOUNT_KEY, accType);
-  data = loadData();
-  if (typeof render === 'function') render();
-  else if (typeof renderUI === 'function') renderUI();
-}
+  function loadStrategyRules() {
+    const raw = localStorage.getItem(STRATEGY_RULES_KEY);
+    return raw ? JSON.parse(raw) : strategyRules;
+  }
+  function saveStrategyRules() {
+    localStorage.setItem(STRATEGY_RULES_KEY, JSON.stringify(strategyRules));
+  }
 
-  // Load account specific data
-  data = loadData();
-  startingBalance = loadStartingBalance();
-  monthlyGoal = loadMonthlyGoal();
-  loadMaxLossSettings();
-  unlockedBadges = loadUnlockedBadges();
+  function loadUnlockedBadges() {
+    const raw = localStorage.getItem(UNLOCKED_BADGES_KEY);
+    return raw ? JSON.parse(raw) : [];
+  }
+  function saveUnlockedBadges() {
+    localStorage.setItem(UNLOCKED_BADGES_KEY, JSON.stringify(unlockedBadges));
+  }
 
-  // Update Header UI
-  const badge = document.getElementById('accountBadgeHeader');
-  if(badge) {
-    if(accType === 'live') {
-      badge.textContent = 'LIVE';
-      badge.className = 'account-badge live';
-    } else {
-      badge.textContent = 'PAPER MONEY';
-      badge.className = 'account-badge paper';
+  function loadTheme() {
+    return localStorage.getItem(THEME_KEY) || 'default';
+  }
+  function applyTheme(theme) {
+    currentTheme = theme;
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem(THEME_KEY, theme);
+    if (winrateChartInstance || equityChartInstance) {
+      render();
     }
   }
 
-  // Sync Input Elements
-  if(startingBalanceInput) startingBalanceInput.value = startingBalance;
-  if(targetGoalInput) targetGoalInput.value = monthlyGoal;
-  if(maxLossValueInput) maxLossValueInput.value = maxLossValue;
-  if(maxLossUnitSelect) maxLossUnitSelect.value = maxLossUnit;
+  function switchAccount(acc) {
+    activeAccount = acc;
+    localStorage.setItem(ACTIVE_ACCOUNT_KEY, acc);
 
-  render();
-}
+    data = loadData();
+    startingBalance = loadStartingBalance();
+    monthlyGoal = loadMonthlyGoal();
+    loadMaxLossSettings();
 
-const startingBalanceInput = document.getElementById('startingBalanceInput');
-const saveBalanceBtn = document.getElementById('saveBalanceBtn');
-const targetGoalInput = document.getElementById('targetGoalInput');
-const maxLossValueInput = document.getElementById('maxLossValueInput');
-const maxLossUnitSelect = document.getElementById('maxLossUnitSelect');
-const saveMaxLossBtn = document.getElementById('saveMaxLossBtn');
-const themeSelect = document.getElementById('themeSelect');
+    const badgeEl = document.getElementById('accountBadge');
+    if (badgeEl) {
+      badgeEl.textContent = acc === 'live' ? 'Live' : 'Paper';
+      badgeEl.className = 'account-badge ' + acc;
+    }
 
-if(saveBalanceBtn) {
-  saveBalanceBtn.addEventListener('click', () => {
-    const v = parseFloat(startingBalanceInput.value);
-    startingBalance = isNaN(v) ? 0 : v;
-    saveStartingBalance(startingBalance);
+    const selectEl = document.getElementById('accountSelect');
+    if (selectEl) selectEl.value = acc;
+
+    document.getElementById('startingBalanceInput').value = startingBalance;
+    document.getElementById('monthlyGoalInput').value = monthlyGoal;
+    document.getElementById('maxLossValueInput').value = maxLossValue;
+    document.getElementById('maxLossUnitSelect').value = maxLossUnit;
+
     render();
-  });
-}
-
-if(targetGoalInput) {
-  targetGoalInput.addEventListener('input', () => {
-    const v = parseFloat(targetGoalInput.value);
-    monthlyGoal = isNaN(v) || v <= 0 ? 1 : v;
-    saveMonthlyGoal(monthlyGoal);
-    renderStatsAndPanels();
-  });
-}
-
-if(saveMaxLossBtn) {
-  saveMaxLossBtn.addEventListener('click', () => {
-    maxLossValue = parseFloat(maxLossValueInput.value) || 0;
-    maxLossUnit = maxLossUnitSelect.value;
-    saveMaxLossSettings();
-    render();
-  });
-}
-
-if(themeSelect) {
-  themeSelect.addEventListener('change', (e) => applyTheme(e.target.value));
-}
-
-function fmtMoney(n){
-  const sign = n < 0 ? '-' : (n > 0 ? '+' : '');
-  return sign + '$' + Math.abs(n).toFixed(2);
-}
-function padNumber(n){ return n < 10 ? '0'+n : ''+n; }
-function dateKey(y,m,d){ return `${y}-${padNumber(m+1)}-${padNumber(d)}`; }
-
-const COMMISSION_PER_CONTRACT = 1.30; // $1.30 per contract
-
-function getTradeNetPnl(t) {
-  const grossPnl = parseFloat(t.pnl) || 0;
-  const qty = parseFloat(t.qty) || 0;
-  return grossPnl - (qty * COMMISSION_PER_CONTRACT);
-}
-
-function dayTotalPnl(key){
-  const day = data[key];
-  if(!day || !day.trades || day.trades.length === 0) return null;
-  return day.trades.reduce((s, t) => s + getTradeNetPnl(t), 0);
-}
-
-function balanceBefore(y,m,d){
-  const targetKey = dateKey(y,m,d);
-  const keys = Object.keys(data).filter(k => data[k] && data[k].trades && data[k].trades.length > 0).sort();
-  let bal = startingBalance;
-  for(const k of keys){
-    if(k < targetKey) {
-      const pnl = dayTotalPnl(k);
-      if(pnl !== null) bal += pnl;
-    }
-    else break;
-  }
-  return bal;
-}
-
-function dayReturnPct(y,m,d){
-  const key = dateKey(y,m,d);
-  const pnl = dayTotalPnl(key);
-  if(pnl === null) return null;
-  const prevBal = balanceBefore(y,m,d);
-  if(prevBal === 0) return null;
-  return (pnl / prevBal) * 100;
-}
-
-const monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-
-function autoGrowNotes() {
-  this.style.height = 'auto';
-  this.style.height = this.scrollHeight + 'px';
-}
-
-/* STRATEGY RULES CONFIGURATION MODAL ENGINE */
-let activeConfigStrategy = null;
-const rulesConfigOverlay = document.getElementById('rulesConfigOverlay');
-
-function openRulesConfigModal(stratName) {
-  activeConfigStrategy = stratName;
-  document.getElementById('configStratName').textContent = `#${stratName}`;
-  renderStrategyRulesList();
-  rulesConfigOverlay.classList.add('show');
-}
-
-function renderStrategyRulesList() {
-  const container = document.getElementById('strategyRulesList');
-  const rules = strategyRules[activeConfigStrategy] || [];
-
-  if(rules.length === 0) {
-    container.innerHTML = `<div style="font-size:12px; color:var(--muted); padding:8px 0;">No mandatory rules configured for this setup.</div>`;
-    return;
   }
 
-  container.innerHTML = rules.map((r, idx) => `
-    <div class="rule-config-item">
-      <span style="font-size:12px; font-weight:600;">✓ ${r}</span>
-      <button class="remove remove-rule-btn" data-idx="${idx}" style="background:none; border:none; color:var(--red); cursor:pointer;">&times;</button>
-    </div>
-  `).join('');
+  // DOM ELEMENTS
+  const sidebar = document.getElementById('sidebar');
+  const openSidebarBtn = document.getElementById('openSidebarBtn');
+  const closeSidebarBtn = document.getElementById('closeSidebarBtn');
+  const accountSelect = document.getElementById('accountSelect');
 
-  container.querySelectorAll('.remove-rule-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      const idx = parseInt(e.target.getAttribute('data-idx'));
-      removeRuleFromActiveStrategy(idx);
+  const navBadgesBtn = document.getElementById('navBadgesBtn');
+  const navTagsBtn = document.getElementById('navTagsBtn');
+  const navBackupBtn = document.getElementById('navBackupBtn');
+
+  const monthLabel = document.getElementById('monthLabel');
+  const calendarGrid = document.getElementById('calendarGrid');
+  const prevMonthBtn = document.getElementById('prevMonthBtn');
+  const nextMonthBtn = document.getElementById('nextMonthBtn');
+
+  const overlay = document.getElementById('modalOverlay');
+  const cancelBtn = document.getElementById('cancelBtn');
+  const saveModalBtn = document.getElementById('saveModalBtn');
+  const modalDateTitle = document.getElementById('modalDateTitle');
+  const tradesContainer = document.getElementById('tradesContainer');
+  const addTradeBtn = document.getElementById('addTradeBtn');
+  const modalNotes = document.getElementById('modalNotes');
+  const imageInput = document.getElementById('imageInput');
+  const uploadImageBtn = document.getElementById('uploadImageBtn');
+  const imageGrid = document.getElementById('imageGrid');
+
+  const startingBalanceInput = document.getElementById('startingBalanceInput');
+  const saveBalanceBtn = document.getElementById('saveBalanceBtn');
+  const monthlyGoalInput = document.getElementById('monthlyGoalInput');
+  const saveGoalBtn = document.getElementById('saveGoalBtn');
+
+  const maxLossValueInput = document.getElementById('maxLossValueInput');
+  const maxLossUnitSelect = document.getElementById('maxLossUnitSelect');
+  const saveMaxLossBtn = document.getElementById('saveMaxLossBtn');
+
+  const themeSelect = document.getElementById('themeSelect');
+
+  const filterStrategySelect = document.getElementById('filterStrategySelect');
+  const filterMistakeSelect = document.getElementById('filterMistakeSelect');
+  const filterSideSelect = document.getElementById('filterSideSelect');
+  const symbolSearchInput = document.getElementById('symbolSearchInput');
+
+  const tagsModalOverlay = document.getElementById('tagsModalOverlay');
+  const closeTagsModalBtn = document.getElementById('closeTagsModalBtn');
+  const strategyTagList = document.getElementById('strategyTagList');
+  const mistakeTagList = document.getElementById('mistakeTagList');
+
+  const rulesConfigOverlay = document.getElementById('rulesConfigOverlay');
+  const closeRulesConfigBtn = document.getElementById('closeRulesConfigBtn');
+  const rulesConfigTitle = document.getElementById('rulesConfigTitle');
+  const rulesListContainer = document.getElementById('rulesListContainer');
+  const newRuleInput = document.getElementById('newRuleInput');
+  const addRuleBtn = document.getElementById('addRuleBtn');
+
+  const badgesModalOverlay = document.getElementById('badgesModalOverlay');
+  const closeBadgesModalBtn = document.getElementById('closeBadgesModalBtn');
+  const badgesGrid = document.getElementById('badgesGrid');
+
+  let activeConfigStrategy = null;
+
+  // INITIALIZE EVENT LISTENERS
+  if (openSidebarBtn) openSidebarBtn.addEventListener('click', () => sidebar.classList.add('open'));
+  if (closeSidebarBtn) closeSidebarBtn.addEventListener('click', () => sidebar.classList.remove('open'));
+  if (accountSelect) accountSelect.addEventListener('change', (e) => switchAccount(e.target.value));
+
+  if (navBadgesBtn) navBadgesBtn.addEventListener('click', () => { openBadgesModal(); sidebar.classList.remove('open'); });
+  if (navTagsBtn) navTagsBtn.addEventListener('click', () => { openTagsModal(); sidebar.classList.remove('open'); });
+  if (navBackupBtn) navBackupBtn.addEventListener('click', () => { window.scrollTo({ top: 0, behavior: 'smooth' }); sidebar.classList.remove('open'); });
+
+  if(prevMonthBtn) prevMonthBtn.addEventListener('click', () => { viewMonth--; if(viewMonth < 0){ viewMonth = 11; viewYear--; } render(); });
+  if(nextMonthBtn) nextMonthBtn.addEventListener('click', () => { viewMonth++; if(viewMonth > 11){ viewMonth = 0; viewYear++; } render(); });
+
+  if(saveBalanceBtn) {
+    saveBalanceBtn.addEventListener('click', () => {
+      const val = parseFloat(startingBalanceInput.value);
+      if(!isNaN(val) && val >= 0){ startingBalance = val; saveStartingBalance(startingBalance); render(); }
     });
-  });
-}
-
-function addRuleToActiveStrategy() {
-  const input = document.getElementById('newRuleInput');
-  const ruleText = input.value.trim();
-  if(!ruleText) return;
-
-  if(!strategyRules[activeConfigStrategy]) {
-    strategyRules[activeConfigStrategy] = [];
   }
-  strategyRules[activeConfigStrategy].push(ruleText);
-  saveStrategyRules();
-  input.value = '';
-  renderStrategyRulesList();
-}
 
-function removeRuleFromActiveStrategy(idx) {
-  strategyRules[activeConfigStrategy].splice(idx, 1);
-  saveStrategyRules();
-  renderStrategyRulesList();
-}
+  if(saveGoalBtn) {
+    saveGoalBtn.addEventListener('click', () => {
+      const val = parseFloat(monthlyGoalInput.value);
+      if(!isNaN(val) && val >= 0){ monthlyGoal = val; saveMonthlyGoal(monthlyGoal); render(); }
+    });
+  }
 
-document.getElementById('addRuleBtn').addEventListener('click', addRuleToActiveStrategy);
+  if(saveMaxLossBtn) {
+    saveMaxLossBtn.addEventListener('click', () => {
+      maxLossValue = parseFloat(maxLossValueInput.value) || 0;
+      maxLossUnit = maxLossUnitSelect.value;
+      saveMaxLossSettings();
+      render();
+    });
+  }
 
-document.getElementById('closeRulesConfigBtn').addEventListener('click', () => {
-  rulesConfigOverlay.classList.remove('show');
-  updateTradeDropdowns();
-});
+  if(themeSelect) {
+    themeSelect.addEventListener('change', (e) => applyTheme(e.target.value));
+  }
 
-function renderTagManager() {
-  const stratList = document.getElementById('stratTagList');
-  const mistakeList = document.getElementById('mistakeTagList');
+  function fmtMoney(n){
+    const sign = n < 0 ? '-' : (n > 0 ? '+' : '');
+    return sign + '$' + Math.abs(n).toFixed(2);
+  }
 
-  if(stratList) {
-    stratList.innerHTML = customTags.strategies.map((s, idx) => `
+  function padNumber(n){ return n < 10 ? '0'+n : ''+n; }
+  function dateKey(y,m,d){ return `${y}-${padNumber(m+1)}-${padNumber(d)}`; }
+
+  const COMMISSION_PER_CONTRACT = 1.30;
+  function getTradeNetPnl(t) {
+    const grossPnl = parseFloat(t.pnl) || 0;
+    const qty = parseFloat(t.qty) || 0;
+    return grossPnl - (qty * COMMISSION_PER_CONTRACT);
+  }
+
+  function dayTotalPnl(key){
+    const day = data[key];
+    if(!day || !day.trades || day.trades.length === 0) return null;
+    return day.trades.reduce((s, t) => s + getTradeNetPnl(t), 0);
+  }
+
+  function balanceBefore(y,m,d){
+    const targetKey = dateKey(y,m,d);
+    const keys = Object.keys(data).filter(k => data[k] && data[k].trades && data[k].trades.length > 0).sort();
+    let bal = startingBalance;
+    for(const k of keys){
+      if(k < targetKey) {
+        const pnl = dayTotalPnl(k);
+        if(pnl !== null) bal += pnl;
+      } else break;
+    }
+    return bal;
+  }
+
+  const monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+
+  function getMaxLossDollarThreshold() {
+    if (maxLossUnit === '%') {
+      return (startingBalance * maxLossValue) / 100;
+    }
+    return maxLossValue;
+  }
+
+  function openBadgesModal() {
+    renderBadgesList();
+    badgesModalOverlay.classList.add('show');
+  }
+  if (closeBadgesModalBtn) closeBadgesModalBtn.addEventListener('click', () => badgesModalOverlay.classList.remove('show'));
+
+  function renderBadgesList() {
+    if (!badgesGrid) return;
+    badgesGrid.innerHTML = BADGES_LIST.map(badge => {
+      const isUnlocked = unlockedBadges.includes(badge.id);
+      return `
+        <div class="badge-card ${isUnlocked ? 'unlocked' : ''}">
+          <div class="badge-status-tag">${isUnlocked ? 'Unlocked' : 'Locked'}</div>
+          <div class="badge-card-icon">${badge.icon}</div>
+          <div class="badge-card-info">
+            <div class="badge-card-title">${badge.title}</div>
+            <div class="badge-card-desc">${badge.desc}</div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function triggerAchievementToast(badge) {
+    const toastContainer = document.getElementById('achievementToast');
+    const toastIcon = document.getElementById('toastIcon');
+    const toastTitle = document.getElementById('toastTitle');
+    const toastDesc = document.getElementById('toastDesc');
+
+    if (!toastContainer) return;
+    toastIcon.textContent = badge.icon;
+    toastTitle.textContent = badge.title;
+    toastDesc.textContent = badge.desc;
+
+    toastContainer.classList.add('show');
+    setTimeout(() => {
+      toastContainer.classList.remove('show');
+    }, 4500);
+  }
+
+  function checkAndGrantBadges() {
+    const keys = Object.keys(data).filter(k => data[k] && data[k].trades && data[k].trades.length > 0).sort();
+
+    function grant(id) {
+      if (!unlockedBadges.includes(id)) {
+        unlockedBadges.push(id);
+        saveUnlockedBadges();
+        const badgeObj = BADGES_LIST.find(b => b.id === id);
+        if (badgeObj) triggerAchievementToast(badgeObj);
+      }
+    }
+
+    if (keys.length >= 1) grant('first_trade');
+
+    let currentStreak = 0;
+    let maxStreak = 0;
+    keys.forEach(k => {
+      const pnl = dayTotalPnl(k);
+      if (pnl > 0) {
+        currentStreak++;
+        if (currentStreak > maxStreak) maxStreak = currentStreak;
+      } else if (pnl < 0) {
+        currentStreak = 0;
+      }
+    });
+
+    if (maxStreak >= 3) grant('win_streak_3');
+    if (maxStreak >= 5) grant('win_streak_5');
+
+    const limitThreshold = getMaxLossDollarThreshold();
+    if (limitThreshold > 0) {
+      let disciplinedDays = 0;
+      keys.forEach(k => {
+        const pnl = dayTotalPnl(k);
+        if (pnl < 0 && Math.abs(pnl) <= limitThreshold) {
+          disciplinedDays++;
+        }
+      });
+      if (disciplinedDays >= 10) grant('risk_manager');
+    }
+
+    let notesCount = 0;
+    keys.forEach(k => {
+      if (data[k].notes && data[k].notes.trim().length > 10) notesCount++;
+    });
+    if (notesCount >= 10) grant('journal_master');
+  }
+
+  function populateFilterDropdowns() {
+    const stratVal = filterStrategySelect.value;
+    const mistVal = filterMistakeSelect.value;
+
+    filterStrategySelect.innerHTML = '<option value="ALL">All Strategies</option>' +
+      customTags.strategies.map(s => `<option value="${s}">${s}</option>`).join('');
+
+    filterMistakeSelect.innerHTML = '<option value="ALL">All Mistakes</option>' +
+      customTags.mistakes.map(m => `<option value="${m}">${m}</option>`).join('');
+
+    filterStrategySelect.value = stratVal || 'ALL';
+    filterMistakeSelect.value = mistVal || 'ALL';
+  }
+
+  if (filterStrategySelect) filterStrategySelect.addEventListener('change', render);
+  if (filterMistakeSelect) filterMistakeSelect.addEventListener('change', render);
+  if (filterSideSelect) filterSideSelect.addEventListener('change', render);
+  if (symbolSearchInput) symbolSearchInput.addEventListener('input', render);
+
+  function openTagsModal() {
+    renderTagsLists();
+    tagsModalOverlay.classList.add('show');
+  }
+  if (closeTagsModalBtn) closeTagsModalBtn.addEventListener('click', () => tagsModalOverlay.classList.remove('show'));
+
+  function renderTagsLists() {
+    if (!strategyTagList || !mistakeTagList) return;
+
+    strategyTagList.innerHTML = customTags.strategies.map((s, idx) => `
       <div class="tag-chip">
-        #${s} 
+        #${s}
         <button class="config-rules-btn" data-strat="${s}" title="Configure Rules Checklist" style="color:var(--amber); margin-left:4px;">⚙️ Rules</button>
         <button class="remove-tag-btn" data-type="strategies" data-idx="${idx}">&times;</button>
       </div>
@@ -1786,17 +1811,11 @@ function renderTagManager() {
       </div>
     `;
 
-    stratList.querySelectorAll('.config-rules-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => openRulesConfigModal(e.target.getAttribute('data-strat')));
-    });
-
-    const addStratBtn = document.getElementById('addStratBtn');
-    if(addStratBtn) addStratBtn.addEventListener('click', () => addTag('strategies'));
-  }
-
-  if(mistakeList) {
-    mistakeList.innerHTML = customTags.mistakes.map((m, idx) => `
-      <div class="tag-chip">#${m} <button class="remove-tag-btn" data-type="mistakes" data-idx="${idx}">&times;</button></div>
+    mistakeTagList.innerHTML = customTags.mistakes.map((m, idx) => `
+      <div class="tag-chip">
+        #${m}
+        <button class="remove-tag-btn" data-type="mistakes" data-idx="${idx}">&times;</button>
+      </div>
     `).join('') + `
       <div class="add-tag-inline">
         <input type="text" id="newMistakeInput" placeholder="New Mistake">
@@ -1804,814 +1823,543 @@ function renderTagManager() {
       </div>
     `;
 
-    const addMistakeBtn = document.getElementById('addMistakeBtn');
-    if(addMistakeBtn) addMistakeBtn.addEventListener('click', () => addTag('mistakes'));
-  }
-
-  document.querySelectorAll('.remove-tag-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      const type = e.target.getAttribute('data-type');
-      const idx = parseInt(e.target.getAttribute('data-idx'));
-      removeTag(type, idx);
+    strategyTagList.querySelectorAll('.config-rules-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => openRulesConfigModal(e.target.getAttribute('data-strat')));
     });
-  });
 
-  updateFilterOptions();
-}
+    tagsModalOverlay.querySelectorAll('.remove-tag-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const type = e.target.getAttribute('data-type');
+        const idx = parseInt(e.target.getAttribute('data-idx'));
+        customTags[type].splice(idx, 1);
+        saveCustomTags();
+        populateFilterDropdowns();
+        renderTagsLists();
+      });
+    });
 
-function addTag(type) {
-  const inputId = type === 'strategies' ? 'newStratInput' : 'newMistakeInput';
-  const val = document.getElementById(inputId).value.trim().replace(/[^a-zA-Z0-9_-]/g, '');
-  if(val && !customTags[type].includes(val)) {
-    customTags[type].push(val);
-    if(type === 'strategies' && !strategyRules[val]) {
-      strategyRules[val] = [];
-      saveStrategyRules();
-    }
-    saveCustomTags();
-    renderTagManager();
-    updateTradeDropdowns();
-  }
-}
+    const addStratBtn = document.getElementById('addStratBtn');
+    if (addStratBtn) addStratBtn.addEventListener('click', () => addTag('strategies', 'newStratInput'));
 
-function removeTag(type, idx) {
-  customTags[type].splice(idx, 1);
-  saveCustomTags();
-  renderTagManager();
-  updateTradeDropdowns();
-}
-
-function updateFilterOptions() {
-  const stratSelect = document.getElementById('filterStrategySelect');
-  const mistakeSelect = document.getElementById('filterMistakeSelect');
-
-  if(stratSelect) {
-    stratSelect.innerHTML = `<option value="ALL">All Strategies</option>` + 
-      customTags.strategies.map(s => `<option value="${s}" ${activeStrategyFilter === s ? 'selected' : ''}>#${s}</option>`).join('');
+    const addMistakeBtn = document.getElementById('addMistakeBtn');
+    if (addMistakeBtn) addMistakeBtn.addEventListener('click', () => addTag('mistakes', 'newMistakeInput'));
   }
 
-  if(mistakeSelect) {
-    mistakeSelect.innerHTML = `<option value="ALL">All Mistakes</option>` + 
-      customTags.mistakes.map(m => `<option value="${m}" ${activeMistakeFilter === m ? 'selected' : ''}>#${m}</option>`).join('');
+  function addTag(type, inputId) {
+    const input = document.getElementById(inputId);
+    if (!input) return;
+    const val = input.value.trim();
+    if (val && !customTags[type].includes(val)) {
+      customTags[type].push(val);
+      saveCustomTags();
+      populateFilterDropdowns();
+      renderTagsLists();
+    }
   }
-}
 
-document.getElementById('filterStrategySelect').addEventListener('change', (e) => {
-  activeStrategyFilter = e.target.value;
-  renderCalendar();
-});
+  function openRulesConfigModal(strategyName) {
+    activeConfigStrategy = strategyName;
+    rulesConfigTitle.textContent = `Rules Checklist: ${strategyName}`;
+    renderRulesList();
+    rulesConfigOverlay.classList.add('show');
+  }
+  if (closeRulesConfigBtn) closeRulesConfigBtn.addEventListener('click', () => rulesConfigOverlay.classList.remove('show'));
 
-document.getElementById('filterMistakeSelect').addEventListener('change', (e) => {
-  activeMistakeFilter = e.target.value;
-  renderCalendar();
-});
+  function renderRulesList() {
+    if (!activeConfigStrategy) return;
+    const rules = strategyRules[activeConfigStrategy] || [];
 
-document.getElementById('globalSearchInput').addEventListener('input', (e) => {
-  searchQuery = e.target.value.trim().toLowerCase();
-  renderCalendar();
-});
-
-function updateTradeDropdowns() {
-  document.querySelectorAll('.trade-row-wrapper').forEach(wrapper => {
-    const stratSelect = wrapper.querySelector('.strategy-input');
-    const mistakeSelect = wrapper.querySelector('.mistake-input');
-    
-    if(stratSelect) {
-      const currentStrat = stratSelect.value;
-      stratSelect.innerHTML = `<option value="None">No Strategy</option>` + 
-        customTags.strategies.map(s => `<option value="${s}" ${currentStrat === s ? 'selected' : ''}>#${s}</option>`).join('');
-    }
-
-    if(mistakeSelect) {
-      const currentMistake = mistakeSelect.value;
-      mistakeSelect.innerHTML = `<option value="None">No Mistake</option>` + 
-        customTags.mistakes.map(m => `<option value="${m}" ${currentMistake === m ? 'selected' : ''}>#${m}</option>`).join('');
-    }
-  });
-}
-
-/* GAME ACHIEVEMENT POPUP TRIGGER */
-let toastTimeout = null;
-function triggerAchievementToast(badge) {
-  const container = document.getElementById('achievementToastContainer');
-  document.getElementById('toastIcon').textContent = badge.icon;
-  document.getElementById('toastTitle').textContent = badge.title;
-  document.getElementById('toastDesc').textContent = badge.desc;
-
-  container.classList.add('show');
-
-  if(toastTimeout) clearTimeout(toastTimeout);
-  toastTimeout = setTimeout(() => {
-    container.classList.remove('show');
-  }, 5000);
-}
-
-function evaluateBadges(computedStats) {
-  BADGES_DEFINITIONS.forEach(badge => {
-    if(!unlockedBadges.includes(badge.id)) {
-      if(badge.check(computedStats)) {
-        unlockedBadges.push(badge.id);
-        saveUnlockedBadges(unlockedBadges);
-        triggerAchievementToast(badge);
-      }
-    }
-  });
-}
-
-function renderBadgesInventory() {
-  const grid = document.getElementById('badgeInventoryGrid');
-  if(!grid) return;
-
-  grid.innerHTML = BADGES_DEFINITIONS.map(b => {
-    const isUnlocked = unlockedBadges.includes(b.id);
-    return `
-      <div class="badge-card ${isUnlocked ? 'unlocked' : ''}">
-        <div class="badge-status-tag">${isUnlocked ? 'UNLOCKED' : 'LOCKED'}</div>
-        <div class="badge-card-icon">${b.icon}</div>
-        <div class="badge-card-info">
-          <div class="badge-card-title">${b.title}</div>
-          <div class="badge-card-desc">${b.desc}</div>
+    rulesListContainer.innerHTML = rules.length === 0 ?
+      '<div style="color:var(--muted); font-size:12px; font-style:italic;">No checklist rules set for this strategy.</div>' :
+      rules.map((r, idx) => `
+        <div class="rule-config-item">
+          <span style="font-size:13px;">• ${r}</span>
+          <button class="remove-rule-btn" data-idx="${idx}" style="background:none; border:none; color:var(--red); cursor:pointer;">&times;</button>
         </div>
-      </div>
-    `;
-  }).join('');
-}
+      `).join('');
 
-const badgesOverlay = document.getElementById('badgesOverlay');
-document.getElementById('closeBadgesBtn').addEventListener('click', () => {
-  badgesOverlay.classList.remove('show');
-});
-badgesOverlay.addEventListener('click', (e) => {
-  if(e.target === badgesOverlay) badgesOverlay.classList.remove('show');
-});
-
-function render(){
-  try {
-    document.getElementById('monthLabel').textContent = `${monthNames[viewMonth]} ${viewYear}`;
-    updateFilterOptions();
-    checkTodayMaxLossAlert();
-    renderCalendar();
-    renderStatsAndPanels();
-    renderEquityChart(); 
-  } catch(e) { console.error("Render error:", e); }
-}
-
-function checkTodayMaxLossAlert(){
-  const todayKey = dateKey(today.getFullYear(), today.getMonth(), today.getDate());
-  const todayPnl = dayTotalPnl(todayKey);
-  const banner = document.getElementById('globalAlertBanner');
-  const limitThreshold = getMaxLossDollarThreshold();
-
-  if(todayPnl !== null && todayPnl < 0 && Math.abs(todayPnl) >= limitThreshold && limitThreshold > 0) {
-    banner.classList.add('show');
-  } else {
-    banner.classList.remove('show');
-  }
-}
-
-function dayMatchesFilter(key) {
-  const rec = data[key];
-  if(!rec) return searchQuery === "";
-
-  let matchStrat = activeStrategyFilter === "ALL";
-  let matchMistake = activeMistakeFilter === "ALL";
-
-  if(rec.trades && rec.trades.length > 0) {
-    if(activeStrategyFilter !== "ALL") matchStrat = rec.trades.some(t => t.strategy === activeStrategyFilter);
-    if(activeMistakeFilter !== "ALL") matchMistake = rec.trades.some(t => t.mistake === activeMistakeFilter);
-  } else if (activeStrategyFilter !== "ALL" || activeMistakeFilter !== "ALL") {
-    return false;
+    rulesListContainer.querySelectorAll('.remove-rule-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const idx = parseInt(e.target.getAttribute('data-idx'));
+        strategyRules[activeConfigStrategy].splice(idx, 1);
+        saveStrategyRules();
+        renderRulesList();
+      });
+    });
   }
 
-  let matchSearch = searchQuery === "";
-  if(searchQuery !== "") {
-    if(rec.trades && rec.trades.length > 0) {
-      matchSearch = rec.trades.some(t => 
-        (t.symbol && t.symbol.toLowerCase().includes(searchQuery)) ||
-        (t.pnl && String(t.pnl).includes(searchQuery)) ||
-        (t.strategy && t.strategy.toLowerCase().includes(searchQuery)) ||
-        (t.mistake && t.mistake.toLowerCase().includes(searchQuery))
-      );
-    } else {
-      matchSearch = false;
-    }
+  if (addRuleBtn) {
+    addRuleBtn.addEventListener('click', () => {
+      const val = newRuleInput.value.trim();
+      if (val && activeConfigStrategy) {
+        if (!strategyRules[activeConfigStrategy]) strategyRules[activeConfigStrategy] = [];
+        strategyRules[activeConfigStrategy].push(val);
+        saveStrategyRules();
+        newRuleInput.value = '';
+        renderRulesList();
+      }
+    });
   }
 
-  return matchStrat && matchMistake && matchSearch;
-}
+  function render() {
+    populateFilterDropdowns();
 
-function renderCalendar(){
-  const grid = document.getElementById('calGrid');
-  if(!grid) return;
-  grid.innerHTML = '';
-  const firstDay = new Date(viewYear, viewMonth, 1).getDay();
-  const daysInMonth = new Date(viewYear, viewMonth+1, 0).getDate();
+    monthLabel.textContent = `${monthNames[viewMonth]} ${viewYear}`;
+    calendarGrid.innerHTML = '';
 
-  for(let i=0;i<firstDay;i++){
-    const e = document.createElement('div');
-    e.className = 'cell empty';
-    grid.appendChild(e);
-  }
+    const firstDay = new Date(viewYear, viewMonth, 1).getDay();
+    const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
 
-  for(let d=1; d<=daysInMonth; d++){
-    const key = dateKey(viewYear, viewMonth, d);
-    const pnl = dayTotalPnl(key);
-    const cell = document.createElement('div');
-    cell.className = 'cell';
+    const filterStrat = filterStrategySelect.value;
+    const filterMistake = filterMistakeSelect.value;
+    const filterSide = filterSideSelect.value;
+    const searchSymbol = symbolSearchInput.value.trim().toUpperCase();
 
-    if(!dayMatchesFilter(key)) {
-      cell.className += ' filtered-out';
+    let totalNetPnlAll = 0;
+    let totalWinsDays = 0;
+    let totalLossDays = 0;
+    let grossProfitSum = 0;
+    let grossLossSum = 0;
+    let totalWinAmount = 0;
+    let winCountForAvg = 0;
+
+    let monthNetPnl = 0;
+
+    const allKeys = Object.keys(data).filter(k => data[k] && data[k].trades && data[k].trades.length > 0).sort();
+
+    allKeys.forEach(k => {
+      const dayPnl = dayTotalPnl(k);
+      if (dayPnl !== null) {
+        totalNetPnlAll += dayPnl;
+        if (dayPnl > 0) {
+          totalWinsDays++;
+          totalWinAmount += dayPnl;
+          winCountForAvg++;
+          grossProfitSum += dayPnl;
+        } else if (dayPnl < 0) {
+          totalLossDays++;
+          grossLossSum += Math.abs(dayPnl);
+        }
+
+        if (k.startsWith(`${viewYear}-${padNumber(viewMonth + 1)}`)) {
+          monthNetPnl += dayPnl;
+        }
+      }
+    });
+
+    for (let i = 0; i < firstDay; i++) {
+      const empty = document.createElement('div');
+      empty.className = 'cell empty';
+      calendarGrid.appendChild(empty);
     }
 
-    if(pnl !== null) cell.className += pnl >= 0 ? ' profit' : ' loss';
-    
-    if(viewYear === today.getFullYear() && viewMonth === today.getMonth() && d === today.getDate()){
-      cell.className += ' today';
-    }
+    const todayStr = dateKey(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
 
-    const dayNum = document.createElement('div');
-    dayNum.className = 'daynum';
-    dayNum.textContent = d;
-    cell.appendChild(dayNum);
+    for (let d = 1; d <= daysInMonth; d++) {
+      const key = dateKey(viewYear, viewMonth, d);
+      const cell = document.createElement('div');
+      cell.className = 'cell';
 
-    if(pnl !== null){
-      const pnlEl = document.createElement('div');
-      pnlEl.className = 'pnl ' + (pnl >= 0 ? 'pos' : 'neg');
-      pnlEl.textContent = fmtMoney(pnl);
-      cell.appendChild(pnlEl);
+      if (key === todayStr) cell.classList.add('today');
 
-      const metaRow = document.createElement('div');
-      metaRow.className = 'meta-row';
-      const pctReturn = dayReturnPct(viewYear, viewMonth, d);
-      const pctText = pctReturn === null ? '—' : (pctReturn >= 0 ? '+' : '') + pctReturn.toFixed(2) + '%';
-      metaRow.innerHTML = `<span>${data[key].trades.length}t</span><span>&bull;</span><span>${pctText}</span>`;
-      cell.appendChild(metaRow);
-    } else {
-      const spacer = document.createElement('div');
-      spacer.className = 'bal';
-      spacer.style.fontSize = '10px';
-      spacer.style.color = 'var(--muted)';
-      spacer.textContent = 'no trades';
-      cell.appendChild(spacer);
-    }
+      const dayData = data[key];
+      let matchesFilter = true;
 
-    cell.addEventListener('click', () => openModal(viewYear, viewMonth, d));
-    grid.appendChild(cell);
-  }
-}
-
-function renderStatsAndPanels(){
-  let allTimePl = 0, monthPnl = 0;
-  let winDays = 0, lossDays = 0;
-  let bestTrade = -Infinity, worstTrade = Infinity;
-  let winTradesCount = 0, lossTradesCount = 0;
-  let allTradesList = [];
-  let cleanTradesCount = 0;
-  let currentStreak = 0, maxWinStreak = 0;
-  let disciplinedDays = 0;
-  let daysWithNotes = 0;
-
-  const daysInMonth = new Date(viewYear, viewMonth+1, 0).getDate();
-
-  for(let d=1; d<=daysInMonth; d++){
-    const key = dateKey(viewYear, viewMonth, d);
-    const pnl = dayTotalPnl(key);
-    if(pnl !== null) monthPnl += pnl;
-  }
-
-  const fillPct = Math.min(Math.max((monthPnl / (monthlyGoal || 1)) * 100, 0), 100);
-  document.getElementById('goalProgressFill').style.width = fillPct + '%';
-  document.getElementById('goalRatioText').innerText = `${fmtMoney(monthPnl)} / ${fmtMoney(monthlyGoal)}`;
-
-  const sortedDateKeys = Object.keys(data).sort();
-  const limitThreshold = getMaxLossDollarThreshold();
-
-  sortedDateKeys.forEach(k => {
-    const day = data[k];
-    if (day) {
-        if(day.notes && day.notes.trim() !== '') daysWithNotes++;
-
-        if(day.trades && day.trades.length > 0) {
-          const dTotal = day.trades.reduce((s,t)=> s + (parseFloat(t.pnl)||0), 0);
-          if(dTotal >= 0) winDays++;
-          else lossDays++;
-
-          if(dTotal < 0 && Math.abs(dTotal) <= limitThreshold) disciplinedDays++;
-          if(dTotal >= 0) disciplinedDays++;
-
-          day.trades.forEach(t => {
-              const pnl = getTradeNetPnl(t);
-              const qty = t.qty || '—';
-              allTimePl += pnl;
-
-              if(!t.mistake || t.mistake === 'None') cleanTradesCount++;
-              
-              if(pnl >= 0) {
-                currentStreak++;
-                if(currentStreak > maxWinStreak) maxWinStreak = currentStreak;
-              } else {
-                currentStreak = 0;
-              }
-
-              let sideDisplay = t.side || 'call';
-              if(sideDisplay.toLowerCase() === 'long') sideDisplay = 'call';
-              if(sideDisplay.toLowerCase() === 'short') sideDisplay = 'put';
-
-              allTradesList.push({ 
-                  date: k, 
-                  symbol: String(t.symbol || '—'), 
-                  side: sideDisplay, 
-                  qty: qty,
-                  strategy: t.strategy || 'None',
-                  mistake: t.mistake || 'None',
-                  pnl: pnl 
-              });
-              
-              if (pnl >= 0) winTradesCount++;
-              else lossTradesCount++;
-
-              if (pnl > bestTrade) bestTrade = pnl;
-              if (pnl < worstTrade) worstTrade = pnl;
+      if (dayData && dayData.trades && dayData.trades.length > 0) {
+        if (filterStrat !== 'ALL' || filterMistake !== 'ALL' || filterSide !== 'ALL' || searchSymbol !== '') {
+          matchesFilter = dayData.trades.some(t => {
+            const matchS = filterStrat === 'ALL' || t.strategy === filterStrat;
+            const matchM = filterMistake === 'ALL' || t.mistake === filterMistake;
+            const matchSide = filterSide === 'ALL' || t.side === filterSide;
+            const matchSym = searchSymbol === '' || (t.symbol && t.symbol.toUpperCase().includes(searchSymbol));
+            return matchS && matchM && matchSide && matchSym;
           });
         }
+
+        const pnl = dayTotalPnl(key);
+        if (pnl > 0) cell.classList.add('profit');
+        if (pnl < 0) cell.classList.add('loss');
+
+        if (!matchesFilter) cell.classList.add('filtered-out');
+
+        const tradeCount = dayData.trades.length;
+        cell.innerHTML = `
+          <div class="daynum">${d}</div>
+          <div class="pnl">${fmtMoney(pnl)}</div>
+          <div class="meta-row">
+            <span>${tradeCount} trade${tradeCount > 1 ? 's' : ''}</span>
+          </div>
+        `;
+      } else {
+        cell.innerHTML = `<div class="daynum">${d}</div>`;
+      }
+
+      cell.addEventListener('click', () => openModal(key));
+      calendarGrid.appendChild(cell);
     }
-  });
 
-  if (bestTrade === -Infinity) bestTrade = 0;
-  if (worstTrade === Infinity) worstTrade = 0;
+    // UPDATE STATS BAR
+    const statStartBal = document.getElementById('statStartBal');
+    const statCurrentBal = document.getElementById('statCurrentBal');
+    const statTotalPnl = document.getElementById('statTotalPnl');
+    const statWinLossDays = document.getElementById('statWinLossDays');
+    const statProfitFactor = document.getElementById('statProfitFactor');
+    const statAvgWin = document.getElementById('statAvgWin');
 
-  const totalTradesCount = allTradesList.length;
-  const winRateCalculated = totalTradesCount > 0 ? ((winTradesCount / totalTradesCount) * 100) : 0;
+    if (statStartBal) statStartBal.textContent = `$${startingBalance.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+    const currentBal = startingBalance + totalNetPnlAll;
+    if (statCurrentBal) statCurrentBal.textContent = `$${currentBal.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
 
-  evaluateBadges({
-    totalTrades: totalTradesCount,
-    netPnl: allTimePl,
-    monthlyPnl: monthPnl,
-    goalAmount: monthlyGoal,
-    disciplinedDays: disciplinedDays,
-    cleanTrades: cleanTradesCount,
-    maxWinStreak: maxWinStreak,
-    daysWithNotes: daysWithNotes,
-    winRatePct: winRateCalculated,
-    startingBal: startingBalance
-  });
+    if (statTotalPnl) {
+      statTotalPnl.textContent = fmtMoney(totalNetPnlAll);
+      statTotalPnl.style.color = totalNetPnlAll >= 0 ? 'var(--green)' : 'var(--red)';
+    }
 
-  const bar = document.getElementById('statsBar');
-  if(bar) {
-    bar.innerHTML = `
-      <div class="stat">
-        <div class="label">NET P&L ALL TIME</div>
-        <div class="value ${allTimePl >= 0 ? 'pos' : 'neg'}">${fmtMoney(allTimePl)}</div>
-      </div>
-      <div class="stat">
-        <div class="label">MONTHLY P&L</div>
-        <div class="value ${monthPnl >= 0 ? 'pos' : 'neg'}">${fmtMoney(monthPnl)}</div>
-      </div>
-      <div class="stat">
-        <div class="label">WIN DAYS</div>
-        <div class="value pos" style="font-family:Consolas;">${winDays} Days</div>
-      </div>
-      <div class="stat">
-        <div class="label">LOSS DAYS</div>
-        <div class="value neg" style="font-family:Consolas;">${lossDays} Days</div>
-      </div>
-      <div class="stat">
-        <div class="split-stat-box">
-          <div class="split-stat-row"><span style="color:var(--muted); font-size:10px;">BEST TRADE</span><span class="pos">${fmtMoney(bestTrade)}</span></div>
-          <div class="split-stat-row" style="margin-top:6px; border-top:1px solid var(--border); padding-top:4px;"><span style="color:var(--muted); font-size:10px;">WORST TRADE</span><span class="neg">${fmtMoney(worstTrade)}</span></div>
-        </div>
-      </div>
-    `;
+    if (statWinLossDays) statWinLossDays.textContent = `${totalWinsDays}W - ${totalLossDays}L`;
+
+    const pf = grossLossSum > 0 ? (grossProfitSum / grossLossSum).toFixed(2) : (grossProfitSum > 0 ? '∞' : '0.00');
+    if (statProfitFactor) statProfitFactor.textContent = pf;
+
+    const avgW = winCountForAvg > 0 ? (totalWinAmount / winCountForAvg) : 0;
+    if (statAvgWin) statAvgWin.textContent = `$${avgW.toFixed(2)}`;
+
+    // UPDATE GOAL PROGRESS
+    const goalFill = document.getElementById('goalProgressFill');
+    const goalCurrentText = document.getElementById('goalCurrentText');
+    const goalPctText = document.getElementById('goalPctText');
+
+    if (goalFill && goalCurrentText && goalPctText) {
+      const pct = monthlyGoal > 0 ? Math.min(Math.max((monthNetPnl / monthlyGoal) * 100, 0), 100) : 0;
+      goalFill.style.width = `${pct}%`;
+      goalCurrentText.textContent = `${fmtMoney(monthNetPnl)} achieved this month`;
+      goalPctText.textContent = `${pct.toFixed(1)}%`;
+
+      if (pct >= 100) checkAndGrantBadges();
+    }
+
+    // CHECK TODAY'S MAX LOSS ALERT
+    const alertBanner = document.getElementById('maxLossAlertBanner');
+    const todayPnl = dayTotalPnl(todayStr);
+    const limitThreshold = getMaxLossDollarThreshold();
+
+    if (todayPnl !== null && todayPnl < 0 && Math.abs(todayPnl) >= limitThreshold && limitThreshold > 0) {
+      if (alertBanner) alertBanner.classList.add('show');
+    } else {
+      if (alertBanner) alertBanner.classList.remove('show');
+    }
+
+    renderWinrateChart(totalWinsDays, totalLossDays);
+    renderRecentTradesTable();
+    renderEquityChart();
   }
 
-  document.getElementById('winRatePctText').innerText = totalTradesCount > 0 ? winRateCalculated.toFixed(0) + '%' : '0%';
-  document.getElementById('winRateCountsText').innerText = `${winTradesCount}W / ${lossTradesCount}L`;
+  function renderWinrateChart(wins, losses) {
+    const canvasEl = document.getElementById('winrateChart');
+    if (!canvasEl || typeof Chart === 'undefined') return;
 
-  const canvasCircular = document.getElementById('winRateChart');
-  if(canvasCircular && typeof Chart !== 'undefined') {
-    const ctxCircular = canvasCircular.getContext('2d');
-    if(winRateChartInstance) winRateChartInstance.destroy();
+    const total = wins + losses;
+    const winPct = total > 0 ? Math.round((wins / total) * 100) : 0;
+
+    const pctEl = document.getElementById('winratePct');
+    const countsEl = document.getElementById('winrateCounts');
+    if (pctEl) pctEl.textContent = `${winPct}%`;
+    if (countsEl) countsEl.textContent = `${wins}W - ${losses}L`;
+
+    const ctx = canvasEl.getContext('2d');
+    if (winrateChartInstance) winrateChartInstance.destroy();
 
     const styles = getComputedStyle(document.documentElement);
     const greenColor = styles.getPropertyValue('--green').trim() || '#3fb950';
     const redColor = styles.getPropertyValue('--red').trim() || '#f85149';
+    const borderBg = styles.getPropertyValue('--panel2').trim() || '#141414';
 
-    winRateChartInstance = new Chart(ctxCircular, {
+    winrateChartInstance = new Chart(ctx, {
       type: 'doughnut',
       data: {
+        labels: ['Wins', 'Losses'],
         datasets: [{
-          data: totalTradesCount > 0 ? [winTradesCount, lossTradesCount] : [1, 0],
-          backgroundColor: totalTradesCount > 0 ? [greenColor, redColor] : ['#1f1f1f', 'transparent'],
-          borderWidth: 0,
-          hoverOffset: 0
+          data: total === 0 ? [0, 1] : [wins, losses],
+          backgroundColor: total === 0 ? [borderBg, borderBg] : [greenColor, redColor],
+          borderWidth: 0
         }]
       },
       options: {
-        cutout: '82%',
+        cutout: '80%',
         responsive: true,
         maintainAspectRatio: false,
-        plugins: { legend: { display: false }, tooltip: { enabled: totalTradesCount > 0 } }
+        plugins: { legend: { display: false }, tooltip: { enabled: total > 0 } }
       }
     });
   }
 
-  allTradesList.sort((a, b) => new Date(b.date) - new Date(a.date));
-  const recentTradesBody = document.getElementById('recentTradesBody');
-  if (recentTradesBody) {
-    if(allTradesList.length === 0) {
-      recentTradesBody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--muted); padding:20px;">No trade execution history recorded yet.</td></tr>`;
-    } else {
-      recentTradesBody.innerHTML = allTradesList.slice(0, 5).map(t => {
-          const pnlColor = t.pnl >= 0 ? 'var(--green)' : 'var(--red)';
-          const pnlSign = t.pnl >= 0 ? '+$' : '-$';
-          const isPut = t.side.toLowerCase() === 'put' || t.side.toLowerCase() === 'short';
-          const strategyText = t.strategy && t.strategy !== 'None' ? `#${t.strategy}` : '—';
-          const mistakeText = t.mistake && t.mistake !== 'None' ? `#${t.mistake}` : '—';
-          const mistakeColor = t.mistake && t.mistake !== 'None' ? 'var(--red)' : 'var(--muted)';
+  function renderRecentTradesTable() {
+    const tbody = document.getElementById('recentTradesTbody');
+    if (!tbody) return;
 
-          return `
-              <tr>
-                  <td style="color: var(--muted);">${t.date}</td>
-                  <td style="font-weight: bold; color:var(--text);">${t.symbol.toUpperCase()}</td>
-                  <td>
-                      <span style="color: ${isPut ? 'var(--red)' : 'var(--green)'}; font-size:11px; font-weight:bold;">${isPut ? 'PUT' : 'CALL'}</span>
-                  </td>
-                  <td style="color: var(--amber); font-weight:600;">${t.qty}</td>
-                  <td style="color: var(--text); font-weight:500;">${strategyText}</td>
-                  <td style="color: ${mistakeColor}; font-weight:500;">${mistakeText}</td>
-                  <td style="text-align: right; font-weight: bold; color: ${pnlColor};">
-                      ${pnlSign}${Math.abs(t.pnl).toFixed(2)}
-                  </td>
-              </tr>
-          `;
+    const allTrades = [];
+    Object.keys(data).forEach(key => {
+      const day = data[key];
+      if (day && day.trades) {
+        day.trades.forEach(t => {
+          allTrades.push({ date: key, ...t });
+        });
+      }
+    });
+
+    allTrades.sort((a, b) => b.date.localeCompare(a.date));
+    const recent = allTrades.slice(0, 10);
+
+    if (recent.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color: var(--muted); padding: 20px;">No trades recorded yet.</td></tr>';
+    } else {
+      tbody.innerHTML = recent.map(t => {
+        const netPnl = getTradeNetPnl(t);
+        const pnlColor = netPnl >= 0 ? 'var(--green)' : 'var(--red)';
+        const pnlSign = netPnl > 0 ? '+' : '';
+        const isPut = t.side === 'put';
+        const sideBg = isPut ? 'var(--red-dim)' : 'var(--green-dim)';
+        const sideColor = isPut ? 'var(--red)' : 'var(--green)';
+
+        return `
+          <tr>
+            <td>${t.date}</td>
+            <td style="font-weight:700;">${t.symbol || 'N/A'}</td>
+            <td><span style="background:${sideBg}; color:${sideColor}; padding:2px 6px; border-radius:3px; font-size:10px; font-weight:bold;">${(t.side || 'CALL').toUpperCase()}</span></td>
+            <td>${t.qty || 1}</td>
+            <td>${t.strategy || '—'}</td>
+            <td>${t.mistake || '—'}</td>
+            <td style="text-align:right; font-weight:bold; color:${pnlColor};">${pnlSign}$${Math.abs(netPnl).toFixed(2)}</td>
+          </tr>
+        `;
       }).join('');
     }
   }
-}
 
-function renderEquityChart(){
-  const canvasEl = document.getElementById('equityChart');
-  if(!canvasEl || typeof Chart === 'undefined') return;
-  const ctx = canvasEl.getContext('2d');
-  
-  const sortedKeys = Object.keys(data).filter(k => data[k] && data[k].trades && data[k].trades.length > 0).sort();
-  let labels = ['Start'];
-  let chartData = [0]; 
-  let runningNetPnl = 0;
+  function renderEquityChart() {
+    const canvasEl = document.getElementById('equityChart');
+    if (!canvasEl || typeof Chart === 'undefined') return;
 
-  sortedKeys.forEach(k => {
-    const dayPnl = dayTotalPnl(k);
-    if (dayPnl !== null) {
-      runningNetPnl += dayPnl;
-      const parts = k.split('-');
-      const formattedDate = new Date(parts[0], parts[1]-1, parts[2]).toLocaleDateString(undefined, {month:'short', day:'numeric'});
-      labels.push(formattedDate);
-      chartData.push(runningNetPnl);
-    }
-  });
+    const sortedKeys = Object.keys(data).filter(k => data[k] && data[k].trades && data[k].trades.length > 0).sort();
 
-  if (equityChartInstance) equityChartInstance.destroy(); 
+    let labels = ['Start'];
+    let chartData = [startingBalance];
+    let runningBal = startingBalance;
 
-  const styles = getComputedStyle(document.documentElement);
-  const greenColor = styles.getPropertyValue('--green').trim() || '#3fb950';
+    sortedKeys.forEach(k => {
+      const pnl = dayTotalPnl(k);
+      if (pnl !== null) {
+        runningBal += pnl;
+        labels.push(k);
+        chartData.push(runningBal);
+      }
+    });
 
-  equityChartInstance = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: labels,
-      datasets: [{
-        label: 'Net Equity',
-        data: chartData,
-        borderColor: greenColor, 
-        borderWidth: 2,
-        backgroundColor: 'rgba(63, 185, 80, 0.03)', 
-        fill: true,
-        tension: 0.25, 
-        pointRadius: chartData.length > 20 ? 0 : 3,
-        pointBackgroundColor: greenColor
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
-      scales: {
-        x: { 
-          grid: { color: 'var(--panel2)' }, 
-          ticks: { color: '#ffffff', font: { size: 11, weight: 'bold' } } 
-        },
-        y: {
-          grid: { color: 'var(--panel2)' },
-          ticks: {
-            color: '#ffffff',
-            font: { family: 'Consolas', size: 11, weight: 'bold' },
-            callback: function(v) { return (v >= 0 ? '+' : '') + '$' + v; }
-          }
+    const ctx = canvasEl.getContext('2d');
+    if (equityChartInstance) equityChartInstance.destroy();
+
+    const styles = getComputedStyle(document.documentElement);
+    const amberColor = styles.getPropertyValue('--amber').trim() || '#d4a72c';
+
+    equityChartInstance = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Account Equity ($)',
+          data: chartData,
+          borderColor: amberColor,
+          backgroundColor: 'rgba(212, 167, 44, 0.1)',
+          fill: true,
+          tension: 0.2,
+          pointRadius: 4,
+          pointBackgroundColor: amberColor
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#767d85', font: { size: 10 } } },
+          y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#767d85', font: { size: 10 } } }
         }
       }
-    }
-  });
-}
-
-document.getElementById('prevBtn').addEventListener('click', () => {
-  viewMonth--; if(viewMonth < 0){ viewMonth = 11; viewYear--; } render();
-});
-document.getElementById('nextBtn').addEventListener('click', () => {
-  viewMonth++; if(viewMonth > 11){ viewMonth = 0; viewYear++; } render();
-});
-
-document.getElementById('exportJsonBtn').addEventListener('click', () => {
-  const backup = { activeAccount, data, startingBalance, monthlyGoal, customTags, strategyRules, maxLossValue, maxLossUnit, currentTheme, unlockedBadges };
-  const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `TradeFlow_${activeAccount.toUpperCase()}_Backup_${new Date().toISOString().slice(0,10)}.json`;
-  a.click();
-});
-
-document.getElementById('exportCsvBtn').addEventListener('click', () => {
-  let csv = "Date,Symbol,Side,Qty,Strategy,Mistake,PnL\n";
-  Object.keys(data).forEach(k => {
-    if(data[k] && data[k].trades) {
-      data[k].trades.forEach(t => {
-        csv += `"${k}","${t.symbol}","${t.side}","${t.qty}","${t.strategy}","${t.mistake}","${t.pnl}"\n`;
-      });
-    }
-  });
-  const blob = new Blob([csv], { type: 'text/csv' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `TradeFlow_${activeAccount.toUpperCase()}_Trades_${new Date().toISOString().slice(0,10)}.csv`;
-  a.click();
-});
-
-const importFileInput = document.getElementById('importFileInput');
-document.getElementById('importJsonBtn').addEventListener('click', () => importFileInput.click());
-importFileInput.addEventListener('change', (e) => {
-  const file = e.target.files[0];
-  if(!file) return;
-  const reader = new FileReader();
-  reader.onload = (event) => {
-    try {
-      const imported = JSON.parse(event.target.result);
-      if(imported.data) data = imported.data;
-      if(imported.startingBalance !== undefined) startingBalance = imported.startingBalance;
-      if(imported.monthlyGoal !== undefined) monthlyGoal = imported.monthlyGoal;
-      if(imported.customTags) customTags = imported.customTags;
-      if(imported.strategyRules) strategyRules = imported.strategyRules;
-      if(imported.maxLossValue !== undefined) maxLossValue = imported.maxLossValue;
-      if(imported.maxLossUnit !== undefined) maxLossUnit = imported.maxLossUnit;
-      if(imported.currentTheme) applyTheme(imported.currentTheme);
-      if(imported.unlockedBadges) unlockedBadges = imported.unlockedBadges;
-
-      saveData(data);
-      saveStartingBalance(startingBalance);
-      saveMonthlyGoal(monthlyGoal);
-      saveCustomTags(customTags);
-      saveStrategyRules();
-      saveMaxLossSettings();
-      saveUnlockedBadges(unlockedBadges);
-
-      if(startingBalanceInput) startingBalanceInput.value = startingBalance;
-      if(targetGoalInput) targetGoalInput.value = monthlyGoal;
-      if(maxLossValueInput) maxLossValueInput.value = maxLossValue;
-      if(maxLossUnitSelect) maxLossUnitSelect.value = maxLossUnit;
-      if(themeSelect) themeSelect.value = currentTheme;
-
-      render();
-      alert("Backup imported successfully!");
-    } catch(err) {
-      alert("Invalid backup file.");
-    }
-  };
-  reader.readAsText(file);
-});
-
-let activeKey = null;
-const overlay = document.getElementById('overlay');
-const tradesContainer = document.getElementById('tradesContainer');
-const notesField = document.getElementById('notesField');
-const dayTotalEl = document.getElementById('dayTotal');
-const saveBtn = document.getElementById('saveBtn');
-const imageInput = document.getElementById('imageInput');
-const importImageBtn = document.getElementById('importImageBtn');
-const imageGrid = document.getElementById('imageGrid');
-const lightboxOverlay = document.getElementById('lightboxOverlay');
-const lightboxImg = document.getElementById('lightboxImg');
-let currentImages = [];
-
-if (notesField) notesField.addEventListener('input', autoGrowNotes);
-
-function renderImageGrid(){
-  if(!imageGrid) return;
-  imageGrid.innerHTML = '';
-  currentImages.forEach((dataUrl, idx) => {
-    const thumb = document.createElement('div');
-    thumb.className = 'image-thumb';
-    const img = document.createElement('img');
-    img.src = dataUrl;
-    img.addEventListener('click', () => { lightboxImg.src = dataUrl; lightboxOverlay.classList.add('show'); });
-    const removeBtn = document.createElement('button');
-    removeBtn.className = 'thumb-remove';
-    removeBtn.textContent = '\u00d7';
-    removeBtn.addEventListener('click', (e) => { e.stopPropagation(); currentImages.splice(idx, 1); renderImageGrid(); });
-    thumb.appendChild(img); thumb.appendChild(removeBtn); imageGrid.appendChild(thumb);
-  });
-}
-
-if(lightboxOverlay) {
-  lightboxOverlay.addEventListener('click', () => { lightboxOverlay.classList.remove('show'); lightboxImg.src = ''; });
-}
-if(importImageBtn) {
-  importImageBtn.addEventListener('click', () => imageInput.click());
-}
-
-if(imageInput) {
-  imageInput.addEventListener('change', async () => {
-    const files = Array.from(imageInput.files || []);
-    imageInput.value = '';
-    for(const file of files){
-      try{
-        const dataUrl = await new Promise((resolve) => {
-          const r = new FileReader();
-          r.onload = (e) => resolve(e.target.result);
-          r.readAsDataURL(file);
-        });
-        currentImages.push(dataUrl);
-      }catch(e){}
-    }
-    renderImageGrid();
-  });
-}
-
-function openModal(y,m,d){
-  activeKey = dateKey(y,m,d);
-  const rec = data[activeKey] || { trades: [], notes: '' };
-  document.getElementById('modalDate').textContent = new Date(y,m,d).toLocaleDateString(undefined, { weekday:'long', year:'numeric', month:'long', day:'numeric' });
-  notesField.value = rec.notes || '';
-  
-  renderTagManager();
-
-  tradesContainer.innerHTML = '';
-  if(rec.trades && rec.trades.length){
-    rec.trades.forEach(t => addTradeRow(t.symbol, t.pnl, t.side, t.qty, t.strategy, t.mistake, t.ruleChecks));
-  } else {
-    addTradeRow('', '', 'call', '', 'None', 'None');
+    });
   }
-  currentImages = rec.images ? [...rec.images] : (rec.image ? [rec.image] : []);
-  renderImageGrid();
-  updateDayTotal();
-  
-  overlay.classList.add('show');
-  
-  setTimeout(() => {
-    notesField.style.height = 'auto';
-    notesField.style.height = notesField.scrollHeight + 'px';
-  }, 10);
-}
 
-function addTradeRow(symbol='', pnl='', side='call', qty='', strategy='None', mistake='None', ruleChecks={}){
-  const wrapper = document.createElement('div');
-  wrapper.className = 'trade-row-wrapper';
+  function openModal(key) {
+    activeKey = key;
+    modalDateTitle.textContent = key;
+    tradesContainer.innerHTML = '';
 
-  const row = document.createElement('div');
-  row.className = 'trade-row';
-  
-  const selectedCall = (side && (side.toLowerCase() === 'put' || side.toLowerCase() === 'short')) ? '' : 'selected';
-  const selectedPut = (side && (side.toLowerCase() === 'put' || side.toLowerCase() === 'short')) ? 'selected' : '';
+    const day = data[key] || { trades: [], notes: '', images: [] };
+    currentImages = day.images ? [...day.images] : [];
 
-  const strategyOptions = `<option value="None">No Strategy</option>` + 
-    customTags.strategies.map(opt => `<option value="${opt}" ${strategy === opt ? 'selected' : ''}>#${opt}</option>`).join('');
-
-  const mistakeOptions = `<option value="None">No Mistake</option>` + 
-    customTags.mistakes.map(opt => `<option value="${opt}" ${mistake === opt ? 'selected' : ''}>#${opt}</option>`).join('');
-
-  row.innerHTML = `
-    <input type="text" class="symbol-input" placeholder="Symbol (e.g. SPY)" value="${symbol}">
-    <select class="side-input">
-        <option value="call" ${selectedCall}>Call</option>
-        <option value="put" ${selectedPut}>Put</option>
-    </select>
-    <input type="number" class="qty-input" placeholder="QTY" value="${qty}">
-    <select class="strategy-input">${strategyOptions}</select>
-    <select class="mistake-input">${mistakeOptions}</select>
-    <input type="number" step="0.01" class="pnl-input" placeholder="P&L ($)" value="${pnl}">
-    <button class="remove">&times;</button>
-  `;
-
-  const checklistContainer = document.createElement('div');
-  checklistContainer.className = 'strategy-checklist-container';
-
-  wrapper.appendChild(row);
-  wrapper.appendChild(checklistContainer);
-
-  const updateChecklistUI = () => {
-    const selectedStrat = row.querySelector('.strategy-input').value;
-    const rules = strategyRules[selectedStrat] || [];
-
-    if(selectedStrat === 'None' || rules.length === 0) {
-      checklistContainer.classList.remove('show');
-      checklistContainer.innerHTML = '';
-      return;
+    if (day.trades && day.trades.length > 0) {
+      day.trades.forEach(t => addTradeRow(t));
+    } else {
+      addTradeRow();
     }
 
-    checklistContainer.innerHTML = `
-      <div class="checklist-title">
-        <span>#${selectedStrat} Execution Checklist</span>
-        <span class="compliance-tag" style="color:var(--text);">Compliance: <strong class="pct-val">0%</strong></span>
+    modalNotes.value = day.notes || '';
+    renderImageGrid();
+    updateModalPnl();
+
+    overlay.classList.add('show');
+  }
+
+  function addTradeRow(tradeData = {}) {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'trade-row-wrapper';
+
+    const stratOptions = customTags.strategies.map(s =>
+      `<option value="${s}" ${tradeData.strategy === s ? 'selected' : ''}>${s}</option>`
+    ).join('');
+
+    const mistakeOptions = customTags.mistakes.map(m =>
+      `<option value="${m}" ${tradeData.mistake === m ? 'selected' : ''}>${m}</option>`
+    ).join('');
+
+    wrapper.innerHTML = `
+      <div class="trade-row">
+        <input type="text" class="symbol-input" placeholder="Symbol (SPY)" value="${tradeData.symbol || ''}">
+        <select class="side-input">
+          <option value="call" ${tradeData.side === 'call' ? 'selected' : ''}>CALL</option>
+          <option value="put" ${tradeData.side === 'put' ? 'selected' : ''}>PUT</option>
+        </select>
+        <input type="number" class="qty-input" placeholder="Qty" value="${tradeData.qty || 1}" min="1">
+        <select class="strategy-input">
+          <option value="">-- Strategy --</option>
+          ${stratOptions}
+        </select>
+        <select class="mistake-input">
+          <option value="">-- Mistake --</option>
+          ${mistakeOptions}
+        </select>
+        <input type="number" class="pnl-input" placeholder="P&L ($)" value="${tradeData.pnl !== undefined ? tradeData.pnl : ''}" step="0.01">
+        <button class="remove" title="Remove Row">&times;</button>
       </div>
-      <div class="checklist-items">
-        ${rules.map((r) => `
-          <label class="checklist-item">
-            <input type="checkbox" class="rule-chk" data-rule="${r}" ${ruleChecks[r] ? 'checked' : ''}>
-            <span>${r}</span>
-          </label>
-        `).join('')}
+      <div class="strategy-checklist-container">
+        <div class="checklist-title">
+          <span>Strategy Checklist</span>
+          <span class="checklist-score" style="color:var(--muted);">0/0</span>
+        </div>
+        <div class="checklist-items"></div>
       </div>
     `;
 
-    checklistContainer.classList.add('show');
-
-    const updateCompliancePct = () => {
-      const chks = checklistContainer.querySelectorAll('.rule-chk');
-      if(chks.length === 0) return;
-      let checked = 0;
-      chks.forEach(c => { if(c.checked) checked++; });
-      const pct = Math.round((checked / chks.length) * 100);
-      const pctEl = checklistContainer.querySelector('.pct-val');
-      if(pctEl) {
-        pctEl.textContent = `${pct}%`;
-        pctEl.style.color = pct === 100 ? 'var(--green)' : (pct > 50 ? 'var(--amber)' : 'var(--red)');
-      }
-    };
-
-    checklistContainer.querySelectorAll('.rule-chk').forEach(chk => {
-      chk.addEventListener('change', updateCompliancePct);
+    const removeBtn = wrapper.querySelector('.remove');
+    removeBtn.addEventListener('click', () => {
+      wrapper.remove();
+      updateModalPnl();
     });
-    updateCompliancePct();
-  };
 
-  row.querySelector('.strategy-input').addEventListener('change', updateChecklistUI);
-  row.querySelector('.remove').addEventListener('click', () => { wrapper.remove(); updateDayTotal(); });
-  row.querySelector('.pnl-input').addEventListener('input', updateDayTotal);
-  
-  tradesContainer.appendChild(wrapper);
-  updateChecklistUI();
-}
+    const pnlInput = wrapper.querySelector('.pnl-input');
+    const qtyInput = wrapper.querySelector('.qty-input');
+    if (pnlInput) pnlInput.addEventListener('input', updateModalPnl);
+    if (qtyInput) qtyInput.addEventListener('input', updateModalPnl);
 
-document.getElementById('addTradeBtn').addEventListener('click', () => addTradeRow());
+    const stratSelect = wrapper.querySelector('.strategy-input');
+    if (stratSelect) {
+      stratSelect.addEventListener('change', () => updateChecklistUI(wrapper, tradeData.ruleChecks));
+      updateChecklistUI(wrapper, tradeData.ruleChecks);
+    }
 
-function updateDayTotal(){
-  let gross = 0;
-  let totalComm = 0;
-
-  tradesContainer.querySelectorAll('.trade-row-wrapper').forEach(wrapper => {
-    const v = parseFloat(wrapper.querySelector('.pnl-input').value);
-    const q = parseFloat(wrapper.querySelector('.qty-input')?.value);
-    
-    if(!isNaN(v)) gross += v;
-    if(!isNaN(q)) totalComm += q * COMMISSION_PER_CONTRACT;
-  });
-
-  const net = gross - totalComm;
-
-  dayTotalEl.innerHTML = `
-    <span style="font-size:12px; color:var(--muted);">Gross: ${fmtMoney(gross)} | Comm: -$${totalComm.toFixed(2)} | </span>
-    <span>Net: ${fmtMoney(net)}</span>
-  `;
-  dayTotalEl.className = 'day-total mono ' + (net >= 0 ? 'pos' : 'neg');
-
-  const alertBox = document.getElementById('modalMaxLossAlert');
-  const limitThreshold = getMaxLossDollarThreshold();
-
-  if(net < 0 && Math.abs(net) >= limitThreshold && limitThreshold > 0) {
-    alertBox.textContent = `🚨 MAX DAILY LOSS EXCEEDED FOR THIS DAY (${fmtMoney(net)} / Limit: $${limitThreshold.toFixed(2)})! STOP TRADING.`;
-    alertBox.classList.add('show');
-  } else {
-    alertBox.classList.remove('show');
+    tradesContainer.appendChild(wrapper);
   }
-}
 
-document.getElementById('cancelBtn').addEventListener('click', closeModal);
-overlay.addEventListener('click', (e) => { if(e.target === overlay) closeModal(); });
-function closeModal(){ overlay.classList.remove('show'); activeKey = null; }
+  function updateChecklistUI(wrapper, savedChecks = {}) {
+    const stratSelect = wrapper.querySelector('.strategy-input');
+    const container = wrapper.querySelector('.strategy-checklist-container');
+    const itemsDiv = wrapper.querySelector('.checklist-items');
+    const scoreSpan = wrapper.querySelector('.checklist-score');
 
-const saveBtn = document.getElementById('saveBtn') || document.getElementById('saveModalBtn');
-const notesField = document.getElementById('modalNotes') || document.getElementById('dayNotes');
+    const selectedStrat = stratSelect.value;
+    const rules = strategyRules[selectedStrat] || [];
 
-if (saveBtn) {
-  saveBtn.addEventListener('click', () => {
-    const trades = [];
-    const tradesContainer = document.getElementById('tradesContainer');
+    if (!selectedStrat || rules.length === 0) {
+      container.classList.remove('show');
+      return;
+    }
 
-    if (tradesContainer) {
+    container.classList.add('show');
+    itemsDiv.innerHTML = rules.map((r, idx) => {
+      const isChecked = savedChecks && savedChecks[idx] === true;
+      return `
+        <label class="checklist-item">
+          <input type="checkbox" class="rule-chk" data-rule="${idx}" ${isChecked ? 'checked' : ''}>
+          <span>${r}</span>
+        </label>
+      `;
+    }).join('');
+
+    function updateScore() {
+      const chks = itemsDiv.querySelectorAll('.rule-chk');
+      let checkedCount = 0;
+      chks.forEach(c => { if (c.checked) checkedCount++; });
+      scoreSpan.textContent = `${checkedCount}/${chks.length} passed`;
+      scoreSpan.style.color = checkedCount === chks.length ? 'var(--green)' : 'var(--amber)';
+    }
+
+    itemsDiv.querySelectorAll('.rule-chk').forEach(chk => chk.addEventListener('change', updateScore));
+    updateScore();
+  }
+
+  if (addTradeBtn) addTradeBtn.addEventListener('click', () => addTradeRow());
+
+  function updateModalPnl() {
+    let grossTotal = 0;
+    let totalComm = 0;
+
+    tradesContainer.querySelectorAll('.trade-row-wrapper').forEach(wrapper => {
+      const pnlVal = parseFloat(wrapper.querySelector('.pnl-input').value) || 0;
+      const qtyVal = parseFloat(wrapper.querySelector('.qty-input').value) || 0;
+      grossTotal += pnlVal;
+      totalComm += (qtyVal * COMMISSION_PER_CONTRACT);
+    });
+
+    const netTotal = grossTotal - totalComm;
+    const dayTotalEl = document.getElementById('modalDayTotalNet');
+    if (dayTotalEl) {
+      dayTotalEl.textContent = fmtMoney(netTotal);
+      dayTotalEl.style.color = netTotal >= 0 ? 'var(--green)' : 'var(--red)';
+    }
+
+    const alertBox = document.getElementById('modalMaxLossAlert');
+    const limitThreshold = getMaxLossDollarThreshold();
+    if (alertBox) {
+      if (netTotal < 0 && Math.abs(netTotal) >= limitThreshold && limitThreshold > 0) {
+        alertBox.textContent = `🚨 MAX DAILY LOSS EXCEEDED FOR THIS DAY (${fmtMoney(netTotal)} / Limit: $${limitThreshold.toFixed(2)})! STOP TRADING.`;
+        alertBox.classList.add('show');
+      } else {
+        alertBox.classList.remove('show');
+      }
+    }
+  }
+
+  if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
+  if (overlay) {
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) closeModal();
+    });
+  }
+
+  function closeModal() {
+    overlay.classList.remove('show');
+    activeKey = null;
+  }
+
+  const saveBtn = document.getElementById('saveModalBtn');
+  if (saveBtn) {
+    saveBtn.addEventListener('click', () => {
+      const trades = [];
       tradesContainer.querySelectorAll('.trade-row-wrapper').forEach(wrapper => {
-        const symbol = wrapper.querySelector('.symbol-input')?.value.trim() || '';
-        const side = wrapper.querySelector('.side-input')?.value || 'call';
-        const qtyVal = wrapper.querySelector('.qty-input')?.value.trim() || '';
-        const strategy = wrapper.querySelector('.strategy-input')?.value || '';
-        const mistake = wrapper.querySelector('.mistake-input')?.value || '';
-        const pnlVal = wrapper.querySelector('.pnl-input')?.value || '';
+        const symbol = wrapper.querySelector('.symbol-input').value.trim();
+        const side = wrapper.querySelector('.side-input').value;
+        const qtyVal = wrapper.querySelector('.qty-input').value.trim();
+        const strategy = wrapper.querySelector('.strategy-input').value;
+        const mistake = wrapper.querySelector('.mistake-input').value;
+        const pnlVal = wrapper.querySelector('.pnl-input').value;
 
         const ruleChecks = {};
         wrapper.querySelectorAll('.rule-chk').forEach(chk => {
@@ -2621,7 +2369,7 @@ if (saveBtn) {
         if (symbol !== '' || pnlVal !== '') {
           trades.push({
             symbol: symbol || 'Trade',
-            side: side,
+            side: side || 'call',
             qty: qtyVal !== '' ? (parseInt(qtyVal) || qtyVal) : 1,
             strategy: strategy,
             mistake: mistake,
@@ -2630,107 +2378,212 @@ if (saveBtn) {
           });
         }
       });
-    }
 
-    const notes = notesField ? notesField.value.trim() : '';
-    const imagesList = typeof currentImages !== 'undefined' ? currentImages : [];
+      const notes = modalNotes ? modalNotes.value.trim() : '';
 
-    if (trades.length === 0 && notes === '' && imagesList.length === 0) {
-      if (typeof activeKey !== 'undefined' && data[activeKey]) {
+      if (trades.length === 0 && notes === '' && currentImages.length === 0) {
         delete data[activeKey];
-      }
-    } else if (typeof activeKey !== 'undefined') {
-      data[activeKey] = { trades, notes, images: imagesList };
-    }
-
-    if (typeof saveData === 'function') saveData(data);
-    if (typeof closeModal === 'function') closeModal();
-    if (typeof render === 'function') render();
-  });
-}
-
-function initAuth() {
-  const DEFAULT_USER = "jonnypapa";
-  const DEFAULT_PASS = "Jamesroland2017";
-
-  const loginOverlay = document.getElementById('loginOverlay');
-  const loginError = document.getElementById('loginError');
-  const loginBtn = document.getElementById('loginBtn');
-
-  // If already logged in, immediately hide login screen
-  if (localStorage.getItem('tf_logged_in') === 'true') {
-    if (loginOverlay) loginOverlay.style.display = 'none';
-    return;
-  } else {
-    if (loginOverlay) loginOverlay.style.display = 'flex';
-  }
-
-  if (loginBtn) {
-    // Rebind clean listener
-    const newBtn = loginBtn.cloneNode(true);
-    loginBtn.parentNode.replaceChild(newBtn, loginBtn);
-
-    newBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-
-      const userEl = document.getElementById('loginUsername');
-      const passEl = document.getElementById('loginPassword');
-
-      const u = (userEl ? userEl.value : '').trim().toLowerCase();
-      const p = (passEl ? passEl.value : '').trim();
-
-      if (u === DEFAULT_USER && p === DEFAULT_PASS) {
-        localStorage.setItem('tf_logged_in', 'true');
-        if (loginOverlay) loginOverlay.style.display = 'none';
-        if (loginError) loginError.style.display = 'none';
       } else {
-        if (loginError) loginError.style.display = 'block';
+        data[activeKey] = { trades, notes, images: currentImages };
       }
+
+      saveData(data);
+      closeModal();
+      render();
     });
   }
-}
 
-function init(){
-  try {
-    initAuth();
-
-    // 1. Restore saved active account choice ('paper' or 'live')
-    if (typeof ACTIVE_ACCOUNT_KEY !== 'undefined') {
-      const savedAccount = localStorage.getItem(ACTIVE_ACCOUNT_KEY);
-      if (savedAccount) activeAccount = savedAccount;
-    }
-
-    // 2. Load data specifically for the active account
-    if (typeof loadData === 'function') data = loadData();
-
-    // 3. Load user tags, rules, and themes
-    if (typeof loadCustomTags === 'function') customTags = loadCustomTags();
-    if (typeof loadStrategyRules === 'function') strategyRules = loadStrategyRules();
-    if (typeof loadTheme === 'function') currentTheme = loadTheme();
-    if (typeof applyTheme === 'function') applyTheme(currentTheme);
-
-    // 4. Switch account UI state
-    if (typeof switchAccount === 'function') switchAccount(activeAccount);
-  } catch(err) {
-    console.error("Data load error:", err);
-    data = {};
+  if (uploadImageBtn && imageInput) {
+    uploadImageBtn.addEventListener('click', () => imageInput.click());
+    imageInput.addEventListener('change', (e) => {
+      const files = Array.from(e.target.files);
+      files.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = (evt) => {
+          currentImages.push(evt.target.result);
+          renderImageGrid();
+        };
+        reader.readAsDataURL(file);
+      });
+    });
   }
 
-  // 5. Hide loading screen and show app
-  const loadingScreen = document.getElementById('loadingScreen');
-  if (loadingScreen) loadingScreen.style.display = 'none';
+  function renderImageGrid() {
+    if (!imageGrid) return;
+    imageGrid.innerHTML = currentImages.map((src, idx) => `
+      <div class="image-thumb">
+        <img src="${src}" onclick="openLightbox('${src}')">
+        <button onclick="removeImage(${idx})">&times;</button>
+      </div>
+    `).join('');
+  }
 
-  const appEl = document.getElementById('app');
-  if (appEl) appEl.style.display = 'block';
+  window.removeImage = function(idx) {
+    currentImages.splice(idx, 1);
+    renderImageGrid();
+  };
 
-  if (typeof render === 'function') render();
-}
+  const lightboxOverlay = document.getElementById('lightboxOverlay');
+  const lightboxImg = document.getElementById('lightboxImg');
 
-document.addEventListener('DOMContentLoaded', init);
-if (document.readyState === 'complete' || document.readyState === 'interactive') {
-  init();
-}
+  window.openLightbox = function(src) {
+    if (lightboxImg && lightboxOverlay) {
+      lightboxImg.src = src;
+      lightboxOverlay.classList.add('show');
+    }
+  };
+
+  if (lightboxOverlay) {
+    lightboxOverlay.addEventListener('click', () => lightboxOverlay.classList.remove('show'));
+  }
+
+  // EXPORT / IMPORT JSON DATA
+  const exportJsonBtn = document.getElementById('exportJsonBtn');
+  const importJsonBtn = document.getElementById('importJsonBtn');
+  const importFileInput = document.getElementById('importFileInput');
+
+  if (exportJsonBtn) {
+    exportJsonBtn.addEventListener('click', () => {
+      const backup = {
+        activeAccount,
+        data,
+        startingBalance,
+        monthlyGoal,
+        maxLossValue,
+        maxLossUnit,
+        customTags,
+        strategyRules,
+        unlockedBadges,
+        currentTheme
+      };
+      const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `TradeFlow_Backup_${activeAccount}_${new Date().toISOString().slice(0,10)}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+  }
+
+  if (importJsonBtn && importFileInput) {
+    importJsonBtn.addEventListener('click', () => importFileInput.click());
+    importFileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (evt) => {
+        try {
+          const imported = JSON.parse(evt.target.result);
+          if (imported.data) data = imported.data;
+          if (imported.startingBalance !== undefined) startingBalance = imported.startingBalance;
+          if (imported.monthlyGoal !== undefined) monthlyGoal = imported.monthlyGoal;
+          if (imported.customTags) customTags = imported.customTags;
+          if (imported.strategyRules) strategyRules = imported.strategyRules;
+          if (imported.maxLossValue !== undefined) maxLossValue = imported.maxLossValue;
+          if (imported.maxLossUnit !== undefined) maxLossUnit = imported.maxLossUnit;
+          if (imported.currentTheme) applyTheme(imported.currentTheme);
+          if (imported.unlockedBadges) unlockedBadges = imported.unlockedBadges;
+
+          saveData(data);
+          saveStartingBalance(startingBalance);
+          saveMonthlyGoal(monthlyGoal);
+          saveMaxLossSettings();
+          saveCustomTags();
+          saveStrategyRules();
+          saveUnlockedBadges();
+
+          alert('Data imported successfully!');
+          render();
+        } catch(err) {
+          alert('Error importing JSON file: Invalid format.');
+        }
+      };
+      reader.readAsText(file);
+    });
+  }
+
+  function initAuth() {
+    const DEFAULT_USER = "jonnypapa";
+    const DEFAULT_PASS = "Jamesroland2017";
+
+    const loginOverlay = document.getElementById('loginOverlay');
+    const loginError = document.getElementById('loginError');
+    const loginBtn = document.getElementById('loginBtn');
+
+    if (localStorage.getItem('tf_logged_in') === 'true') {
+      if (loginOverlay) loginOverlay.style.display = 'none';
+      return;
+    } else {
+      if (loginOverlay) loginOverlay.style.display = 'flex';
+    }
+
+    if (loginBtn) {
+      const newBtn = loginBtn.cloneNode(true);
+      loginBtn.parentNode.replaceChild(newBtn, loginBtn);
+
+      newBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        const userEl = document.getElementById('loginUsername');
+        const passEl = document.getElementById('loginPassword');
+
+        const u = (userEl ? userEl.value : '').trim().toLowerCase();
+        const p = (passEl ? passEl.value : '').trim();
+
+        if (u === DEFAULT_USER && p === DEFAULT_PASS) {
+          localStorage.setItem('tf_logged_in', 'true');
+          if (loginOverlay) loginOverlay.style.display = 'none';
+          if (loginError) loginError.style.display = 'none';
+        } else {
+          if (loginError) loginError.style.display = 'block';
+        }
+      });
+    }
+  }
+
+  function init(){
+    try {
+      initAuth();
+
+      const savedAccount = localStorage.getItem(ACTIVE_ACCOUNT_KEY);
+      if (savedAccount) activeAccount = savedAccount;
+
+      data = loadData();
+      startingBalance = loadStartingBalance();
+      monthlyGoal = loadMonthlyGoal();
+      loadMaxLossSettings();
+
+      customTags = loadCustomTags();
+      strategyRules = loadStrategyRules();
+      unlockedBadges = loadUnlockedBadges();
+      currentTheme = loadTheme();
+      applyTheme(currentTheme);
+
+      switchAccount(activeAccount);
+    } catch(err) {
+      console.error("Data load error:", err);
+      data = {};
+    }
+
+    const dailyQuote = document.getElementById('dailyQuote');
+    if (dailyQuote) {
+      dailyQuote.textContent = QUOTES[Math.floor(Math.random() * QUOTES.length)];
+    }
+
+    const loadingScreen = document.getElementById('loadingScreen');
+    if (loadingScreen) loadingScreen.style.display = 'none';
+
+    const appEl = document.getElementById('app');
+    if (appEl) appEl.style.display = 'block';
+
+    render();
+  }
+
+  document.addEventListener('DOMContentLoaded', init);
+  if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    init();
+  }
 </script>
 </body>
 </html>
-
