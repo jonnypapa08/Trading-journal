@@ -1476,7 +1476,13 @@ viewMonth = today.getMonth();
 
 // Get account-specific keys
 function getKey(baseKey) {
-  return `${baseKey}_${activeAccount}`;
+  // 1. Figure out which account is active (defaults to 'paper' if not set)
+  const currentAccount = activeAccount || localStorage.getItem('tj_active_account') || 'paper';
+  
+  // 2. Remember it so it never gets lost on refresh
+  localStorage.setItem('tj_active_account', currentAccount);
+  
+  return `${baseKey}_${currentAccount}`;
 }
 
 function loadData(){
