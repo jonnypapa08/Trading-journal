@@ -2642,30 +2642,41 @@ function initAuth() {
   const DEFAULT_USER = "Jonnypapa";
   const DEFAULT_PASS = "Jamesroland2017";
 
-  // Changed sessionStorage to localStorage here 👇
-  const isLoggedIn = localStorage.getItem('tf_logged_in');
   const loginOverlay = document.getElementById('loginOverlay');
+  const loginError = document.getElementById('loginError');
+  const loginBtn = document.getElementById('loginBtn');
 
-  if (isLoggedIn === 'true') {
+  // Check if logged in in localStorage or sessionStorage
+  if (localStorage.getItem('tf_logged_in') === 'true' || sessionStorage.getItem('tf_logged_in') === 'true') {
     if (loginOverlay) loginOverlay.style.display = 'none';
+    return;
   } else {
     if (loginOverlay) loginOverlay.style.display = 'flex';
   }
 
-  document.getElementById('loginBtn')?.addEventListener('click', () => {
-    const u = document.getElementById('loginUsername').value.trim();
-    const p = document.getElementById('loginPassword').value.trim();
-    const errEl = document.getElementById('loginError');
+  if (loginBtn) {
+    // Clone button to ensure fresh listener binding
+    const newBtn = loginBtn.cloneNode(true);
+    loginBtn.parentNode.replaceChild(newBtn, loginBtn);
 
-    if (u === DEFAULT_USER && p === DEFAULT_PASS) {
-      // Changed sessionStorage to localStorage here 👇
-      localStorage.setItem('tf_logged_in', 'true');
-      if (loginOverlay) loginOverlay.style.display = 'none';
-      if (errEl) errEl.style.display = 'none';
-    } else {
-      if (errEl) errEl.style.display = 'block';
-    }
-  });
+    newBtn.addEventListener('click', () => {
+      const u = (document.getElementById('loginUsername')?.value || '').trim();
+      const p = (document.getElementById('loginPassword')?.value || '').trim();
+
+      // Case-insensitive check for Jonnypapa
+      const isUserValid = u.toLowerCase() === DEFAULT_USER.toLowerCase();
+      const isPassValid = p === DEFAULT_PASS;
+
+      if (isUserValid && isPassValid) {
+        localStorage.setItem('tf_logged_in', 'true');
+        sessionStorage.setItem('tf_logged_in', 'true');
+        if (loginOverlay) loginOverlay.style.display = 'none';
+        if (loginError) loginError.style.display = 'none';
+      } else {
+        if (loginError) loginError.style.display = 'block';
+      }
+    });
+  }
 }
 function init(){
   try {
