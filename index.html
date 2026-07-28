@@ -2646,7 +2646,7 @@ function initAuth() {
   const loginError = document.getElementById('loginError');
   const loginBtn = document.getElementById('loginBtn');
 
-  // If already logged in, immediately remove login screen
+  // If already logged in, immediately hide login screen
   if (localStorage.getItem('tf_logged_in') === 'true') {
     if (loginOverlay) loginOverlay.style.display = 'none';
     return;
@@ -2678,6 +2678,7 @@ function initAuth() {
     });
   }
 }
+
 function init(){
   try {
     initAuth();
