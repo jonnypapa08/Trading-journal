@@ -2630,7 +2630,8 @@ function initAuth() {
   const DEFAULT_USER = "Jonnypapa";
   const DEFAULT_PASS = "Jamesroland2017";
 
-  const isLoggedIn = sessionStorage.getItem('tf_logged_in');
+  // Changed sessionStorage to localStorage here 👇
+  const isLoggedIn = localStorage.getItem('tf_logged_in');
   const loginOverlay = document.getElementById('loginOverlay');
 
   if (isLoggedIn === 'true') {
@@ -2645,7 +2646,8 @@ function initAuth() {
     const errEl = document.getElementById('loginError');
 
     if (u === DEFAULT_USER && p === DEFAULT_PASS) {
-      sessionStorage.setItem('tf_logged_in', 'true');
+      // Changed sessionStorage to localStorage here 👇
+      localStorage.setItem('tf_logged_in', 'true');
       if (loginOverlay) loginOverlay.style.display = 'none';
       if (errEl) errEl.style.display = 'none';
     } else {
