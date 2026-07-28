@@ -1319,11 +1319,7 @@ const TAGS_KEY = 'tj_custom_tags_v1';
 const RULES_KEY = 'tj_strategy_rules_v1';
 const THEME_KEY = 'tj_theme_v1';
 
-let activeAccount = 'paper'; // Default to Paper so migrated trades show immediately
-  localStorage.setItem('tj_active_account', activeAccount);
-data = loadData();
-if (typeof renderUI === 'function') renderUI();
-
+let activeAccount = localStorage.getItem('tj_active_account') || 'paper';
 let data = {}; 
 let startingBalance = 0;
 let monthlyGoal = 5000;
@@ -1479,12 +1475,8 @@ viewMonth = today.getMonth();
 
 // Get account-specific keys
 function getKey(baseKey) {
-  // 1. Figure out which account is active (defaults to 'paper' if not set)
   const currentAccount = activeAccount || localStorage.getItem('tj_active_account') || 'paper';
-  
-  // 2. Remember it so it never gets lost on refresh
   localStorage.setItem('tj_active_account', currentAccount);
-  
   return `${baseKey}_${currentAccount}`;
 }
 
@@ -1560,20 +1552,24 @@ const closeSidebarBtn = document.getElementById('closeSidebarBtn');
 
 if(openSidebarBtn) {
   openSidebarBtn.addEventListener('click', () => {
-    appSidebar.classList.add('open');
+    if(appSidebar) appSidebar.classList.add('open');
   });
 }
 if(closeSidebarBtn) {
   closeSidebarBtn.addEventListener('click', () => {
-    appSidebar.classList.remove('open');
+    if(appSidebar) appSidebar.classList.remove('open');
   });
 }
 
-document.getElementById('sidebarTrophyBtn').addEventListener('click', () => {
-  appSidebar.classList.remove('open');
-  renderBadgesInventory();
-  badgesOverlay.classList.add('show');
-});
+const trophyBtn = document.getElementById('sidebarTrophyBtn');
+if(trophyBtn) {
+  trophyBtn.addEventListener('click', () => {
+    if(appSidebar) appSidebar.classList.remove('open');
+    if(typeof renderBadgesInventory === 'function') renderBadgesInventory();
+    const badgesOverlay = document.getElementById('badgesOverlay');
+    if(badgesOverlay) badgesOverlay.classList.add('show');
+  });
+}
 
 /* ACCOUNT SWITCHER HANDLER */
 const accountSelect = document.getElementById('accountSelect');
@@ -1588,7 +1584,8 @@ function switchAccount(accType) {
   activeAccount = accType;
   localStorage.setItem(ACTIVE_ACCOUNT_KEY, accType);
   data = loadData();
-  if (typeof renderUI === 'function') renderUI();
+  if (typeof render === 'function') render();
+  else if (typeof renderUI === 'function') renderUI();
 }
 
   // Load account specific data
