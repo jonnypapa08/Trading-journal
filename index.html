@@ -2639,15 +2639,15 @@ saveBtn.addEventListener('click', () => {
   render();
 });
 function initAuth() {
-  const DEFAULT_USER = "Jonnypapa";
+  const DEFAULT_USER = "jonnypapa";
   const DEFAULT_PASS = "Jamesroland2017";
 
   const loginOverlay = document.getElementById('loginOverlay');
   const loginError = document.getElementById('loginError');
   const loginBtn = document.getElementById('loginBtn');
 
-  // Check if logged in in localStorage or sessionStorage
-  if (localStorage.getItem('tf_logged_in') === 'true' || sessionStorage.getItem('tf_logged_in') === 'true') {
+  // If already logged in, immediately remove login screen
+  if (localStorage.getItem('tf_logged_in') === 'true') {
     if (loginOverlay) loginOverlay.style.display = 'none';
     return;
   } else {
@@ -2655,21 +2655,21 @@ function initAuth() {
   }
 
   if (loginBtn) {
-    // Clone button to ensure fresh listener binding
+    // Rebind clean listener
     const newBtn = loginBtn.cloneNode(true);
     loginBtn.parentNode.replaceChild(newBtn, loginBtn);
 
-    newBtn.addEventListener('click', () => {
-      const u = (document.getElementById('loginUsername')?.value || '').trim();
-      const p = (document.getElementById('loginPassword')?.value || '').trim();
+    newBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      
+      const userEl = document.getElementById('loginUsername');
+      const passEl = document.getElementById('loginPassword');
 
-      // Case-insensitive check for Jonnypapa
-      const isUserValid = u.toLowerCase() === DEFAULT_USER.toLowerCase();
-      const isPassValid = p === DEFAULT_PASS;
+      const u = (userEl ? userEl.value : '').trim().toLowerCase();
+      const p = (passEl ? passEl.value : '').trim();
 
-      if (isUserValid && isPassValid) {
+      if (u === DEFAULT_USER && p === DEFAULT_PASS) {
         localStorage.setItem('tf_logged_in', 'true');
-        sessionStorage.setItem('tf_logged_in', 'true');
         if (loginOverlay) loginOverlay.style.display = 'none';
         if (loginError) loginError.style.display = 'none';
       } else {
