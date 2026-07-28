@@ -1320,6 +1320,9 @@ const RULES_KEY = 'tj_strategy_rules_v1';
 const THEME_KEY = 'tj_theme_v1';
 
 let activeAccount = 'paper'; // Default to Paper so migrated trades show immediately
+  localStorage.setItem('tj_active_account', activeAccount);
+data = loadData();
+if (typeof renderUI === 'function') renderUI();
 
 let data = {}; 
 let startingBalance = 0;
@@ -1584,6 +1587,9 @@ if(accountSelect) {
 function switchAccount(accType) {
   activeAccount = accType;
   localStorage.setItem(ACTIVE_ACCOUNT_KEY, accType);
+  data = loadData();
+  if (typeof renderUI === 'function') renderUI();
+}
 
   // Load account specific data
   data = loadData();
@@ -2690,6 +2696,7 @@ function init(){
 
     const savedAccount = localStorage.getItem(ACTIVE_ACCOUNT_KEY);
     if(savedAccount) activeAccount = savedAccount;
+    data = loadData();
 
     customTags = loadCustomTags();
     strategyRules = loadStrategyRules();
